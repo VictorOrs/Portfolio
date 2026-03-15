@@ -48,6 +48,15 @@ const config: Config = {
 
         // Utility
         white: "var(--color-white)", // #FCFFFE
+
+        // Button
+        btn: {
+          primary: {
+            bg:    "var(--color-btn-primary-bg)",
+            hover: "var(--color-btn-primary-bg-hover)",
+            text:  "var(--color-btn-primary-text)",
+          },
+        },
       },
 
       // ─── Fonts ──────────────────────────────────────────────────────────
@@ -63,6 +72,7 @@ const config: Config = {
         "heading-4": ["32px", { lineHeight: "40px", letterSpacing: "0",  fontWeight: "500" }], // Title/H4
         "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/R
         "btn-lg":    ["18px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/L
+        "btn-md":    ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/M
         "link":      ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "500" }], // Link
         "label":     ["14px", { lineHeight: "20px", letterSpacing: "8px",fontWeight: "600" }], // Uppercase
       },
@@ -93,6 +103,9 @@ const config: Config = {
       // ─── Effects ─────────────────────────────────────────────────────────
       backdropBlur: {
         glass: "24px", // Blur token — BACKGROUND_BLUR radius: 24
+      },
+      boxShadow: {
+        "btn-glow": "0px 0px 20px 0px rgba(255,255,255,0.48)", // Primary button hover — white glow
       },
       dropShadow: {
         illustration: "0 -3.65px 29.18px rgba(0,0,0,0.72)", // Illustration token

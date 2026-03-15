@@ -29,8 +29,8 @@
 
 :root {
   /* Backgrounds */
-  --color-bg-base:    #F7F7F9; /* Light/Base/#1 */
-  --color-bg-surface: #FFFFFF; /* Light/Base/#2 */
+  --color-bg-base:    #F5F5F5;
+  --color-bg-surface: #E0E0E0;
 
   /* Text */
   --color-text-primary:   #383C48; /* Default/Text/Primary */
@@ -39,6 +39,11 @@
 
   /* Overlays */
   --color-alpha: #0000001a; /* 10% dark overlay on light bg */
+
+  /* Button / Primary */
+  --color-btn-primary-bg:       #090909;
+  --color-btn-primary-bg-hover: #202020;
+  --color-btn-primary-text:     #f5f5f5;
 
   /* Semantic — invariant across modes */
   --color-success:              #0ebe6a;
@@ -53,8 +58,8 @@
 
 .dark {
   /* Backgrounds */
-  --color-bg-base:    #090909; /* background/base */
-  --color-bg-surface: #e0e0e0; /* background/#1 / primary/base */
+  --color-bg-base:    #090909;
+  --color-bg-surface: #202020;
 
   /* Text */
   --color-text-primary:   #f5f5f5; /* text/Primary */
@@ -63,12 +68,27 @@
 
   /* Overlays */
   --color-alpha: #ffffff1a; /* alpha/#1 — 10% white overlay on dark bg */
+
+  /* Button / Primary */
+  --color-btn-primary-bg:       #E0E0E0;
+  --color-btn-primary-bg-hover: #FFFFFF;
+  --color-btn-primary-text:     #090909;
 }
 
 body {
   color: var(--color-text-primary);
   background: var(--color-bg-base);
   font-family: var(--font-geist-sans), sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    background-color: var(--color-btn-primary-bg);
+    color: var(--color-bg-base);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-btn-primary-bg-hover);
+  }
 }
 
 @layer utilities {
