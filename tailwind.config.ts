@@ -6,14 +6,100 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  // Class-based dark mode — add/remove `dark` on <html> to switch themes
+  darkMode: "class",
   theme: {
     extend: {
+      // ─── Colors ─────────────────────────────────────────────────────────
+      // All values reference CSS variables defined in globals.css.
+      // Semantic tokens change between :root (light) and .dark.
+      // Invariant tokens are defined once in :root and never overridden.
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        // Backgrounds
+        background: {
+          base:    "var(--color-bg-base)",    // main canvas
+          surface: "var(--color-bg-surface)", // cards, panels
+        },
+
+        // Text hierarchy
+        text: {
+          primary:   "var(--color-text-primary)",
+          secondary: "var(--color-text-secondary)",
+          accent:    "var(--color-text-accent)",
+        },
+
+        // Overlays / glass
+        alpha: "var(--color-alpha)", // 10% overlay, adapts per mode
+
+        // Accent / brand (invariant)
+        accent: {
+          purple: {
+            DEFAULT: "var(--color-accent-purple)",      // #725FEB
+            dark:    "var(--color-accent-purple-dark)", // #5A3A88
+            light:   "var(--color-accent-purple-light)",// #F4EBFF
+          },
+          brand: "var(--color-brand)", // #4779FF
+        },
+
+        // Semantic status (invariant)
+        success: "var(--color-success)", // #0ebe6a
+        error:   "var(--color-error)",   // #DF2626
+        green:   "var(--color-green)",   // #319463
+
+        // Utility
+        white: "var(--color-white)", // #FCFFFE
+      },
+
+      // ─── Fonts ──────────────────────────────────────────────────────────
+      fontFamily: {
+        display: ["Nohemi", "sans-serif"],                         // headings, buttons, nav
+        body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, labels
+      },
+
+      // ─── Font sizes (with paired line-heights & weights) ────────────────
+      fontSize: {
+        "display-1": ["88px", { lineHeight: "96px", letterSpacing: "0",  fontWeight: "500" }], // Title/H1
+        "heading-3": ["48px", { lineHeight: "56px", letterSpacing: "0",  fontWeight: "500" }], // Title/H3
+        "heading-4": ["32px", { lineHeight: "40px", letterSpacing: "0",  fontWeight: "500" }], // Title/H4
+        "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/R
+        "btn-lg":    ["18px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/L
+        "link":      ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "500" }], // Link
+        "label":     ["14px", { lineHeight: "20px", letterSpacing: "8px",fontWeight: "600" }], // Uppercase
+      },
+
+      // ─── Spacing (4 px base unit) ────────────────────────────────────────
+      // Numeric tokens match Tailwind's built-in scale (1 = 4px).
+      // Named tokens are section/layout-level additions.
+      spacing: {
+        1:  "4px",
+        2:  "8px",
+        3:  "12px",
+        4:  "16px",
+        6:  "24px",
+        8:  "32px",
+        10: "40px",
+        12: "48px",
+        16: "64px",
+        20: "80px",
+        // Section spacing
+        xs:  "40px",
+        s:   "64px",
+        m:   "80px",
+        l:   "120px",
+        xl:  "190px",
+        xxl: "300px",
+      },
+
+      // ─── Effects ─────────────────────────────────────────────────────────
+      backdropBlur: {
+        glass: "24px", // Blur token — BACKGROUND_BLUR radius: 24
+      },
+      dropShadow: {
+        illustration: "0 -3.65px 29.18px rgba(0,0,0,0.72)", // Illustration token
       },
     },
   },
   plugins: [],
 };
+
 export default config;
