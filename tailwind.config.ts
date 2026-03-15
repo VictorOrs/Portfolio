@@ -81,6 +81,7 @@ const config: Config = {
       // Numeric tokens match Tailwind's built-in scale (1 = 4px).
       // Named tokens are section/layout-level additions.
       spacing: {
+        "4.5": "18px", // py for primary/lg → 18+20+18 = 56px
         1:  "4px",
         2:  "8px",
         3:  "12px",
