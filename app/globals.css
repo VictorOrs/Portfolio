@@ -44,6 +44,7 @@
   --color-btn-primary-bg:       #090909;
   --color-btn-primary-bg-hover: #202020;
   --color-btn-primary-text:     #f5f5f5;
+  --shadow-btn-glow:            0px 0px 20px 0px rgba(255, 255, 255, 0.48);
 
   /* Semantic — invariant across modes */
   --color-success:              #0ebe6a;
@@ -73,6 +74,7 @@
   --color-btn-primary-bg:       #E0E0E0;
   --color-btn-primary-bg-hover: #FFFFFF;
   --color-btn-primary-text:     #090909;
+  --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.20);
 }
 
 body {
@@ -94,5 +96,13 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Plug into Tailwind's shadow variable system so box-shadow composes correctly
+     with ring utilities and transition-all */
+  .btn-primary:hover {
+    --tw-shadow: var(--shadow-btn-glow);
+    --tw-shadow-colored: var(--shadow-btn-glow);
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   }
 }

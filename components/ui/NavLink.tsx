@@ -8,7 +8,7 @@ export default function NavLink({ className, children, ...props }: NavLinkProps)
     <Link
       className={[
         // Layout & shape
-        "inline-flex items-center justify-center px-4 py-3 rounded-full",
+        "inline-flex items-center justify-center p-3 rounded-full",
         // Typography — Link token (Nohemi Medium 16px/20px)
         "font-display text-link",
         // Default state

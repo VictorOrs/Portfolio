@@ -16,7 +16,6 @@ export const buttonVariants = cva(
       variant: {
         primary: [
           "btn-primary",
-          "hover:shadow-btn-glow",
         ],
         secondary: [
           "outline outline-2 outline-alpha outline-offset-[-2px] text-text-primary",
