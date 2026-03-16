@@ -44,7 +44,7 @@
   --color-btn-primary-bg:       #090909;
   --color-btn-primary-bg-hover: #202020;
   --color-btn-primary-text:     #f5f5f5;
-  --shadow-btn-glow:            0px 0px 20px 0px rgba(255, 255, 255, 0.48);
+  --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.48);
 
   /* Semantic — invariant across modes */
   --color-success:              #0ebe6a;
@@ -74,7 +74,7 @@
   --color-btn-primary-bg:       #E0E0E0;
   --color-btn-primary-bg-hover: #FFFFFF;
   --color-btn-primary-text:     #090909;
-  --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.20);
+  --shadow-btn-glow:            0px 0px 20px 0px rgba(255, 255, 255, 0.20);
 }
 
 body {
@@ -91,6 +91,11 @@ body {
   .btn-primary:hover {
     background-color: var(--color-btn-primary-bg-hover);
   }
+
+  .changing-span {
+    background-color: var(--color-btn-primary-bg);
+    color: var(--color-bg-base);
+  }
 }
 
 @layer utilities {
@@ -104,5 +109,26 @@ body {
     --tw-shadow: var(--shadow-btn-glow);
     --tw-shadow-colored: var(--shadow-btn-glow);
     box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  }
+
+  /* Hero title — rainbow radial gradient clipped to text */
+  .hero-title-gradient {
+    background-image: linear-gradient(
+      115deg,
+      #E0E0E0 8%,
+      #F7BF7E 22%,
+      #FFB35E 30%,
+      #FF665C 42%,
+      #C261AE 50%,
+      #A45ED6 54%,
+      #865BFF 58%,
+      #98A8FF 62%,
+      #AAF5FF 66%,
+      #D3FFE7 70%,
+      #E0E0E0 74%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

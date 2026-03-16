@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
+import LanguageToggle from "@/components/ui/LanguageToggle";
 
 type NavbarProps = {
   scrolled?: boolean;
@@ -37,6 +38,7 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
 
       {/* CTA buttons — right */}
       <div className="flex items-center gap-4 shrink-0">
+        <LanguageToggle />
         <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label="Send an email" />
         <Button variant="primary" size="lg">
           Book a call

@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "process": "Processus",
+    "work": "Projets",
+    "faq": "FAQ"
+  },
+  "hero": {
+    "headline": "Accélérez \nvotre croissance grâce à\ndes "
+  }
+}

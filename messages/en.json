@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "process": "Process",
+    "work": "Work",
+    "faq": "FAQ"
+  },
+  "hero": {
+    "headline": "Speed up \nyour growth through\nsuccessful "
+  }
+}
