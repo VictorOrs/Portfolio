@@ -83,19 +83,73 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
 }
 
+body::after {
+  content: "";
+  position: fixed;
+  inset: -200%;
+  width: 400%;
+  height: 400%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  opacity: 0.12;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  z-index: 9999;
+}
+
 @layer components {
   .btn-primary {
+    position: relative;
+    overflow: hidden;
     background-color: var(--color-btn-primary-bg);
     color: var(--color-bg-base);
   }
+
+  .btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background-image: linear-gradient(115deg, #FFFFFF 0%, #FFFFFF 25%, #E0E0E0 38%, #FFFFFF 55%, #E0E0E0 68%, #E0E0E0 100%);
+    background-size: 300% 100%;
+    background-position: 100% 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .btn-primary > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .btn-primary:hover {
-    background-color: var(--color-btn-primary-bg-hover);
+    background-color: #FFFFFF;
+  }
+
+  .btn-primary:hover::before {
+    animation: btn-shimmer 1.1s ease-out forwards;
   }
 
   .changing-span {
     background-color: var(--color-btn-primary-bg);
     color: var(--color-bg-base);
   }
+}
+
+/* Light card context — plain hover, no shimmer, no glow */
+.light-card .btn-primary:hover {
+  background-color: var(--color-btn-primary-bg-hover);
+  box-shadow: none;
+}
+.light-card .btn-primary:hover::before {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes btn-shimmer {
+  0%   { opacity: 1; background-position: 100% 50%; }
+  65%  { opacity: 1; background-position: 0% 50%; }
+  100% { opacity: 0; background-position: 0% 50%; }
 }
 
 @layer utilities {

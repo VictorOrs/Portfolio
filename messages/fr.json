@@ -1,4 +1,8 @@
 {
+  "navbar": {
+    "bookCall": "Me contacter",
+    "sendEmail": "Envoyer un email"
+  },
   "nav": {
     "home": "Accueil",
     "about": "À propos",
@@ -7,6 +11,17 @@
     "faq": "FAQ"
   },
   "hero": {
-    "headline": "Accélérez \nvotre croissance grâce à\ndes "
+    "headline": "Accélérez \nvotre croissance\ngrâce à du "
+  },
+  "whoiam": {
+    "role": "Designer Produit Freelance",
+    "bioPrefix": "Avec plus de",
+    "bioYears": "7 ans d'expérience",
+    "bioMid": ", je suis spécialisé dans la création de",
+    "bioSpeciality": "designs propres, centrés utilisateur et fonctionnels",
+    "bioSuffix": "dans différents marchés, notamment",
+    "bioMarkets": "la fintech, la data et le web3.",
+    "clientsHeading": "La confiance de \nclients d'exception",
+    "clientsCaption": "Ces dernières années, j'ai eu l'opportunité de travailler sur une grande variété de projets avec des équipes formidables."
   }
 }

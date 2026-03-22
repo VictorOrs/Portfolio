@@ -1,23 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { GRADIENT_STOPS } from "@/lib/gradient";
 
 const TYPES = [
   "Product",
   "Branding",
   "System",
-  "No-Coding",
-  "Vibe-Coding",
   "Visuals",
 ] as const;
 
-type SpanType = (typeof TYPES)[number];
-
 type ChangingSpanProps = {
-  interval?: number; // ms between changes, default 2000
+  interval?: number;
 };
 
-export default function ChangingSpan({ interval = 2000 }: ChangingSpanProps) {
+export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -28,10 +26,33 @@ export default function ChangingSpan({ interval = 2000 }: ChangingSpanProps) {
   }, [interval]);
 
   return (
-    <span className="inline-flex items-center justify-center px-8 pt-2.5 pb-0.5 rounded-full changing-span">
-      <span className="font-display text-display-1 whitespace-nowrap">
-        {TYPES[index]}
-      </span>
-    </span>
+    <motion.span
+      layout
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className="inline-flex items-center justify-center px-8 overflow-hidden"
+      style={{
+        height: "104px",
+        borderRadius: "9999px",
+        paddingTop: "10px",
+        backgroundColor: "var(--color-btn-primary-bg)",
+      }}
+    >
+      <AnimatePresence mode="popLayout">
+        <motion.span
+          key={TYPES[index]}
+          className="font-display text-display-1 whitespace-nowrap"
+          initial={{ opacity: 0, y: "-100%" }}
+          animate={{ opacity: 1, y: "0%" }}
+          exit={{ opacity: 0, y: "100%" }}
+          transition={{
+            y: { duration: 0.5, ease: "easeInOut" },
+            opacity: { duration: 0.65, ease: "easeInOut" },
+          }}
+          style={{ display: "block", lineHeight: "inherit", color: "var(--color-bg-base)" }}
+        >
+          {TYPES[index]}
+        </motion.span>
+      </AnimatePresence>
+    </motion.span>
   );
 }

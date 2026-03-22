@@ -1,4 +1,8 @@
 {
+  "navbar": {
+    "bookCall": "Book a call",
+    "sendEmail": "Send an email"
+  },
   "nav": {
     "home": "Home",
     "about": "About",
@@ -8,5 +12,16 @@
   },
   "hero": {
     "headline": "Speed up \nyour growth through\nsuccessful "
+  },
+  "whoiam": {
+    "role": "Freelance Product Designer",
+    "bioPrefix": "With over",
+    "bioYears": "7 years' experience",
+    "bioMid": ", I'm specialised in creating",
+    "bioSpeciality": "clean, user-centric and functional designs",
+    "bioSuffix": "in a variety of markets, including",
+    "bioMarkets": "fintech, data & web3.",
+    "clientsHeading": "Trusted by \ntop-tier clients",
+    "clientsCaption": "Over the last few years, I've had the opportunity to work on a wide range of projects with amazing teams."
   }
 }

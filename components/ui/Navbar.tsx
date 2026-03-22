@@ -1,13 +1,15 @@
-import Image from "next/image";
+"use client";
+
 import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
 import LanguageToggle from "@/components/ui/LanguageToggle";
+import Logo from "@/components/ui/Logo";
+import { useTranslation } from "@/lib/i18n";
 
 type NavbarProps = {
   scrolled?: boolean;
 };
 
-// Mail icon — matches the secondary icon-only button in the Figma header
 function MailIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -18,18 +20,13 @@ function MailIcon() {
 }
 
 export default function Navbar({ scrolled = false }: NavbarProps) {
+  const { t } = useTranslation();
+
   return (
     <header className="relative flex items-center justify-between w-full px-20 py-10">
 
       {/* Logo — left */}
-      <Image
-        src="/img/logo3D.png"
-        alt="Logo"
-        width={56}
-        height={56}
-        className="shrink-0"
-        priority
-      />
+      <Logo variant="flat" className="shrink-0" />
 
       {/* NavGroup — absolutely centered so it doesn't depend on side column widths */}
       <div className="absolute left-1/2 top-10 -translate-x-1/2">
@@ -39,9 +36,9 @@ export default function Navbar({ scrolled = false }: NavbarProps) {
       {/* CTA buttons — right */}
       <div className="flex items-center gap-4 shrink-0">
         <LanguageToggle />
-        <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label="Send an email" />
+        <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
         <Button variant="primary" size="lg">
-          Book a call
+          {t("navbar.bookCall")}
         </Button>
       </div>
 

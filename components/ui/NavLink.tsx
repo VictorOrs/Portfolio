@@ -1,29 +1,41 @@
+"use client";
+
 import Link from "next/link";
 import { ComponentProps } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
-type NavLinkProps = ComponentProps<typeof Link>;
+type NavLinkProps = ComponentProps<typeof Link> & {
+  isHovered?: boolean;
+};
 
-export default function NavLink({ className, children, ...props }: NavLinkProps) {
+export default function NavLink({ className, children, isHovered, ...props }: NavLinkProps) {
   return (
     <Link
       className={[
-        // Layout & shape
-        "inline-flex items-center justify-center p-3 rounded-full",
-        // Typography — Link token (Nohemi Medium 16px/20px)
+        "relative inline-flex items-center justify-center p-3 rounded-full",
         "font-display text-link",
-        // Default state
-        "text-text-secondary",
-        // Hover state — glass pill
-        "hover:text-text-primary hover:bg-alpha hover:backdrop-blur-glass",
-        // Transition
-        "transition-all duration-200",
+        isHovered ? "text-text-primary" : "text-text-secondary",
+        "transition-colors duration-200",
         className,
       ]
         .filter(Boolean)
         .join(" ")}
       {...props}
     >
-      <span className="flex items-center justify-center pt-1 px-1 leading-5">
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            layoutId="nav-pill"
+            className="absolute inset-0 rounded-full"
+            style={{ backgroundColor: "var(--color-alpha)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 350, damping: 35 }}
+          />
+        )}
+      </AnimatePresence>
+      <span className="relative z-10 flex items-center justify-center pt-1 px-1 leading-5">
         {children}
       </span>
     </Link>

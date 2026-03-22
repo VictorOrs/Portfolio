@@ -67,7 +67,7 @@ const config: Config = {
 
       // ─── Font sizes (with paired line-heights & weights) ────────────────
       fontSize: {
-        "display-1": ["88px", { lineHeight: "96px", letterSpacing: "0", fontWeight: "500" }], // Title/H1
+        "display-1": ["88px", { lineHeight: "104px", letterSpacing: "0", fontWeight: "500" }], // Title/H1
         "heading-3": ["48px", { lineHeight: "56px", letterSpacing: "0",  fontWeight: "500" }], // Title/H3
         "heading-4": ["32px", { lineHeight: "40px", letterSpacing: "0",  fontWeight: "500" }], // Title/H4
         "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/R

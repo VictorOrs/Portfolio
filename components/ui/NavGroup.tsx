@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import NavLink from "@/components/ui/NavLink";
 import { useTranslation } from "@/lib/i18n";
+import { AnimatePresence, motion } from "framer-motion";
 
 type NavGroupProps = {
   scrolled?: boolean;
@@ -18,11 +20,12 @@ const NAV_KEYS = [
 
 export default function NavGroup({ scrolled = false, className }: NavGroupProps) {
   const { t } = useTranslation();
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   return (
     <nav
       className={[
-        "inline-flex items-center justify-center gap-1 p-1 rounded-full",
+        "relative inline-flex items-center justify-center gap-1 p-1 rounded-full",
         "outline outline-2 outline-alpha outline-offset-[-2px]",
         "backdrop-blur-glass",
         scrolled ? "bg-alpha" : "",
@@ -33,7 +36,13 @@ export default function NavGroup({ scrolled = false, className }: NavGroupProps)
         .join(" ")}
     >
       {NAV_KEYS.map(({ key, href }) => (
-        <NavLink key={href} href={href}>
+        <NavLink
+          key={href}
+          href={href}
+          isHovered={hoveredKey === key}
+          onMouseEnter={() => setHoveredKey(key)}
+          onMouseLeave={() => setHoveredKey(null)}
+        >
           {t(`nav.${key}`)}
         </NavLink>
       ))}
