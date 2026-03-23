@@ -29,7 +29,8 @@ const config: Config = {
         },
 
         // Overlays / glass
-        alpha: "var(--color-alpha)", // 10% overlay, adapts per mode
+        alpha:        "var(--color-alpha)",        // 10% overlay, adapts per mode
+        "alpha-revert": "var(--color-alpha-revert)", // scrolled state bg
 
         // Accent / brand (invariant)
         accent: {
@@ -61,7 +62,7 @@ const config: Config = {
 
       // ─── Fonts ──────────────────────────────────────────────────────────
       fontFamily: {
-        display: ["Nohemi", "sans-serif"],                         // headings, buttons, nav
+        display: ["Nohemi", "sans-serif"],                            // headings, buttons, nav
         body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, labels
       },
 
@@ -97,8 +98,8 @@ const config: Config = {
         s:   "64px",
         m:   "80px",
         l:   "120px",
-        xl:  "190px",
-        xxl: "300px",
+        xl:  "177px",
+        xxl: "289px",
       },
 
       // ─── Effects ─────────────────────────────────────────────────────────

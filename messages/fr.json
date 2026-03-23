@@ -13,6 +13,16 @@
   "hero": {
     "headline": "Accélérez \nvotre croissance\ngrâce à du "
   },
+  "process": {
+    "step1Title": "Premier contact",
+    "step1Body": "Notre collaboration commence par un appel d'introduction qui m'aide à comprendre vos besoins. Nous discuterons de vos objectifs et ambitions pour votre projet, et si la collaboration semble prometteuse, nous approfondissons les spécifications.",
+    "step2Title": "Lancement du projet",
+    "step2Body": "La confiance est ma priorité absolue quand nous travaillons ensemble. Je resterai en contact tout au long du projet pour assurer la transparence, et nous définirons ensemble les étapes pour lancer votre projet dans les meilleures conditions.",
+    "step3Title": "Proposition",
+    "step3Body": "Une fois tous les détails de votre projet réunis, nous avançons en concevant plusieurs propositions. Pour chaque jalon atteint, je solliciterai votre validation. Nous pouvons travailler en compensation journalière ou opter pour un paiement au projet.",
+    "step4Title": "Livraison",
+    "step4Body": "Après avoir intégré vos retours, je vous remettrai le travail final. Par la suite, je resterai disponible pour l'assurance qualité, évoquer de nouveaux projets ou simplement garder le contact."
+  },
   "whoiam": {
     "role": "Designer Produit Freelance",
     "bioPrefix": "Avec plus de",

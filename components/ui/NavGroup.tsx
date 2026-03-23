@@ -3,7 +3,6 @@
 import { useState } from "react";
 import NavLink from "@/components/ui/NavLink";
 import { useTranslation } from "@/lib/i18n";
-import { AnimatePresence, motion } from "framer-motion";
 
 type NavGroupProps = {
   scrolled?: boolean;
@@ -11,7 +10,6 @@ type NavGroupProps = {
 };
 
 const NAV_KEYS = [
-  { key: "home",    href: "/" },
   { key: "about",   href: "/about" },
   { key: "process", href: "/process" },
   { key: "work",    href: "/work" },
@@ -25,10 +23,10 @@ export default function NavGroup({ scrolled = false, className }: NavGroupProps)
   return (
     <nav
       className={[
-        "relative inline-flex items-center justify-center gap-1 p-1 rounded-full",
+        "relative inline-flex items-center justify-center gap-1 p-2 rounded-full",
         "outline outline-2 outline-alpha outline-offset-[-2px]",
         "backdrop-blur-glass",
-        scrolled ? "bg-alpha" : "",
+        scrolled ? "bg-alpha-revert" : "",
         "transition-all duration-200",
         className,
       ]

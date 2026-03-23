@@ -1,47 +1,54 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import Logo from "@/components/ui/Logo";
 import { useTranslation } from "@/lib/i18n";
+import MailIcon from "@/components/ui/MailIcon";
 
-type NavbarProps = {
-  scrolled?: boolean;
-};
-
-function MailIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-      <path d="M22 6l-10 7L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  );
-}
-
-export default function Navbar({ scrolled = false }: NavbarProps) {
+export default function Navbar() {
   const { t } = useTranslation();
+  const [visible, setVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const current = window.scrollY;
+      setVisible(current < lastScrollY.current || current < 50);
+      setScrolled(current > 50);
+      lastScrollY.current = current;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="relative flex items-center justify-between w-full px-20 py-10">
-
+    <motion.header
+      animate={{ y: visible ? 0 : "-100%" }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-16 py-10 ${scrolled ? "z-[10000]" : "z-50"}`}
+    >
       {/* Logo — left */}
       <Logo variant="flat" className="shrink-0" />
 
-      {/* NavGroup — absolutely centered so it doesn't depend on side column widths */}
+      {/* NavGroup — absolutely centered */}
       <div className="absolute left-1/2 top-10 -translate-x-1/2">
         <NavGroup scrolled={scrolled} />
       </div>
 
       {/* CTA buttons — right */}
       <div className="flex items-center gap-4 shrink-0">
-        <LanguageToggle />
+        <LanguageToggle scrolled={scrolled} />
         <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
-        <Button variant="primary" size="lg">
+        <Button variant="primary" size="lg" className="w-[144px]">
           {t("navbar.bookCall")}
         </Button>
       </div>
-
-    </header>
+    </motion.header>
   );
 }

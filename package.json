@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
+    "figma-squircle": "^1.1.0",
     "framer-motion": "^12.38.0",
     "next": "14.2.35",
     "react": "^18",

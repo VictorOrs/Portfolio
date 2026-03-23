@@ -12,7 +12,7 @@ export default function NavLink({ className, children, isHovered, ...props }: Na
   return (
     <Link
       className={[
-        "relative inline-flex items-center justify-center p-3 rounded-full",
+        "relative inline-flex items-center justify-center p-2 rounded-full",
         "font-display text-link",
         isHovered ? "text-text-primary" : "text-text-secondary",
         "transition-colors duration-200",
@@ -35,7 +35,7 @@ export default function NavLink({ className, children, isHovered, ...props }: Na
           />
         )}
       </AnimatePresence>
-      <span className="relative z-10 flex items-center justify-center pt-1 px-1 leading-5">
+      <span className="relative z-10 flex items-center justify-center pt-1 px-2 leading-5">
         {children}
       </span>
     </Link>

@@ -18,8 +18,8 @@ export const buttonVariants = cva(
           "btn-primary",
         ],
         secondary: [
-          "outline outline-2 outline-alpha outline-offset-[-2px] text-text-primary",
-          "hover:bg-alpha hover:backdrop-blur-glass",
+          "bg-alpha-revert backdrop-blur-glass outline outline-2 outline-alpha outline-offset-[-2px] text-text-primary",
+          "hover:bg-alpha",
         ],
       },
       size: {

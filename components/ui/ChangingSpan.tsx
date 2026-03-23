@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { GRADIENT_STOPS } from "@/lib/gradient";
 
 const TYPES = [
   "Product",
@@ -31,10 +30,11 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
       transition={{ duration: 0.5, ease: "easeInOut" }}
       className="inline-flex items-center justify-center px-8 overflow-hidden"
       style={{
-        height: "104px",
+        height: "114px",
         borderRadius: "9999px",
         paddingTop: "10px",
         backgroundColor: "var(--color-btn-primary-bg)",
+        boxShadow: "0 8px 48px 0 rgba(0,0,0,0.85)",
       }}
     >
       <AnimatePresence mode="popLayout">

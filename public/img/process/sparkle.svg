@@ -1,0 +1,26 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 55.8913 43.1804" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="How does the magic happen?">
+<path d="M26.5472 1.30618C25.4379 12.5257 31.6031 23.2043 41.8742 27.8534C30.6547 26.7441 19.9761 32.9094 15.327 43.1804C16.4363 31.9609 10.2711 21.2823 0 16.6332C11.2196 17.7425 21.8981 11.5772 26.5472 1.30618Z" fill="url(#paint0_radial_0_4)"/>
+<path d="M44.9886 0C46.898 4.21823 51.2835 6.75024 55.8913 6.29467C51.6731 8.20402 49.141 12.5896 49.5966 17.1974C47.6873 12.9791 43.3017 10.4471 38.6939 10.9027C42.9122 8.99334 45.4442 4.60777 44.9886 0Z" fill="url(#paint1_radial_0_4)"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_0_4" cx="0" cy="0" r="1" gradientTransform="matrix(541.507 334.608 -474.331 2251.47 -297.462 -42.9117)" gradientUnits="userSpaceOnUse">
+<stop offset="0.146518" stop-color="#E0E0E0"/>
+<stop offset="0.367729" stop-color="#FFB35E"/>
+<stop offset="0.492079" stop-color="#FF665C"/>
+<stop offset="0.5747" stop-color="#865BFF"/>
+<stop offset="0.631892" stop-color="#AAF5FF"/>
+<stop offset="0.656638" stop-color="#D3FFE7"/>
+<stop offset="0.683591" stop-color="#E0E0E0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_0_4" cx="0" cy="0" r="1" gradientTransform="matrix(541.507 334.608 -474.331 2251.47 -297.462 -42.9117)" gradientUnits="userSpaceOnUse">
+<stop offset="0.146518" stop-color="#E0E0E0"/>
+<stop offset="0.367729" stop-color="#FFB35E"/>
+<stop offset="0.492079" stop-color="#FF665C"/>
+<stop offset="0.5747" stop-color="#865BFF"/>
+<stop offset="0.631892" stop-color="#AAF5FF"/>
+<stop offset="0.656638" stop-color="#D3FFE7"/>
+<stop offset="0.683591" stop-color="#E0E0E0"/>
+</radialGradient>
+</defs>
+</svg>

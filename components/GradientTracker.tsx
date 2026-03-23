@@ -22,6 +22,8 @@ export default function GradientTracker() {
 
       document.documentElement.style.setProperty("--grad-x", `${currentX.current}%`);
       document.documentElement.style.setProperty("--grad-y", `${currentY.current}%`);
+      document.documentElement.style.setProperty("--grad-x-dec", `${currentX.current / 100}`);
+      document.documentElement.style.setProperty("--grad-y-dec", `${currentY.current / 100}`);
 
       raf.current = requestAnimationFrame(tick);
     }

@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import en from "@/messages/en.json";
@@ -24,6 +25,7 @@ type I18nContextValue = {
   lang: Language;
   setLang: (lang: Language) => void;
   t: (key: string) => string;
+  isTransitioning: boolean;
 };
 
 const I18nContext = createContext<I18nContextValue | null>(null);
@@ -32,6 +34,8 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>("en");
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -40,8 +44,13 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setLang = useCallback((next: Language) => {
-    setLangState(next);
-    localStorage.setItem(STORAGE_KEY, next);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setIsTransitioning(true);
+    timerRef.current = setTimeout(() => {
+      setLangState(next);
+      localStorage.setItem(STORAGE_KEY, next);
+      setIsTransitioning(false);
+    }, 120);
   }, []);
 
   // Resolve a dot-notated key like "nav.home" against the current message file
@@ -60,8 +69,15 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <I18nContext.Provider value={{ lang, setLang, t }}>
-      {children}
+    <I18nContext.Provider value={{ lang, setLang, t, isTransitioning }}>
+      <div
+        style={{
+          opacity: isTransitioning ? 0 : 1,
+          transition: "opacity 120ms ease",
+        }}
+      >
+        {children}
+      </div>
     </I18nContext.Provider>
   );
 }

@@ -1,4 +1,9 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { motion, useAnimation } from "framer-motion";
+import { useState } from "react";
 
 type Props = {
   variant?: "flat" | "3d";
@@ -6,38 +11,56 @@ type Props = {
   className?: string;
 };
 
-/**
- * Logo — 56×56 container, two variants:
- * - flat: logo.svg with 2.45% horizontal inset (~1.4px each side)
- * - 3d:   logo3D.png (full bleed, cropped)
- */
 export default function Logo({ variant = "flat", size = 56, className }: Props) {
-  if (variant === "3d") {
-    return (
-      <div className={className} style={{ width: size, height: size, position: "relative" }}>
-        <Image
-          src="/img/logo3D.png"
-          alt="Logo"
-          fill
-          className="object-cover"
-          priority
-        />
+  const controls = useAnimation();
+  const [hovered, setHovered] = useState(false);
+
+  const handleHoverStart = () => {
+    setHovered(true);
+    controls.start({
+      rotate: 360,
+      transition: { duration: 6, ease: "linear", repeat: Infinity },
+    });
+  };
+
+  const handleHoverEnd = () => {
+    setHovered(false);
+    controls.stop();
+    controls.start({
+      rotate: 0,
+      transition: { duration: 0.5, ease: "easeOut" },
+    });
+  };
+
+  const imageContent =
+    variant === "3d" ? (
+      <Image src="/img/logo3D.png" alt="Logo" fill className="object-cover" priority />
+    ) : (
+      <div style={{ position: "absolute", inset: "0 2.45%" }}>
+        <Image src="/img/logo.svg" alt="Logo" fill className="object-contain" priority />
       </div>
     );
-  }
 
   return (
-    <div className={className} style={{ width: size, height: size, position: "relative" }}>
-      {/* 2.45% inset on left/right ≈ 1.4px each side at 56px */}
-      <div style={{ position: "absolute", inset: "0 2.45%" }}>
-        <Image
-          src="/img/logo.svg"
-          alt="Logo"
-          fill
-          className="object-contain"
-          priority
-        />
-      </div>
-    </div>
+    <Link href="/" aria-label="Retour à l'accueil">
+      <motion.div
+        className={className}
+        animate={controls}
+        onHoverStart={handleHoverStart}
+        onHoverEnd={handleHoverEnd}
+        style={{
+          width: size,
+          height: size,
+          position: "relative",
+          cursor: "pointer",
+          filter: hovered
+            ? "brightness(3) saturate(0) drop-shadow(0 0 6px rgba(255,255,255,0.25))"
+            : "brightness(1)",
+          transition: "filter 0.6s ease",
+        }}
+      >
+        {imageContent}
+      </motion.div>
+    </Link>
   );
 }
