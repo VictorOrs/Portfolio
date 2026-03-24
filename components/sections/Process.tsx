@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
+import { useLoading } from "@/lib/loading";
 import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
 
@@ -37,11 +38,14 @@ async function fetchBitmap(url: string): Promise<ImageBitmap> {
   return createImageBitmap(blob);
 }
 
+const CANVAS_ZOOM    = 1.25;
+const CANVAS_OFFSET_X = 12; // px shift to the right
+
 function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap): void {
   const cw    = ctx.canvas.width;
   const ch    = ctx.canvas.height;
-  const scale = Math.min(cw / bmp.width, ch / bmp.height);
-  const dx    = (cw - bmp.width  * scale) / 2;
+  const scale = Math.min(cw / bmp.width, ch / bmp.height) * CANVAS_ZOOM;
+  const dx    = (cw - bmp.width  * scale) / 2 + CANVAS_OFFSET_X;
   const dy    = (ch - bmp.height * scale) / 2;
   ctx.clearRect(0, 0, cw, ch);
   ctx.drawImage(bmp, dx, dy, bmp.width * scale, bmp.height * scale);
@@ -50,6 +54,7 @@ function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap): void {
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function Process() {
   const { t, lang } = useTranslation();
+  const { setProgress, setLoaded: setGlobalLoaded } = useLoading();
 
   const SP_X = lang === "fr" ? SP_X_FR : SP_X_EN;
   const SP_Y = lang === "fr" ? SP_Y_FR : SP_Y_EN;
@@ -68,7 +73,6 @@ export default function Process() {
   const rafRef         = useRef<number>(0);
 
   const [framesLoaded, setFramesLoaded] = useState(false);
-  const [loadPct,      setLoadPct]      = useState(0);
   const [stepIndex,    setStepIndex]    = useState(0);
 
   // ── Load frames ─────────────────────────────────────────────────────────────
@@ -87,6 +91,7 @@ export default function Process() {
         bitmapsRef.current = arr;
         frameRef.current   = mid;
         setFramesLoaded(true);
+        setGlobalLoaded();
       });
       return () => { cancelled = true; };
     }
@@ -99,13 +104,14 @@ export default function Process() {
         fetchBitmap(frameUrl(mobile, i)).then((bmp) => {
           if (cancelled) { bmp.close(); return; }
           arr[i] = bmp;
-          setLoadPct(Math.round((++done / total) * 100));
+          setProgress(Math.round((++done / total) * 100));
         })
       )
     ).then(() => {
       if (cancelled) return;
       bitmapsRef.current = arr;
       setFramesLoaded(true);
+      setGlobalLoaded();
     });
 
     return () => {
@@ -186,13 +192,19 @@ export default function Process() {
   return (
     <section ref={containerRef} className="relative h-[300vh]">
 
-      <div className="sticky top-0 h-screen flex items-stretch w-full max-w-[1440px] mx-auto overflow-hidden z-[10000]">
+      <div className="sticky top-0 h-screen flex items-center gap-m px-xl py-l w-full max-w-[1440px] mx-auto z-[10000] relative">
 
         {/* ── Left column ────────────────────────────────────────────────────── */}
-        <div className="flex flex-col justify-between flex-1 pl-xl pr-m py-l">
+        <motion.div
+          className="flex flex-col gap-[80px] w-[400px] shrink-0"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        >
 
           {/* Title + sparkle */}
-          <div className="relative w-[399px]">
+          <div className="relative">
             <p
               className="font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
               style={{
@@ -225,7 +237,8 @@ export default function Process() {
             />
           </div>
 
-          {/* Step info — animated on scroll */}
+          {/* Step info — fixed height prevents layout jump between steps */}
+          <div className="h-[200px] overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={stepIndex}
@@ -243,38 +256,41 @@ export default function Process() {
               </p>
             </motion.div>
           </AnimatePresence>
+          </div>
 
-        </div>
+        </motion.div>
 
         {/* ── Right column — cube animation ───────────────────────────────────── */}
-        <div className="w-[795px] flex flex-col py-m pr-xl">
-          <SquircleCard className="flex-1 relative bg-background-surface" style={{ zIndex: 10000 }}>
+        <motion.div
+          className="flex-1"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        >
+        <SquircleCard radius={49} className="relative w-full bg-background-surface overflow-hidden" style={{ height: 636, zIndex: 10000 }}>
 
-            <div ref={cardInnerRef} className="absolute inset-0">
+          <div ref={cardInnerRef} className="absolute inset-0">
 
-              {/* Loading indicator */}
-              {!framesLoaded && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <div
-                    className="h-8 w-8 animate-spin rounded-full border-2 border-text-secondary"
-                    style={{ borderTopColor: "var(--color-text-primary)" }}
-                  />
-                  <p className="font-body text-label text-text-secondary tabular-nums">
-                    {loadPct}%
-                  </p>
-                </div>
-              )}
+            <canvas
+              ref={canvasRef}
+              aria-hidden
+              className="absolute inset-0"
+              style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
+            />
 
-              <canvas
-                ref={canvasRef}
-                aria-hidden
-                className="absolute inset-0"
-                style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
-              />
+            {/* Vignette overlay — fades edges to bg-surface */}
+            <div
+              aria-hidden
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: "radial-gradient(ellipse 107% 50% at center, transparent 43.5%, var(--color-bg-surface) 58.2%)",
+              }}
+            />
 
-            </div>
-          </SquircleCard>
-        </div>
+          </div>
+        </SquircleCard>
+        </motion.div>
 
       </div>
     </section>

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import LinkedInIcon from "@/components/ui/LinkedInIcon";
@@ -12,10 +13,22 @@ export default function WhoIAm() {
   const { t } = useTranslation();
 
   return (
-    <section className="px-xl py-l w-full max-w-[1440px] mx-auto">
+    <section
+      className="relative px-xl py-l w-full max-w-[1440px] mx-auto"
+      style={{
+        zIndex: 10000,
+        background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
+      }}
+    >
       <div className="flex gap-10 items-start">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+        >
         <SquircleCard
           className="light-card relative flex flex-col justify-between p-8 overflow-hidden shrink-0 w-[399px] h-[556px]"
           style={{ zIndex: 10000,
@@ -104,9 +117,16 @@ export default function WhoIAm() {
             </Button>
           </div>
         </SquircleCard>
+        </motion.div>
 
         {/* ── Clients Section ───────────────────────────────────── */}
-        <div className="flex flex-col gap-12 shrink-0 w-[621px]">
+        <motion.div
+          className="flex flex-col gap-12 shrink-0 w-[621px]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        >
 
           {/* Client logos card */}
           <SquircleCard className="relative bg-background-surface h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
@@ -151,7 +171,7 @@ export default function WhoIAm() {
           <p className="font-body text-body text-text-secondary pl-8">
             {t("whoiam.clientsCaption")}
           </p>
-        </div>
+        </motion.div>
 
       </div>
     </section>
