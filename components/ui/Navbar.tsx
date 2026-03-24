@@ -31,7 +31,7 @@ export default function Navbar() {
     <motion.header
       animate={{ y: visible ? 0 : "-100%" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-16 py-10 ${scrolled ? "z-[10000]" : "z-50"}`}
+      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-16 py-10 ${scrolled ? "z-[10001]" : "z-50"}`}
     >
       {/* Logo — left */}
       <Logo variant="flat" className="shrink-0" />

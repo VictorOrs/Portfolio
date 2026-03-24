@@ -13,7 +13,7 @@ export default function Hero() {
       <div className="relative h-[312px] w-full">
 
         <p
-          className="absolute top-0 left-0 font-display text-display-1 whitespace-pre"
+          className="absolute top-0 left-0 h-full font-display text-display-1 whitespace-pre"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
             backgroundSize: "250% 250%",
@@ -28,7 +28,7 @@ export default function Hero() {
 
         {/* Inner shadow overlay */}
         <p
-          className="absolute top-0 left-0 font-display text-display-1 whitespace-pre pointer-events-none"
+          className="absolute top-0 left-0 h-full font-display text-display-1 whitespace-pre pointer-events-none"
           aria-hidden
           style={{
             backgroundImage: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%)",
