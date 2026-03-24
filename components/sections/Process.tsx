@@ -1,178 +1,282 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
 
-// ── Gradient geometry ────────────────────────────────────────────────────────
-// Title box: 399 × 144 px (w-[399px], 2 lines × 72px line-height)
-// backgroundSize = 250 % of the title box → same coordinate space for both elements
-const TITLE_W  = 399;
-const TITLE_H  = 144; // 2 × leading-[72px]
-const GRAD_W   = TITLE_W * 3;        // 997.5 px
-const GRAD_H   = TITLE_H * 2.5;        // 360 px
-// Parallax motion range — total px the gradient travels across the full mouse range
-const MOVE_X   = 120;
-const MOVE_Y   = 50;
-// Shifts that place gradient 0,0 at the title's top-left at the default
-// mouse position (grad-x-dec = 0.45, grad-y-dec = 0.5 — GradientTracker init)
-const SHIFT_X  = Math.round(MOVE_X * 0.45);
-const SHIFT_Y  = Math.round(MOVE_Y * 0.10);
-// Sparkle offset from the title's top-left corner — EN default
-// left:483 − px-xl:177 = 306 px;  top:179 − py-l:120 = 59 px
+// ── Gradient geometry ─────────────────────────────────────────────────────────
+const TITLE_W = 399;
+const TITLE_H = 144;
+const GRAD_W  = TITLE_W * 3;
+const GRAD_H  = TITLE_H * 2.5;
+const MOVE_X  = 120;
+const MOVE_Y  = 50;
+const SHIFT_X = Math.round(MOVE_X * 0.45);
+const SHIFT_Y = Math.round(MOVE_Y * 0.10);
+// Sparkle offsets — EN default / FR (next to "magie")
 const SP_X_EN = 306;
 const SP_Y_EN = 59;
-// FR: sparkle next to "magie" (line 2, y ≈ 72px + offset)
 const SP_X_FR = 258;
 const SP_Y_FR = 70;
 
-const STEPS = [
-  {
-    key: "step1",
-    img: "/img/process/step-1.png",
-    w: "269.85px",
-    imgStyle: { left: "-23.04%", top: "0.23%", width: "137.96%", height: "107.08%" },
-  },
-  {
-    key: "step2",
-    img: "/img/process/step-2.png",
-    w: "269.85px",
-    imgStyle: { left: "-37.83%", top: "-3.54%", width: "137.96%", height: "107.08%" },
-  },
-  {
-    key: "step3",
-    img: "/img/process/step-3.png",
-    w: "269.276px",
-    imgStyle: { left: "-38.14%", top: "0%", width: "138.14%", height: "106.99%" },
-  },
-  {
-    key: "step4",
-    img: "/img/process/step-4.png",
-    w: "269.85px",
-    imgStyle: { left: "-24.32%", top: "0%", width: "138.07%", height: "107.17%" },
-  },
-];
+// ── Frame sequence ────────────────────────────────────────────────────────────
+const DESKTOP_TOTAL = 363;
+const MOBILE_TOTAL  = 182;
+const MOBILE_BP     = 768;
 
+function frameUrl(mobile: boolean, idx: number): string {
+  const n = String(idx + 1).padStart(3, "0");
+  return `/frames/${mobile ? "mobile" : "desktop"}/frame_${n}.webp`;
+}
+
+async function fetchBitmap(url: string): Promise<ImageBitmap> {
+  const res  = await fetch(url);
+  const blob = await res.blob();
+  return createImageBitmap(blob);
+}
+
+function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap): void {
+  const cw    = ctx.canvas.width;
+  const ch    = ctx.canvas.height;
+  const scale = Math.min(cw / bmp.width, ch / bmp.height);
+  const dx    = (cw - bmp.width  * scale) / 2;
+  const dy    = (ch - bmp.height * scale) / 2;
+  ctx.clearRect(0, 0, cw, ch);
+  ctx.drawImage(bmp, dx, dy, bmp.width * scale, bmp.height * scale);
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 export default function Process() {
   const { t, lang } = useTranslation();
+
   const SP_X = lang === "fr" ? SP_X_FR : SP_X_EN;
   const SP_Y = lang === "fr" ? SP_Y_FR : SP_Y_EN;
-  const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const CARD_TOP = 80;
+  // Scroll zone
+  const containerRef   = useRef<HTMLDivElement>(null);
 
+  // Canvas
+  const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const cardInnerRef   = useRef<HTMLDivElement>(null);
+  const ctxRef         = useRef<CanvasRenderingContext2D | null>(null);
+  const bitmapsRef     = useRef<ImageBitmap[]>([]);
+  const frameRef       = useRef(0);
+  const progressRef    = useRef(0);
+  const stepIndexRef   = useRef(0);
+  const rafRef         = useRef<number>(0);
+
+  const [framesLoaded, setFramesLoaded] = useState(false);
+  const [loadPct,      setLoadPct]      = useState(0);
+  const [stepIndex,    setStepIndex]    = useState(0);
+
+  // ── Load frames ─────────────────────────────────────────────────────────────
   useEffect(() => {
-    const onScroll = () => {
-      wrapperRefs.current.forEach((el, i) => {
-        if (!el || i === STEPS.length - 1) return;
-        const next = wrapperRefs.current[i + 1];
-        if (!next) return;
+    let cancelled = false;
+    const mobile  = window.innerWidth < MOBILE_BP;
+    const total   = mobile ? MOBILE_TOTAL : DESKTOP_TOTAL;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        const elRect = el.getBoundingClientRect();
-        const nextTop = next.getBoundingClientRect().top;
-        const overlap = elRect.bottom - nextTop;
-        const progress = Math.max(0, Math.min(1, overlap / elRect.height));
-
-        if (progress <= 0) {
-          el.style.transform = "";
-          el.style.opacity = "";
-        } else {
-          el.style.transform = `scale(${1 - progress * 0.06})`;
-          el.style.opacity = `${1 - progress}`;
-        }
+    if (reduced) {
+      const mid = Math.floor(total / 2);
+      fetchBitmap(frameUrl(mobile, mid)).then((bmp) => {
+        if (cancelled) { bmp.close(); return; }
+        const arr = new Array<ImageBitmap>(total);
+        arr[mid] = bmp;
+        bitmapsRef.current = arr;
+        frameRef.current   = mid;
+        setFramesLoaded(true);
       });
+      return () => { cancelled = true; };
+    }
+
+    let done = 0;
+    const arr = new Array<ImageBitmap>(total);
+
+    Promise.all(
+      Array.from({ length: total }, (_, i) =>
+        fetchBitmap(frameUrl(mobile, i)).then((bmp) => {
+          if (cancelled) { bmp.close(); return; }
+          arr[i] = bmp;
+          setLoadPct(Math.round((++done / total) * 100));
+        })
+      )
+    ).then(() => {
+      if (cancelled) return;
+      bitmapsRef.current = arr;
+      setFramesLoaded(true);
+    });
+
+    return () => {
+      cancelled = true;
+      bitmapsRef.current.forEach((b) => b?.close());
+      bitmapsRef.current = [];
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Canvas sizing + scroll + RAF ─────────────────────────────────────────────
+  useEffect(() => {
+    if (!framesLoaded) return;
+
+    const canvas    = canvasRef.current;
+    const cardInner = cardInnerRef.current;
+    if (!canvas || !cardInner) return;
+
+    ctxRef.current = canvas.getContext("2d");
+    const reduced  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const sizeCanvas = () => {
+      const { width, height } = cardInner.getBoundingClientRect();
+      canvas.width  = width;
+      canvas.height = height;
+      const ctx = ctxRef.current;
+      const bmp = bitmapsRef.current[frameRef.current];
+      if (ctx && bmp) drawContained(ctx, bmp);
+    };
+    sizeCanvas();
+    window.addEventListener("resize", sizeCanvas);
+
+    if (reduced) {
+      return () => window.removeEventListener("resize", sizeCanvas);
+    }
+
+    const onScroll = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const top   = el.getBoundingClientRect().top;
+      const range = el.offsetHeight - window.innerHeight;
+      if (range <= 0) return;
+      const p = Math.max(0, Math.min(1, -top / range));
+      progressRef.current = p;
+
+      // Step cycling — 4 equal segments
+      const next = Math.min(3, Math.floor(p * 4));
+      if (next !== stepIndexRef.current) {
+        stepIndexRef.current = next;
+        setStepIndex(next);
+      }
+    };
+
+    const tick = () => {
+      const bitmaps = bitmapsRef.current;
+      const target  = Math.round(progressRef.current * (bitmaps.length - 1));
+      const clamped = Math.max(0, Math.min(bitmaps.length - 1, target));
+
+      if (clamped !== frameRef.current) {
+        frameRef.current = clamped;
+        const ctx = ctxRef.current;
+        const bmp = bitmaps[clamped];
+        if (ctx && bmp) drawContained(ctx, bmp);
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", sizeCanvas);
+    };
+  }, [framesLoaded]);
 
   return (
-    <section className="relative flex gap-xs items-start px-xl py-l w-full max-w-[1440px] mx-auto">
+    <section ref={containerRef} className="relative h-[300vh]">
 
-      {/* ── Left column — sticks once it reaches the viewport ─────────────── */}
-      <div className="sticky top-[80px] self-start shrink-0 w-[399px] relative">
+      <div className="sticky top-0 h-screen flex items-stretch w-full max-w-[1440px] mx-auto overflow-hidden z-[10000]">
 
-        {/* Title */}
-        <p
-          className="w-full font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
-          style={{
-            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-            backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-            backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
-          }}
-        >
-          {t("process.title")}
-        </p>
+        {/* ── Left column ────────────────────────────────────────────────────── */}
+        <div className="flex flex-col justify-between flex-1 pl-xl pr-m py-l">
 
-        {/* Sparkle — inside the sticky wrapper so it travels with the title */}
-        <div
-          aria-hidden
-          className="absolute pointer-events-none"
-          style={{
-            left: SP_X,
-            top: SP_Y,
-            width: "55.891px",
-            height: "43.18px",
-            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-            backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-            backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
-            WebkitMaskImage: "url(/img/process/sparkle.svg)",
-            WebkitMaskSize: "100% 100%",
-            WebkitMaskRepeat: "no-repeat",
-            maskImage: "url(/img/process/sparkle.svg)",
-            maskSize: "100% 100%",
-            maskRepeat: "no-repeat",
-          } as React.CSSProperties}
-        />
-      </div>
+          {/* Title + sparkle */}
+          <div className="relative w-[399px]">
+            <p
+              className="font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
+              style={{
+                backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+                backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
+              }}
+            >
+              {t("process.title")}
+            </p>
 
-      {/* ── Right column — cards stack on top of each other ────────────────── */}
-      <div className="flex flex-col gap-10 shrink-0 w-[620px]">
-        {STEPS.map(({ key, img, w, imgStyle }, index) => (
-          <div
-            key={key}
-            ref={(el) => { wrapperRefs.current[index] = el; }}
-            className="sticky w-full"
-            style={{
-              top: `${CARD_TOP}px`,
-              zIndex: 10001 + index,
-              filter: "drop-shadow(0 -12px 20px var(--color-bg-base))",
-              transformOrigin: "top center",
-              willChange: "transform, opacity",
-            }}
-          >
-          <SquircleCard
-            className="bg-background-surface flex flex-col items-start overflow-hidden pb-10 pt-8 px-10 w-full"
-          >
-            {/* 3D illustration */}
-            <div className="relative h-[140px] shrink-0 overflow-hidden mb-3" style={{ width: w, zIndex: 10000 }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={img}
-                alt=""
+            <div
+              aria-hidden
+              className="absolute pointer-events-none"
+              style={{
+                left: SP_X,
+                top:  SP_Y,
+                width:  "55.891px",
+                height: "43.18px",
+                backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+                backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
+                WebkitMaskImage:  "url(/img/process/sparkle.svg)",
+                WebkitMaskSize:   "100% 100%",
+                WebkitMaskRepeat: "no-repeat",
+                maskImage:        "url(/img/process/sparkle.svg)",
+                maskSize:         "100% 100%",
+                maskRepeat:       "no-repeat",
+              } as React.CSSProperties}
+            />
+          </div>
+
+          {/* Step info — animated on scroll */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={stepIndex}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{    opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="flex flex-col gap-4"
+            >
+              <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+                {String(stepIndex + 1).padStart(2, "0")}. {t(`process.step${stepIndex + 1}Title`)}
+              </p>
+              <p className="font-body text-body text-text-primary">
+                {t(`process.step${stepIndex + 1}Body`)}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+        </div>
+
+        {/* ── Right column — cube animation ───────────────────────────────────── */}
+        <div className="w-[795px] flex flex-col py-m pr-xl">
+          <SquircleCard className="flex-1 relative bg-background-surface" style={{ zIndex: 10000 }}>
+
+            <div ref={cardInnerRef} className="absolute inset-0">
+
+              {/* Loading indicator */}
+              {!framesLoaded && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                  <div
+                    className="h-8 w-8 animate-spin rounded-full border-2 border-text-secondary"
+                    style={{ borderTopColor: "var(--color-text-primary)" }}
+                  />
+                  <p className="font-body text-label text-text-secondary tabular-nums">
+                    {loadPct}%
+                  </p>
+                </div>
+              )}
+
+              <canvas
+                ref={canvasRef}
                 aria-hidden
-                className="absolute max-w-none"
-                style={imgStyle}
-                loading="lazy"
+                className="absolute inset-0"
+                style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
               />
-            </div>
 
-            {/* Text */}
-            <div className="flex flex-col gap-4 w-full">
-              <p className="font-display text-heading-4 text-text-primary">
-                {t(`process.${key}Title`)}
-              </p>
-              <p className="font-body text-body text-text-secondary">
-                {t(`process.${key}Body`)}
-              </p>
             </div>
           </SquircleCard>
-          </div>
-        ))}
-      </div>
+        </div>
 
+      </div>
     </section>
   );
 }

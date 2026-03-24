@@ -2,7 +2,6 @@ import Navbar from "@/components/ui/Navbar";
 import Hero from "@/components/sections/Hero";
 import WhoIAm from "@/components/sections/WhoIAm";
 import Process from "@/components/sections/Process";
-import CubeScrollSequence from "@/components/CubeScrollSequence";
 
 export default function Page() {
   return (
@@ -11,7 +10,6 @@ export default function Page() {
       <Hero />
       <WhoIAm />
       <Process />
-      <CubeScrollSequence />
     </main>
   );
 }
