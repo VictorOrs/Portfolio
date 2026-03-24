@@ -109,7 +109,7 @@ export default function WhoIAm() {
         <div className="flex flex-col gap-12 shrink-0 w-[621px]">
 
           {/* Client logos card */}
-          <SquircleCard className="relative bg-background-surface h-[414px] w-full overflow-hidden">
+          <SquircleCard className="relative bg-background-surface h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading — centré à 88px du haut (Figma: top-[88px] -translate-y-1/2) */}
             <h2 className="absolute left-8 top-[88px] -translate-y-1/2 font-display text-heading-4 text-text-primary leading-10 whitespace-pre">

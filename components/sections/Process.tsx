@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
@@ -11,8 +12,6 @@ const TITLE_W  = 399;
 const TITLE_H  = 144; // 2 × leading-[72px]
 const GRAD_W   = TITLE_W * 3;        // 997.5 px
 const GRAD_H   = TITLE_H * 2.5;        // 360 px
-const SPAN_X   = GRAD_W - TITLE_W;     // 598.5 px  (panning range)
-const SPAN_Y   = GRAD_H - TITLE_H;     // 216 px
 // Parallax motion range — total px the gradient travels across the full mouse range
 const MOVE_X   = 120;
 const MOVE_Y   = 50;
@@ -20,10 +19,13 @@ const MOVE_Y   = 50;
 // mouse position (grad-x-dec = 0.45, grad-y-dec = 0.5 — GradientTracker init)
 const SHIFT_X  = Math.round(MOVE_X * 0.45);
 const SHIFT_Y  = Math.round(MOVE_Y * 0.10);
-// Sparkle offset from the title's top-left corner
+// Sparkle offset from the title's top-left corner — EN default
 // left:483 − px-xl:177 = 306 px;  top:179 − py-l:120 = 59 px
-const SP_X = 306;
-const SP_Y = 59;
+const SP_X_EN = 306;
+const SP_Y_EN = 59;
+// FR: sparkle next to "magie" (line 2, y ≈ 72px + offset)
+const SP_X_FR = 258;
+const SP_Y_FR = 70;
 
 const STEPS = [
   {
@@ -53,57 +55,99 @@ const STEPS = [
 ];
 
 export default function Process() {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
+  const SP_X = lang === "fr" ? SP_X_FR : SP_X_EN;
+  const SP_Y = lang === "fr" ? SP_Y_FR : SP_Y_EN;
+  const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const CARD_TOP = 80;
+
+  useEffect(() => {
+    const onScroll = () => {
+      wrapperRefs.current.forEach((el, i) => {
+        if (!el || i === STEPS.length - 1) return;
+        const next = wrapperRefs.current[i + 1];
+        if (!next) return;
+
+        const elRect = el.getBoundingClientRect();
+        const nextTop = next.getBoundingClientRect().top;
+        const overlap = elRect.bottom - nextTop;
+        const progress = Math.max(0, Math.min(1, overlap / elRect.height));
+
+        if (progress <= 0) {
+          el.style.transform = "";
+          el.style.opacity = "";
+        } else {
+          el.style.transform = `scale(${1 - progress * 0.06})`;
+          el.style.opacity = `${1 - progress}`;
+        }
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <section className="relative flex gap-xs items-start px-xl py-l w-full max-w-[1440px] mx-auto">
 
-      {/* Title — gradient in absolute-px coordinates so the sparkle can
-          share the exact same raster at its offset within the title block */}
-      <p
-        className="shrink-0 w-[399px] font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent"
-        style={{
-          backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-          backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-          backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
-        }}
-      >
-        How does
-        <br />
-        the magic happen
-      </p>
+      {/* ── Left column — sticks once it reaches the viewport ─────────────── */}
+      <div className="sticky top-[80px] self-start shrink-0 w-[399px] relative">
 
-      {/* Sparkle — exact same gradient shifted by the sparkle's offset (SP_X, SP_Y)
-          from the title's origin, giving pixel-perfect continuity */}
-      <div
-        aria-hidden
-        className="absolute pointer-events-none"
-        style={{
-          left: 483,
-          top: 179,
-          width: "55.891px",
-          height: "43.18px",
-          backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-          backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-          backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
-          WebkitMaskImage: "url(/img/process/sparkle.svg)",
-          WebkitMaskSize: "100% 100%",
-          WebkitMaskRepeat: "no-repeat",
-          maskImage: "url(/img/process/sparkle.svg)",
-          maskSize: "100% 100%",
-          maskRepeat: "no-repeat",
-        } as React.CSSProperties}
-      />
+        {/* Title */}
+        <p
+          className="w-full font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
+          style={{
+            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+            backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+            backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
+          }}
+        >
+          {t("process.title")}
+        </p>
 
-      {/* Cards */}
-      <div className="flex flex-col gap-xs shrink-0 w-[620px]">
-        {STEPS.map(({ key, img, w, imgStyle }) => (
-          <SquircleCard
+        {/* Sparkle — inside the sticky wrapper so it travels with the title */}
+        <div
+          aria-hidden
+          className="absolute pointer-events-none"
+          style={{
+            left: SP_X,
+            top: SP_Y,
+            width: "55.891px",
+            height: "43.18px",
+            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+            backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+            backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
+            WebkitMaskImage: "url(/img/process/sparkle.svg)",
+            WebkitMaskSize: "100% 100%",
+            WebkitMaskRepeat: "no-repeat",
+            maskImage: "url(/img/process/sparkle.svg)",
+            maskSize: "100% 100%",
+            maskRepeat: "no-repeat",
+          } as React.CSSProperties}
+        />
+      </div>
+
+      {/* ── Right column — cards stack on top of each other ────────────────── */}
+      <div className="flex flex-col gap-10 shrink-0 w-[620px]">
+        {STEPS.map(({ key, img, w, imgStyle }, index) => (
+          <div
             key={key}
+            ref={(el) => { wrapperRefs.current[index] = el; }}
+            className="sticky w-full"
+            style={{
+              top: `${CARD_TOP}px`,
+              zIndex: 10001 + index,
+              filter: "drop-shadow(0 -12px 20px var(--color-bg-base))",
+              transformOrigin: "top center",
+              willChange: "transform, opacity",
+            }}
+          >
+          <SquircleCard
             className="bg-background-surface flex flex-col items-start overflow-hidden pb-10 pt-8 px-10 w-full"
           >
             {/* 3D illustration */}
-            <div className="relative h-[140px] shrink-0 overflow-hidden mb-3" style={{ width: w }}>
+            <div className="relative h-[140px] shrink-0 overflow-hidden mb-3" style={{ width: w, zIndex: 10000 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={img}
@@ -125,6 +169,7 @@ export default function Process() {
               </p>
             </div>
           </SquircleCard>
+          </div>
         ))}
       </div>
 

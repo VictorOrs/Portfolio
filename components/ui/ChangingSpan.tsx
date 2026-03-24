@@ -2,27 +2,31 @@
 
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslation } from "@/lib/i18n";
 
-const TYPES = [
-  "Product",
-  "Branding",
-  "System",
-  "Visuals",
-] as const;
+const TYPES: Record<"en" | "fr", string[]> = {
+  en: ["Product", "Branding", "System", "Visuals"],
+  fr: ["Produit", "Branding", "Système", "Visuels"],
+};
 
 type ChangingSpanProps = {
   interval?: number;
 };
 
 export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
+  const { lang } = useTranslation();
+  const types = TYPES[lang];
   const [index, setIndex] = useState(0);
 
+  // Reset index and restart interval when language or interval changes
   useEffect(() => {
+    setIndex(0);
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % TYPES.length);
+      setIndex((prev) => (prev + 1) % TYPES[lang].length);
     }, interval);
     return () => clearInterval(timer);
-  }, [interval]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, interval]);
 
   return (
     <motion.span
@@ -39,7 +43,7 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
     >
       <AnimatePresence mode="popLayout">
         <motion.span
-          key={TYPES[index]}
+          key={`${lang}-${types[index]}`}
           className="font-display text-display-1 whitespace-nowrap"
           initial={{ opacity: 0, y: "-100%" }}
           animate={{ opacity: 1, y: "0%" }}
@@ -50,7 +54,7 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
           }}
           style={{ display: "block", lineHeight: "inherit", color: "var(--color-bg-base)" }}
         >
-          {TYPES[index]}
+          {types[index]}
         </motion.span>
       </AnimatePresence>
     </motion.span>
