@@ -10,6 +10,8 @@ import MailIcon from "@/components/ui/MailIcon";
 import Logo from "@/components/ui/Logo";
 import PlayIcon from "@/components/ui/PlayIcon";
 import PauseIcon from "@/components/ui/PauseIcon";
+import PlusIcon from "@/components/ui/PlusIcon";
+import MinusIcon from "@/components/ui/MinusIcon";
 import PlayPauseButton from "@/components/ui/PlayPauseButton";
 import WorkCard from "@/components/ui/WorkCard";
 import WorkController from "@/components/ui/WorkController";
@@ -317,6 +319,8 @@ function TabIcons() {
           { label: "Logo",         node: <Logo /> },
           { label: "PlayIcon",     node: <PlayIcon /> },
           { label: "PauseIcon",    node: <PauseIcon /> },
+          { label: "PlusIcon",     node: <PlusIcon /> },
+          { label: "MinusIcon",    node: <MinusIcon /> },
         ].map(({ label, node }) => (
           <div key={label} className="flex flex-col gap-2 items-center">
             {node}

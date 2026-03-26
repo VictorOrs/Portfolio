@@ -118,18 +118,15 @@ export default function Work() {
         <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
           {t("work.eyebrow")}
         </p>
-        <p className="font-display text-heading-2">
-          <span className="text-text-primary">{t("work.titlePrefix")} </span>
-          <span
-            className="bg-clip-text text-transparent"
-            style={{
-              backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
-              backgroundSize: "250% 250%",
-              backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
-            }}
-          >
-            {t("work.titleHighlight")}
-          </span>
+        <p
+          className="font-display text-heading-2 bg-clip-text text-transparent"
+          style={{
+            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+            backgroundSize: "250% 250%",
+            backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
+          }}
+        >
+          {t("work.titlePrefix")} {t("work.titleHighlight")}
         </p>
       </motion.div>
 

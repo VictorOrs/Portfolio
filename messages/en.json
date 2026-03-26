@@ -34,6 +34,20 @@
     "learnMore": "Learn more",
     "cta": "See more at enuma-collective.com"
   },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Any further\nquestions?",
+    "q1": "Do you work exclusively via the collective?",
+    "a1": "No, as a customer you decide whether to work with the collective, which I am a part, or exclusively with me, depending on your needs and budget.",
+    "q2": "What services do you offer exactly?",
+    "a2": "I focus mainly on Product Design & UX UI Design, whether from an existing application/website or from scratch. I'm qualified to help you create impactful visuals, an easy-to-use well-organised design system and integrate your website on Webflow.",
+    "q3": "How do you bill your services?",
+    "a3": "I mainly invoice in days and do not accept contracts invoiced in hours. However, depending on your needs and availability, I can invoice on a per-project basis.",
+    "q4": "Do you work only remotely or can you join our offices?",
+    "a4": "I usually work 100% remote. As I'm based in France, I can sometimes travel if your office is in the Bordeaux area or in Paris.",
+    "q5": "Do you work internationally?",
+    "a5": "Yes, I'm based in Bali, in Indonesia, but I'm used to working with start-ups based in the U.S. and Europe. Nowadays, distance is no longer a problem."
+  },
   "whoiam": {
     "role": "Freelance Product Designer",
     "bioPrefix": "With over",
