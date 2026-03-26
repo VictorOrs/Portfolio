@@ -45,8 +45,7 @@ export default function WhoIAm() {
             background:                     "#E0E0E0",
           } as React.CSSProperties}
         >
-          {/* Decorative badge — Figma: left 263.59px, top 2.9px, 132.856×132.856, rotate 15deg */}
-          <Image
+          {/* Decorative badge — Figma: left 263.59px, top 2.9px, 132.856×132.856, rotate 15deg *<Image
             src="/img/SVG export logo enuma.svg"
             alt=""
             aria-hidden
@@ -73,7 +72,7 @@ export default function WhoIAm() {
                 className="rounded-full object-cover"
               />
               {/* Online dot */}
-              <span className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-success border-2 border-[#E0E0E0]" />
+              <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success border-4 border-[#E0E0E0]" />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -85,9 +84,6 @@ export default function WhoIAm() {
                 <div className="flex items-center gap-1.5">
                   <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-[#666] hover:text-[#202020] transition-colors">
                     <LinkedInIcon />
-                  </a>
-                  <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" aria-label="Dribbble" className="text-[#666] hover:text-[#202020] transition-colors">
-                    <DribbbleIcon />
                   </a>
                 </div>
               </div>
@@ -136,35 +132,26 @@ export default function WhoIAm() {
               {`Trusted by \ntop-tier clients`}
             </h2>
 
-            {/* MyPal — top right, partially above fold */}
-            <div
-              className="absolute rounded-[14.6px] overflow-hidden"
-              style={{ width: 296, height: 273, left: 352, top: -69, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
-            >
-              <Image src="/img/mypal.svg" alt="MyPal" width={296} height={273} unoptimized className="w-full h-full object-cover" />
-            </div>
+            {/* Moso — top right, partially above fold */}
+            <Image
+              src="/img/moso.svg" alt="Moso" width={296} height={261} unoptimized
+              className="absolute rounded-[16px]"
+              style={{ left: 352, top: -57, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
+            />
 
             {/* Enuma — bottom left */}
-            <div
-              className="absolute rounded-[14.6px] overflow-hidden"
-              style={{
-                width: 296, height: 261, left: 32, top: 160,
-                boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)",
-              }}
-            >
-              <Image src="/img/enuma.svg" alt="Enuma" width={296} height={261} unoptimized className="w-full h-full object-cover" />
-            </div>
+            <Image
+              src="/img/enuma.svg" alt="Enuma" width={296} height={261} unoptimized
+              className="absolute rounded-[16px]"
+              style={{ left: 32, top: 166, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" }}
+            />
 
-            {/* Betclic — bottom right */}
-            <div
-              className="absolute rounded-[14.6px] overflow-hidden"
-              style={{
-                width: 296, height: 261, left: 352, top: 228,
-                boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)",
-              }}
-            >
-              <Image src="/img/betclic.svg" alt="Betclic" width={296} height={261} unoptimized className="w-full h-full object-cover" />
-            </div>
+            {/* Dialog — bottom right */}
+            <Image
+              src="/img/dialog.svg" alt="Dialog" width={296} height={261} unoptimized
+              className="absolute rounded-[16px]"
+              style={{ left: 352, top: 228, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
+            />
           </SquircleCard>
 
           {/* Caption */}

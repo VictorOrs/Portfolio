@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
-import { LoadingProvider } from "@/lib/loading";
 import GradientTracker from "@/components/GradientTracker";
 import Grain from "@/components/Grain";
-import LoadingScreen from "@/components/LoadingScreen";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,12 +28,9 @@ export default function RootLayout({
       >
         <GradientTracker />
         <Grain />
-        <LoadingProvider>
-          <I18nProvider>
-            <LoadingScreen />
-            {children}
-          </I18nProvider>
-        </LoadingProvider>
+        <I18nProvider>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );

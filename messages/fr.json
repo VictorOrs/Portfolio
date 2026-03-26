@@ -24,6 +24,16 @@
     "step4Title": "Livraison",
     "step4Body": "Après avoir intégré vos retours, je vous remettrai le travail final. Par la suite, je resterai disponible pour l'assurance qualité, évoquer de nouveaux projets ou simplement garder le contact."
   },
+  "work": {
+    "eyebrow": "Aperçu des",
+    "titlePrefix": "Travaux",
+    "titleHighlight": "sélectionnés",
+    "workedOn": "Collaboré avec",
+    "enumaTitle": "Un partenariat durable en tant que\nProduct & Brand Designer",
+    "enumaCta": "Visiter enuma-collective.com",
+    "learnMore": "En savoir plus",
+    "cta": "Voir plus sur enuma-collective.com"
+  },
   "whoiam": {
     "role": "Designer Produit Freelance",
     "bioPrefix": "Avec plus de",

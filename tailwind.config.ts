@@ -69,9 +69,11 @@ const config: Config = {
       // ─── Font sizes (with paired line-heights & weights) ────────────────
       fontSize: {
         "display-1": ["88px", { lineHeight: "104px", letterSpacing: "0", fontWeight: "500" }], // Title/H1
+        "heading-2": ["64px", { lineHeight: "72px",  letterSpacing: "0",  fontWeight: "500" }], // Title/H2
         "heading-3": ["48px", { lineHeight: "56px", letterSpacing: "0",  fontWeight: "500" }], // Title/H3
         "heading-4": ["32px", { lineHeight: "40px", letterSpacing: "0",  fontWeight: "500" }], // Title/H4
-        "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/R
+        "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/L — R
+        "body-m":   ["16px", { lineHeight: "24px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/M — R (use font-medium for M variant)
         "btn-lg":    ["18px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/L
         "btn-md":    ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/M
         "link":      ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "500" }], // Link

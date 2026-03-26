@@ -24,6 +24,16 @@
     "step4Title": "Delivery",
     "step4Body": "After completing your feedback, I'll hand over the final work to you. Afterward, I'll stay in touch to provide quality assurance, discuss potential new projects, or just keep in touch."
   },
+  "work": {
+    "eyebrow": "Quick look on",
+    "titlePrefix": "Selected",
+    "titleHighlight": "work",
+    "workedOn": "Worked on",
+    "enumaTitle": "Lasting partnership as\nProduct & Brand Designer",
+    "enumaCta": "Visit enuma-collective.com",
+    "learnMore": "Learn more",
+    "cta": "See more at enuma-collective.com"
+  },
   "whoiam": {
     "role": "Freelance Product Designer",
     "bioPrefix": "With over",

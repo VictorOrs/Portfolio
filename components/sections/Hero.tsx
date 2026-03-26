@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ChangingSpan from "@/components/ui/ChangingSpan";
 import { useTranslation } from "@/lib/i18n";
@@ -15,21 +14,16 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function Hero() {
   const { t } = useTranslation();
   const { isLoaded } = useLoading();
-  const sectionRef = useRef<HTMLElement>(null);
 
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-
-  // Title fades out as you scroll through the hero section
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  // Global scroll in px — more reliable than target-based progress on a fixed-content spacer
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [0, 420], [1, 0]);
 
   return (
-    // h-screen = scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
-    <section ref={sectionRef} className="relative h-[32rem]">
+    // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
+    <section className="relative h-[55vh]">
 
-      {/* Fixed title — stays at its viewport position, fades as the section scrolls */}
+      {/* Fixed title — stays at its viewport position, fades as the page scrolls */}
       <motion.div
         className="fixed inset-x-0 max-w-[1440px] mx-auto px-xl"
         style={{ top: FIXED_TOP, zIndex: 0, opacity }}

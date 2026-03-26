@@ -206,7 +206,7 @@ export default function Process() {
           {/* Title + sparkle */}
           <div className="relative">
             <p
-              className="font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
+              className="font-display text-heading-2 bg-clip-text text-transparent whitespace-pre"
               style={{
                 backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
                 backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
@@ -268,7 +268,7 @@ export default function Process() {
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
-        <SquircleCard radius={49} className="relative w-full bg-background-surface overflow-hidden" style={{ height: 636, zIndex: 10000 }}>
+        <SquircleCard className="relative w-full bg-background-surface overflow-hidden" style={{ height: 636, zIndex: 10000 }}>
 
           <div ref={cardInnerRef} className="absolute inset-0">
 
