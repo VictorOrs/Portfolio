@@ -218,13 +218,13 @@ function TabButton() {
         <div className="grid grid-cols-3 gap-4 font-mono text-[13px]">
           <div className="bg-background-surface rounded-xl p-4 flex flex-col gap-2">
             <span className="text-text-accent">variant</span>
-            <span className="text-text-secondary">"primary" | "secondary"</span>
-            <span className="text-text-secondary text-[11px]">default: "primary"</span>
+            <span className="text-text-secondary">&quot;primary&quot; | &quot;secondary&quot;</span>
+            <span className="text-text-secondary text-[11px]">default: &quot;primary&quot;</span>
           </div>
           <div className="bg-background-surface rounded-xl p-4 flex flex-col gap-2">
             <span className="text-text-accent">size</span>
-            <span className="text-text-secondary">"lg" | "md"</span>
-            <span className="text-text-secondary text-[11px]">default: "lg"</span>
+            <span className="text-text-secondary">&quot;lg&quot; | &quot;md&quot;</span>
+            <span className="text-text-secondary text-[11px]">default: &quot;lg&quot;</span>
           </div>
           <div className="bg-background-surface rounded-xl p-4 flex flex-col gap-2">
             <span className="text-text-accent">icon</span>
@@ -297,7 +297,7 @@ function TabChangingSpan() {
       </Subsection>
       <Subsection title="Notes">
         <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
-          <li>Cycling pill via framer-motion <code className="text-text-accent font-mono text-[14px]">layout</code> + <code className="text-text-accent font-mono text-[14px]">AnimatePresence mode="popLayout"</code></li>
+          <li>Cycling pill via framer-motion <code className="text-text-accent font-mono text-[14px]">layout</code> + <code className="text-text-accent font-mono text-[14px]">AnimatePresence mode=&quot;popLayout&quot;</code></li>
           <li>Height fixed at <code className="text-text-accent font-mono text-[14px]">104px</code> via inline style — prevents framer-motion interpolation</li>
           <li><code className="text-text-accent font-mono text-[14px]">borderRadius</code> also inline for the same reason</li>
         </ul>
@@ -342,7 +342,7 @@ function TabPlayPauseButton() {
         <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>SVG path morphing via <code className="text-text-accent font-mono text-[14px]">useMotionValue</code> + standalone <code className="text-text-accent font-mono text-[14px]">animate()</code></li>
           <li>Both paths share M L L L Z command structure for smooth interpolation</li>
-          <li>Wraps <code className="text-text-accent font-mono text-[14px]">Button variant="secondary" size="md"</code></li>
+          <li>Wraps <code className="text-text-accent font-mono text-[14px]">Button variant=&quot;secondary&quot; size=&quot;md&quot;</code></li>
         </ul>
       </Subsection>
     </div>

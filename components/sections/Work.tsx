@@ -28,8 +28,9 @@ function EnumaIllustration() {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const DURATION = 6000; // ms per slide
-const CARD_H   = 540;
+const DURATION   = 6000; // ms per slide
+const SLIDE_COUNT = 3;
+const CARD_H     = 540;
 const ease     = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
@@ -84,7 +85,7 @@ export default function Work() {
       } else {
         progressRef.current = 0;
         setProgress(0);
-        setActiveIndex((prev) => (prev + 1) % SLIDES.length);
+        setActiveIndex((prev) => (prev + 1) % SLIDE_COUNT);
       }
     };
 
@@ -99,7 +100,7 @@ export default function Work() {
     setActiveIndex(i);
   }, []);
 
-  const nextIndex = (activeIndex + 1) % SLIDES.length;
+  const nextIndex = (activeIndex + 1) % SLIDE_COUNT;
 
   return (
     <section

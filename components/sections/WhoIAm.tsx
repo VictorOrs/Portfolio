@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import LinkedInIcon from "@/components/ui/LinkedInIcon";
-import DribbbleIcon from "@/components/ui/DribbbleIcon";
 import MailIcon from "@/components/ui/MailIcon";
 import SquircleCard from "@/components/ui/SquircleCard";
 import { useTranslation } from "@/lib/i18n";
