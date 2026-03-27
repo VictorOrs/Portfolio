@@ -4,6 +4,7 @@ import WhoIAm from "@/components/sections/WhoIAm";
 import Process from "@/components/sections/Process";
 import Work from "@/components/sections/Work";
 import FAQ from "@/components/sections/FAQ";
+import Footer from "@/components/sections/Footer";
 
 export default function Page() {
   return (
@@ -14,6 +15,7 @@ export default function Page() {
       <Work />
       <Process />
       <FAQ />
+      <Footer />
     </main>
   );
 }

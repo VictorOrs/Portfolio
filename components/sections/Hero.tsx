@@ -25,7 +25,7 @@ export default function Hero() {
 
       {/* Fixed title — stays at its viewport position, fades as the page scrolls */}
       <motion.div
-        className="fixed inset-x-0 max-w-[1440px] mx-auto px-xl"
+        className="fixed inset-x-0 max-w-[1440px] mx-auto px-xl pointer-events-none"
         style={{ top: FIXED_TOP, zIndex: 0, opacity }}
       >
         {/* Entrance animation */}

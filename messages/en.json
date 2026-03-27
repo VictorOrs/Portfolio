@@ -48,6 +48,15 @@
     "q5": "Do you work internationally?",
     "a5": "Yes, I'm based in Bali, in Indonesia, but I'm used to working with start-ups based in the U.S. and Europe. Nowadays, distance is no longer a problem."
   },
+  "footer": {
+    "interested": "Interested?",
+    "getInTouch": "Get in touch",
+    "subtitle": "Our design journey starts now.",
+    "madeWithLove": "Made with love ❤️ in France",
+    "privacy": "Privacy",
+    "legalNotice": "Legal notice",
+    "copyright": "© 2026 Victor Oursin. All rights reserved."
+  },
   "whoiam": {
     "role": "Freelance Product Designer",
     "bioPrefix": "With over",
