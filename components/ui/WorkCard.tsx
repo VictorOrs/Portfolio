@@ -98,11 +98,11 @@ export default function WorkCard({
 
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
       {hasContent && (
-        <div className="absolute bottom-0 left-0 right-0 px-[48px] py-[48px] flex flex-col gap-8">
+        <div className="absolute bottom-0 left-0 right-0 px-6 py-6 md:px-[48px] md:py-[48px] flex flex-col gap-6 md:gap-8">
 
           {/* Logo + Title + Worked on */}
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-8 items-start" style={{ width: 575 }}>
+          <div className="flex flex-col gap-4 md:gap-6">
+            <div className="flex flex-col gap-6 md:gap-8 items-start w-full md:w-[575px]">
               {logo && (
                 <Image
                   src={logo.src}
@@ -128,8 +128,8 @@ export default function WorkCard({
             {/* "Worked on" marquee */}
             {showWorkedOn && (
               <div
-                className="relative overflow-hidden"
-                style={{ height: 40, width: 575 }}
+                className="relative overflow-hidden w-full md:w-[575px]"
+                style={{ height: 40 }}
               >
                 {/* Scrolling logos — offset 107px to leave room for "Worked on" label */}
                 <div className="absolute inset-y-0" style={{ left: 107 }}>

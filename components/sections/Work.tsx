@@ -28,10 +28,9 @@ function EnumaIllustration() {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const DURATION   = 6000; // ms per slide
+const DURATION    = 6000; // ms per slide
 const SLIDE_COUNT = 3;
-const CARD_H     = 540;
-const ease     = [0.22, 1, 0.36, 1] as const;
+const ease        = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
 
@@ -63,6 +62,18 @@ export default function Work() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress]       = useState(0);
   const [paused, setPaused]           = useState(false);
+  const [cardH, setCardH]             = useState(540);
+
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth < 768) setCardH(380);
+      else if (window.innerWidth < 1024) setCardH(460);
+      else setCardH(540);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   const progressRef = useRef(0);
   const rafRef      = useRef<number>(0);
@@ -104,7 +115,7 @@ export default function Work() {
 
   return (
     <section
-      className="relative px-xl py-l w-full max-w-[1440px] mx-auto flex flex-col gap-16"
+      className="relative px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto flex flex-col gap-12 md:gap-16"
       style={{ zIndex: 10000 }}
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
@@ -119,7 +130,7 @@ export default function Work() {
           {t("work.eyebrow")}
         </p>
         <p
-          className="font-display text-heading-2 bg-clip-text text-transparent"
+          className="font-display text-heading-3 md:text-heading-2 bg-clip-text text-transparent"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
             backgroundSize: "250% 250%",
@@ -133,7 +144,7 @@ export default function Work() {
       {/* ── Card carousel ──────────────────────────────────────────────────── */}
       <motion.div
         className="relative"
-        style={{ height: CARD_H + 30 }}
+        style={{ height: cardH + 30 }}
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.05 }}
@@ -144,14 +155,14 @@ export default function Work() {
           aria-hidden
           className="absolute inset-x-4 bottom-0 pointer-events-none overflow-hidden rounded-[40px]"
           style={{
-            height: CARD_H,
+            height: cardH,
             zIndex: 1,
             opacity: 0.4,
             transform: "scaleX(0.97)",
             transformOrigin: "center bottom",
           }}
         >
-          <WorkCard {...SLIDES[nextIndex].card} height={CARD_H} />
+          <WorkCard {...SLIDES[nextIndex].card} height={cardH} />
         </div>
 
         {/* Active card */}
@@ -164,7 +175,7 @@ export default function Work() {
               exit={{ y: -24, opacity: 0 }}
               transition={{ duration: 0.65, ease }}
             >
-              <WorkCard {...SLIDES[activeIndex].card} height={CARD_H} />
+              <WorkCard {...SLIDES[activeIndex].card} height={cardH} />
             </motion.div>
           </AnimatePresence>
         </div>

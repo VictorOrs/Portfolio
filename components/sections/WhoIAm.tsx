@@ -13,13 +13,13 @@ export default function WhoIAm() {
 
   return (
     <section
-      className="relative px-xl py-l w-full max-w-[1440px] mx-auto"
+      className="relative px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
     >
-      <div className="flex gap-10 items-start">
+      <div className="flex flex-col gap-8 lg:flex-row lg:gap-10 lg:items-start">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
@@ -29,7 +29,7 @@ export default function WhoIAm() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
         <SquircleCard
-          className="light-card relative flex flex-col justify-between p-8 overflow-hidden shrink-0 w-[399px] h-[556px]"
+          className="light-card relative flex flex-col justify-between p-8 overflow-hidden w-full lg:w-[399px] h-[556px] lg:shrink-0"
           style={{ zIndex: 10000,
             "--color-bg-base":              "#F5F5F5",
             "--color-bg-surface":           "#E0E0E0",
@@ -116,7 +116,7 @@ export default function WhoIAm() {
 
         {/* ── Clients Section ───────────────────────────────────── */}
         <motion.div
-          className="flex flex-col gap-12 shrink-0 w-[621px]"
+          className="flex flex-col gap-12 w-full lg:shrink-0 lg:w-[621px]"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}

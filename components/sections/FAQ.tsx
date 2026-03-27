@@ -94,12 +94,11 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="px-xl py-l w-full max-w-[1440px] mx-auto flex gap-20 items-start">
+    <section className="px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto flex flex-col gap-10 lg:flex-row lg:gap-20 lg:items-start">
 
       {/* ── Header ──────────────────────────────────────────────────── */}
       <motion.div
-        className="flex flex-col gap-4 shrink-0"
-        style={{ width: 399 }}
+        className="flex flex-col gap-4 w-full lg:w-[399px] lg:shrink-0"
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
@@ -109,7 +108,7 @@ export default function FAQ() {
           {t("faq.eyebrow")}
         </p>
         <p
-          className="font-display text-heading-2 bg-clip-text text-transparent whitespace-pre-line"
+          className="font-display text-heading-3 md:text-heading-2 bg-clip-text text-transparent whitespace-pre-line"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
             backgroundSize: "250% 250%",
@@ -122,7 +121,7 @@ export default function FAQ() {
 
       {/* ── FAQ list ────────────────────────────────────────────────── */}
       <motion.div
-        className="flex-1 flex flex-col gap-8 pt-10"
+        className="w-full flex-1 flex flex-col gap-8 lg:pt-10"
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}

@@ -11,6 +11,15 @@ const FIXED_TOP = 80 + 177;
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
+const gradientTextStyle = {
+  backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+  backgroundSize: "250% 250%",
+  backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+};
+
 export default function Hero() {
   const { t } = useTranslation();
   const { isLoaded } = useLoading();
@@ -21,11 +30,30 @@ export default function Hero() {
 
   return (
     // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
-    <section className="relative h-[55vh]">
+    <section className="relative lg:h-[55vh]">
 
-      {/* Fixed title — stays at its viewport position, fades as the page scrolls */}
+      {/* ── Mobile / tablet layout (< lg) — in normal flow, fades on scroll ── */}
       <motion.div
-        className="fixed inset-x-0 max-w-[1440px] mx-auto px-xl pointer-events-none"
+        className="lg:hidden pointer-events-none px-6 py-16 md:px-10 md:py-24"
+        style={{ opacity }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={isLoaded ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 1.4, ease }}
+        >
+          <p
+            className="font-display text-[32px] leading-[40px] md:text-[52px] md:leading-[60px] whitespace-pre-wrap"
+            style={gradientTextStyle}
+          >
+            {t("hero.headline")}
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* ── Desktop layout (≥ lg) — fixed, stays at viewport position ── */}
+      <motion.div
+        className="hidden lg:block fixed inset-x-0 max-w-[1440px] mx-auto px-xl pointer-events-none"
         style={{ top: FIXED_TOP, zIndex: 0, opacity }}
       >
         {/* Entrance animation */}
@@ -37,14 +65,7 @@ export default function Hero() {
         >
           <p
             className="absolute top-0 left-0 h-full font-display text-display-1 whitespace-pre"
-            style={{
-              backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
-              backgroundSize: "250% 250%",
-              backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-            }}
+            style={gradientTextStyle}
           >
             {t("hero.headline")}
           </p>

@@ -192,11 +192,11 @@ export default function Process() {
   return (
     <section ref={containerRef} className="relative h-[300vh]">
 
-      <div className="sticky top-0 h-screen flex items-center gap-m px-xl py-l w-full max-w-[1440px] mx-auto z-[10000] relative">
+      <div className="sticky top-0 h-screen flex flex-col justify-center gap-8 px-6 py-10 md:flex-row md:items-center md:gap-m md:px-10 md:py-l lg:px-xl w-full max-w-[1440px] mx-auto z-[10000] relative overflow-hidden">
 
         {/* ── Left column ────────────────────────────────────────────────────── */}
         <motion.div
-          className="flex flex-col gap-[80px] w-[400px] shrink-0"
+          className="flex flex-col gap-8 md:gap-[80px] w-full md:w-[400px] md:shrink-0"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
@@ -206,7 +206,7 @@ export default function Process() {
           {/* Title + sparkle */}
           <div className="relative">
             <p
-              className="font-display text-heading-2 bg-clip-text text-transparent whitespace-pre"
+              className="font-display text-heading-3 md:text-heading-2 bg-clip-text text-transparent whitespace-pre"
               style={{
                 backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
                 backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
@@ -238,7 +238,7 @@ export default function Process() {
           </div>
 
           {/* Step info — fixed height prevents layout jump between steps */}
-          <div className="h-[200px] overflow-hidden">
+          <div className="h-[140px] md:h-[200px] overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={stepIndex}
@@ -268,7 +268,7 @@ export default function Process() {
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
-        <SquircleCard className="relative w-full bg-background-surface overflow-hidden" style={{ height: 636, zIndex: 10000 }}>
+        <SquircleCard className="relative w-full bg-background-surface overflow-hidden h-[200px] md:h-[480px] lg:h-[636px]" style={{ zIndex: 10000 }}>
 
           <div ref={cardInnerRef} className="absolute inset-0">
 

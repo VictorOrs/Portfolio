@@ -29,11 +29,11 @@ export default function Footer() {
   return (
     <footer className="w-full flex flex-col">
       {/* ── Main content ──────────────────────────────────────────────── */}
-      <div className="px-xl pt-l pb-m w-full max-w-[1440px] mx-auto flex flex-col gap-16">
+      <div className="px-6 pt-12 pb-8 md:px-10 md:pt-16 md:pb-12 lg:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto flex flex-col gap-10 md:gap-16">
 
         {/* ── CTA card — forced light mode ─────────────────────────── */}
         <motion.div
-          className="light-card flex flex-col gap-8 items-center p-16 rounded-[32px] bg-background-surface overflow-hidden"
+          className="light-card flex flex-col gap-6 md:gap-8 items-center p-8 md:p-16 rounded-[24px] md:rounded-[32px] bg-background-surface overflow-hidden"
           style={LIGHT_VARS}
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -43,10 +43,10 @@ export default function Footer() {
           {/* Heading — "Interested?" hardcoded #666 per Figma, independent of token */}
           <div className="flex flex-col gap-4 items-center">
             <div className="text-center">
-              <p className="font-display text-heading-2" style={{ color: "#666666" }}>
+              <p className="font-display text-heading-3 md:text-heading-2" style={{ color: "#666666" }}>
                 {t("footer.interested")}
               </p>
-              <p className="font-display text-heading-2 text-text-primary">
+              <p className="font-display text-heading-3 md:text-heading-2 text-text-primary">
                 {t("footer.getInTouch")}
               </p>
             </div>
@@ -56,11 +56,11 @@ export default function Footer() {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-4 items-center">
-            <Button variant="secondary" size="lg" icon={<MailIcon />}>
+          <div className="flex flex-col gap-3 md:flex-row md:gap-4 items-center w-full md:w-auto">
+            <Button variant="secondary" size="lg" icon={<MailIcon />} className="w-full md:w-auto">
               {t("navbar.sendEmail")}
             </Button>
-            <Button variant="primary" size="lg">
+            <Button variant="primary" size="lg" className="w-full md:w-auto">
               {t("navbar.bookCall")}
             </Button>
           </div>
@@ -68,7 +68,7 @@ export default function Footer() {
 
         {/* ── Footer info row ───────────────────────────────────────── */}
         <motion.div
-          className="flex items-center justify-between"
+          className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
