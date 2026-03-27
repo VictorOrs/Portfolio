@@ -13,36 +13,25 @@ export default function WhoIAm() {
 
   return (
     <section
-      className="relative px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto"
+      className="relative px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
     >
-      <div className="flex flex-col gap-8 lg:flex-row lg:gap-10 lg:items-start">
+      <div className="grid grid-cols-1 gap-5 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full lg:grid-cols-12 lg:gap-10">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
+          className="lg:col-span-5"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
         <SquircleCard
-          className="light-card relative flex flex-col justify-between p-8 overflow-hidden w-full lg:w-[399px] h-[556px] lg:shrink-0"
-          style={{ zIndex: 10000,
-            "--color-bg-base":              "#F5F5F5",
-            "--color-bg-surface":           "#E0E0E0",
-            "--color-text-primary":         "#383C48",
-            "--color-text-secondary":       "#abacb2",
-            "--color-alpha":                "#09090914",
-            "--color-alpha-revert":         "#ffffff14",
-            "--color-btn-primary-bg":       "#090909",
-            "--color-btn-primary-bg-hover": "#202020",
-            "--color-btn-primary-text":     "#f5f5f5",
-            "--shadow-btn-glow":            "0px 0px 20px 0px rgba(0,0,0,0.48)",
-            background:                     "#E0E0E0",
-          } as React.CSSProperties}
+          className="light-card relative flex flex-col justify-between p-6 xl:p-8 overflow-hidden w-full h-[480px] lg:h-full"
+          style={{ zIndex: 10000, background: "var(--color-bg-surface)" }}
         >
           {/* Decorative badge — Figma: left 263.59px, top 2.9px, 132.856×132.856, rotate 15deg *<Image
             src="/img/SVG export logo enuma.svg"
@@ -71,37 +60,37 @@ export default function WhoIAm() {
                 className="rounded-full object-cover"
               />
               {/* Online dot */}
-              <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success border-4 border-[#E0E0E0]" />
+              <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success border-4 border-background-surface" />
             </div>
 
             <div className="flex flex-col gap-1">
               {/* Name + social icons */}
               <div className="flex items-center gap-3">
-                <span className="font-display text-heading-4 text-[#202020] whitespace-nowrap">
+                <span className="font-display text-heading-4 text-text-primary whitespace-nowrap">
                   Victor Oursin
                 </span>
                 <div className="flex items-center gap-1.5">
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-[#666] hover:text-[#202020] transition-colors">
+                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="text-text-secondary hover:text-text-primary transition-colors">
                     <LinkedInIcon />
                   </a>
                 </div>
               </div>
 
               {/* Role */}
-              <p className="text-label tracking-[1.12px] uppercase text-[#666]">
+              <p className="text-label tracking-[1.12px] uppercase text-text-secondary">
                 {t("whoiam.role")}
               </p>
             </div>
           </div>
 
           {/* Bio */}
-          <p className="font-body text-body text-[#666] leading-8">
+          <p className="font-body text-body-m md:text-body text-text-secondary leading-6 md:leading-8">
             {t("whoiam.bioPrefix")}{" "}
-            <strong className="font-medium text-[#202020]">{t("whoiam.bioYears")}</strong>
+            <strong className="font-medium text-text-primary">{t("whoiam.bioYears")}</strong>
             {t("whoiam.bioMid")}{" "}
-            <strong className="font-medium text-[#202020]">{t("whoiam.bioSpeciality")}</strong>
+            <strong className="font-medium text-text-primary">{t("whoiam.bioSpeciality")}</strong>
             {" "}{t("whoiam.bioSuffix")}{" "}
-            <strong className="font-medium text-[#202020]">{t("whoiam.bioMarkets")}</strong>
+            <strong className="font-medium text-text-primary">{t("whoiam.bioMarkets")}</strong>
           </p>
 
           {/* CTA buttons */}
@@ -116,7 +105,7 @@ export default function WhoIAm() {
 
         {/* ── Clients Section ───────────────────────────────────── */}
         <motion.div
-          className="flex flex-col gap-12 w-full lg:shrink-0 lg:w-[621px]"
+          className="flex flex-col gap-5 md:gap-12 w-full lg:col-span-7"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -124,11 +113,11 @@ export default function WhoIAm() {
         >
 
           {/* Client logos card */}
-          <SquircleCard className="relative bg-background-surface h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
+          <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading — centré à 88px du haut (Figma: top-[88px] -translate-y-1/2) */}
             <h2 className="absolute left-8 top-[88px] -translate-y-1/2 font-display text-heading-4 text-text-primary leading-10 whitespace-pre">
-              {`Trusted by \ntop-tier clients`}
+              {t("whoiam.clientsHeading")}
             </h2>
 
             {/* Moso — top right, partially above fold */}
@@ -154,7 +143,7 @@ export default function WhoIAm() {
           </SquircleCard>
 
           {/* Caption */}
-          <p className="font-body text-body text-text-secondary pl-8">
+          <p className="font-body text-body-m text-text-secondary pl-4 md:pl-8">
             {t("whoiam.clientsCaption")}
           </p>
         </motion.div>

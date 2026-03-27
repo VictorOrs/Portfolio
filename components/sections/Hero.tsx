@@ -28,32 +28,44 @@ export default function Hero() {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 420], [1, 0]);
 
+  // Split headline so the ChangingSpan sits inline on the last line
+  const headline = t("hero.headline");
+  const headlineLines = headline.split("\n");
+  const prevLines = headlineLines.slice(0, -1).join("\n");
+  const lastLine  = headlineLines[headlineLines.length - 1];
+  const fluidSize = "calc((100vw - 3rem) / 6)";
+
   return (
     // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
     <section className="relative lg:h-[55vh]">
 
       {/* ── Mobile / tablet layout (< lg) — in normal flow, fades on scroll ── */}
       <motion.div
-        className="lg:hidden pointer-events-none px-6 py-16 md:px-10 md:py-24"
+        className="lg:hidden pointer-events-none px-6 py-10 md:px-10 md:py-16 grid grid-cols-12 gap-4 md:gap-6"
         style={{ opacity }}
       >
         <motion.div
+          className="col-span-full md:col-start-2 md:col-span-10"
           initial={{ opacity: 0, y: 28 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.4, ease }}
         >
+          {/* Full headline — mobile-specific 4-line split */}
           <p
-            className="font-display text-[32px] leading-[40px] md:text-[52px] md:leading-[60px] whitespace-pre-wrap"
-            style={gradientTextStyle}
+            className="font-display whitespace-pre"
+            style={{ ...gradientTextStyle, fontSize: fluidSize, lineHeight: "1.2" }}
           >
-            {t("hero.headline")}
+            {t("hero.headlineMobile")}
           </p>
+
+          {/* ChangingSpan — own line below the title */}
+          <ChangingSpan fontSize={fluidSize} />
         </motion.div>
       </motion.div>
 
       {/* ── Desktop layout (≥ lg) — fixed, stays at viewport position ── */}
       <motion.div
-        className="hidden lg:block fixed inset-x-0 max-w-[1440px] mx-auto px-xl pointer-events-none"
+        className="hidden lg:block fixed inset-x-0 max-w-[1440px] mx-auto px-s xl:px-xl 2xl:px-xl pointer-events-none"
         style={{ top: FIXED_TOP, zIndex: 0, opacity }}
       >
         {/* Entrance animation */}

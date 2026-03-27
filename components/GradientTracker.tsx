@@ -10,6 +10,12 @@ export default function GradientTracker() {
   const raf = useRef<number>(0);
 
   useEffect(() => {
+    // Prevent the browser from restoring a previous scroll position on page load
+    history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     function onMouseMove(e: MouseEvent) {
       targetX.current = (e.clientX / window.innerWidth) * 100;
       targetY.current = (e.clientY / window.innerHeight) * 100;

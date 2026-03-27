@@ -11,9 +11,12 @@ const TYPES: Record<"en" | "fr", string[]> = {
 
 type ChangingSpanProps = {
   interval?: number;
+  /** Fluid font-size (e.g. "calc((100vw - 3rem) / 10.5)"). When set, all internal
+   *  dimensions use em units relative to this value instead of hardcoded px. */
+  fontSize?: string;
 };
 
-export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
+export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpanProps) {
   const { lang } = useTranslation();
   const types = TYPES[lang];
   const [index, setIndex] = useState(0);
@@ -28,15 +31,20 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lang, interval]);
 
+  const fluid = !!fontSize;
+
   return (
     <motion.span
       layout
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="inline-flex items-center justify-center px-8 overflow-hidden"
+      className="inline-flex items-center justify-center overflow-hidden"
       style={{
-        height: "114px",
+        fontSize: fluid ? fontSize : undefined,
+        height:       fluid ? "1.3em"   : "114px",
+        paddingLeft:  fluid ? "0.36em"  : "2rem",
+        paddingRight: fluid ? "0.36em"  : "2rem",
+        paddingTop:   fluid ? "0.11em"  : "10px",
         borderRadius: "9999px",
-        paddingTop: "10px",
         backgroundColor: "var(--color-btn-primary-bg)",
         boxShadow: "0 8px 48px 0 rgba(0,0,0,0.85)",
       }}
@@ -44,7 +52,7 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
       <AnimatePresence mode="popLayout">
         <motion.span
           key={`${lang}-${types[index]}`}
-          className="font-display text-display-1 whitespace-nowrap"
+          className={`font-display whitespace-nowrap${fluid ? "" : " text-display-1"}`}
           initial={{ opacity: 0, y: "-100%" }}
           animate={{ opacity: 1, y: "0%" }}
           exit={{ opacity: 0, y: "100%" }}
@@ -52,7 +60,12 @@ export default function ChangingSpan({ interval = 3000 }: ChangingSpanProps) {
             y: { duration: 0.5, ease: "easeInOut" },
             opacity: { duration: 0.65, ease: "easeInOut" },
           }}
-          style={{ display: "block", lineHeight: "inherit", color: "var(--color-bg-base)" }}
+          style={{
+            display: "block",
+            lineHeight: "inherit",
+            color: "var(--color-bg-base)",
+            ...(fluid ? { fontSize: "1em" } : {}),
+          }}
         >
           {types[index]}
         </motion.span>

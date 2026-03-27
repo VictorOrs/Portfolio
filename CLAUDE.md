@@ -51,6 +51,14 @@ Defined in `tailwind.config.ts` and `app/globals.css`. **Never use raw hex value
 
 Animated cycling pill in the hero. Uses framer-motion `motion.span` with `layout` prop for width animation, and `AnimatePresence mode="popLayout"` for vertical ticker (exit down, enter from above). Height is fixed at `104px` via inline style (not Tailwind) to prevent framer-motion from interpolating it. `borderRadius` is also inline for the same reason.
 
+## Code Style
+
+- Prefer simplicity over abstraction
+- Minimum viable implementation first — no premature optimization or unnecessary abstractions
+- For responsive design: use Tailwind breakpoints only, `md:` prefix for tablet/desktop, no custom breakpoints, no JS for layout
+- Keep components small and readable
+- No defensive over-engineering
+
 ### Fonts
 
 - **Nohemi** (display): loaded via `@font-face` in `globals.css` from `/public/fonts/`. Weights: 500, 600.

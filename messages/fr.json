@@ -1,5 +1,6 @@
 {
   "navbar": {
+    "menu": "Menu",
     "bookCall": "Me contacter",
     "sendEmail": "Envoyer un email"
   },
@@ -11,7 +12,8 @@
     "faq": "FAQ"
   },
   "hero": {
-    "headline": "Accélérez \nvotre croissance\ngrâce à du "
+    "headline": "Accélérez \nvotre croissance\ngrâce à du ",
+    "headlineMobile": "Accélérez\nvotre\ncroissance\ngrâce à du "
   },
   "process": {
     "title": "Comment\nla magie\nopère ?",
@@ -36,7 +38,7 @@
   },
   "faq": {
     "eyebrow": "FAQ",
-    "title": "Des questions\nsupplémentaires ?",
+    "title": "Encore des\nquestions ?",
     "q1": "Travaillez-vous exclusivement via le collectif ?",
     "a1": "Non, en tant que client vous décidez si vous souhaitez travailler avec le collectif dont je fais partie, ou exclusivement avec moi, selon vos besoins et votre budget.",
     "q2": "Quels services proposez-vous exactement ?",

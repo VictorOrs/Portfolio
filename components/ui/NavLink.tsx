@@ -11,15 +11,7 @@ type NavLinkProps = ComponentProps<typeof Link> & {
 export default function NavLink({ className, children, isHovered, ...props }: NavLinkProps) {
   return (
     <Link
-      className={[
-        "relative inline-flex items-center justify-center p-2 rounded-full",
-        "font-display text-link",
-        isHovered ? "text-text-primary" : "text-text-secondary",
-        "transition-colors duration-200",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className={`relative inline-flex items-center justify-center p-2 rounded-full font-display text-link transition-colors duration-200 ${isHovered ? "text-text-primary" : "text-text-secondary"}${className ? ` ${className}` : ""}`}
       {...props}
     >
       <AnimatePresence>

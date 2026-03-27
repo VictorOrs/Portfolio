@@ -98,7 +98,7 @@ export default function WorkCard({
 
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
       {hasContent && (
-        <div className="absolute bottom-0 left-0 right-0 px-6 py-6 md:px-[48px] md:py-[48px] flex flex-col gap-6 md:gap-8">
+        <div className="absolute bottom-0 left-0 right-0 px-5 py-5 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
 
           {/* Logo + Title + Worked on */}
           <div className="flex flex-col gap-4 md:gap-6">
@@ -119,7 +119,7 @@ export default function WorkCard({
                 />
               )}
               {title && (
-                <p className="font-display text-heading-4 text-white whitespace-pre-line">
+                <p className="font-display text-[18px] leading-6 md:text-heading-4 text-white whitespace-pre-line">
                   {title}
                 </p>
               )}

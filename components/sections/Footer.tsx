@@ -8,33 +8,19 @@ import { useTranslation } from "@/lib/i18n";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// Figma tokens for the CTA card (light mode):
-// background/#1 → #E0E0E0  |  text/primary → #202020  |  text/secondary → #666
-const LIGHT_VARS = {
-  "--color-bg-base":              "#F5F5F5",
-  "--color-bg-surface":           "#E0E0E0",
-  "--color-text-primary":         "#202020",
-  "--color-text-secondary":       "#666666",
-  "--color-alpha":                "#09090914",
-  "--color-alpha-revert":         "#ffffff14",
-  "--color-btn-primary-bg":       "#090909",
-  "--color-btn-primary-bg-hover": "#202020",
-  "--color-btn-primary-text":     "#f5f5f5",
-  "--shadow-btn-glow":            "0px 0px 20px 0px rgba(0, 0, 0, 0.48)",
-} as React.CSSProperties;
-
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
     <footer className="w-full flex flex-col">
       {/* ── Main content ──────────────────────────────────────────────── */}
-      <div className="px-6 pt-12 pb-8 md:px-10 md:pt-16 md:pb-12 lg:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto flex flex-col gap-10 md:gap-16">
+      <div className="px-6 pt-8 pb-6 md:px-10 md:pt-12 md:pb-8 lg:px-s xl:px-xl 2xl:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10">
+
+        <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
 
         {/* ── CTA card — forced light mode ─────────────────────────── */}
         <motion.div
-          className="light-card flex flex-col gap-6 md:gap-8 items-center p-8 md:p-16 rounded-[24px] md:rounded-[32px] bg-background-surface overflow-hidden"
-          style={LIGHT_VARS}
+          className="light-card flex flex-col gap-5 md:gap-8 items-center p-6 md:p-16 rounded-[20px] md:rounded-[32px] bg-background-surface overflow-hidden"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -43,14 +29,14 @@ export default function Footer() {
           {/* Heading — "Interested?" hardcoded #666 per Figma, independent of token */}
           <div className="flex flex-col gap-4 items-center">
             <div className="text-center">
-              <p className="font-display text-heading-3 md:text-heading-2" style={{ color: "#666666" }}>
+              <p className="font-display text-[26px] leading-8 md:text-heading-2 text-text-secondary">
                 {t("footer.interested")}
               </p>
-              <p className="font-display text-heading-3 md:text-heading-2 text-text-primary">
+              <p className="font-display text-[26px] leading-8 md:text-heading-2 text-text-primary">
                 {t("footer.getInTouch")}
               </p>
             </div>
-            <p className="font-body text-body text-text-secondary text-center">
+            <p className="font-body text-body-m text-text-secondary text-center">
               {t("footer.subtitle")}
             </p>
           </div>
@@ -91,6 +77,8 @@ export default function Footer() {
             </a>
           </div>
         </motion.div>
+
+        </div>
       </div>
 
       {/* ── Copyright bar ─────────────────────────────────────────────── */}

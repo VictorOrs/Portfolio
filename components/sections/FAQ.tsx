@@ -48,13 +48,13 @@ function FAQItem({
   onToggle: () => void;
 }) {
   return (
-    <div className="border-b border-background-surface pb-8 flex flex-col">
+    <div className="border-b border-background-surface last:border-b-0 pb-5 md:pb-8 flex flex-col">
       <button
         className="flex gap-6 items-center w-full text-left cursor-pointer"
         onClick={onToggle}
         aria-expanded={open}
       >
-        <p className="flex-1 font-body font-medium text-body text-text-primary">
+        <p className="flex-1 font-body font-medium text-body-m md:text-body text-text-primary">
           {question}
         </p>
         <PlusMinusIcon open={open} />
@@ -68,7 +68,7 @@ function FAQItem({
       >
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <motion.p
-            className="font-body text-body-m text-text-secondary pt-4"
+            className="font-body text-[13px] leading-5 md:text-body-m text-text-secondary pt-3 md:pt-4"
             animate={{ opacity: open ? 1 : 0 }}
             transition={{ duration: 0.25, ease }}
           >
@@ -94,49 +94,54 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto flex flex-col gap-10 lg:flex-row lg:gap-20 lg:items-start">
+    <section className="px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 lg:items-start">
 
-      {/* ── Header ──────────────────────────────────────────────────── */}
-      <motion.div
-        className="flex flex-col gap-4 w-full lg:w-[399px] lg:shrink-0"
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 1.2, ease }}
-      >
-        <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-          {t("faq.eyebrow")}
-        </p>
-        <p
-          className="font-display text-heading-3 md:text-heading-2 bg-clip-text text-transparent whitespace-pre-line"
-          style={{
-            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
-            backgroundSize: "250% 250%",
-            backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
-          }}
+      {/* ── At lg: 8-col wrapper (stacked); at xl: display:contents → children become direct grid items ── */}
+      <div className="flex flex-col gap-8 col-span-full md:col-start-2 md:col-span-10 lg:gap-m xl:contents">
+
+        {/* ── Header ────────────────────────────────────────────────── */}
+        <motion.div
+          className="flex flex-col gap-4 lg:items-center xl:items-start xl:col-span-5"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1.2, ease }}
         >
-          {t("faq.title")}
-        </p>
-      </motion.div>
+          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+            {t("faq.eyebrow")}
+          </p>
+          <p
+            className="font-display text-heading-4 md:text-heading-2 bg-clip-text text-transparent whitespace-pre-line lg:whitespace-nowrap xl:whitespace-pre-line"
+            style={{
+              backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+              backgroundSize: "250% 250%",
+              backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
+            }}
+          >
+            {t("faq.title")}
+          </p>
+        </motion.div>
 
-      {/* ── FAQ list ────────────────────────────────────────────────── */}
-      <motion.div
-        className="w-full flex-1 flex flex-col gap-8 lg:pt-10"
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.1 }}
-        transition={{ duration: 1.2, ease, delay: 0.1 }}
-      >
-        {items.map((item, i) => (
-          <FAQItem
-            key={i}
-            question={item.q}
-            answer={item.a}
-            open={openIndex === i}
-            onToggle={() => setOpenIndex(openIndex === i ? null : i)}
-          />
-        ))}
-      </motion.div>
+        {/* ── FAQ list ──────────────────────────────────────────────── */}
+        <motion.div
+          className="flex flex-col gap-5 md:gap-8 xl:col-span-7 xl:pt-10"
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.1 }}
+          transition={{ duration: 1.2, ease, delay: 0.1 }}
+        >
+          {items.map((item, i) => (
+            <FAQItem
+              key={i}
+              question={item.q}
+              answer={item.a}
+              open={openIndex === i}
+              onToggle={() => setOpenIndex(openIndex === i ? null : i)}
+            />
+          ))}
+        </motion.div>
+
+      </div>
     </section>
   );
 }

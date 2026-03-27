@@ -22,16 +22,7 @@ export default function NavGroup({ scrolled = false, className }: NavGroupProps)
 
   return (
     <nav
-      className={[
-        "relative inline-flex items-center justify-center gap-1 p-2 rounded-full",
-        "outline outline-2 outline-alpha outline-offset-[-2px]",
-        "backdrop-blur-glass",
-        scrolled ? "bg-alpha-revert" : "",
-        "transition-all duration-200",
-        className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className={`relative inline-flex items-center justify-center gap-1 p-2 rounded-full outline outline-2 outline-alpha outline-offset-[-2px] backdrop-blur-glass transition-all duration-200${scrolled ? " bg-alpha-revert" : ""}${className ? ` ${className}` : ""}`}
     >
       {NAV_KEYS.map(({ key, href }) => (
         <NavLink

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS } from "@/lib/gradient";
@@ -59,6 +59,9 @@ export default function Work() {
     },
   ];
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const inView     = useInView(sectionRef, { amount: 0.3 });
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [progress, setProgress]       = useState(0);
   const [paused, setPaused]           = useState(false);
@@ -66,8 +69,8 @@ export default function Work() {
 
   useEffect(() => {
     const update = () => {
-      if (window.innerWidth < 768) setCardH(380);
-      else if (window.innerWidth < 1024) setCardH(460);
+      if (window.innerWidth < 768) setCardH(300);
+      else if (window.innerWidth < 1024) setCardH(420);
       else setCardH(540);
     };
     update();
@@ -78,9 +81,18 @@ export default function Work() {
   const progressRef = useRef(0);
   const rafRef      = useRef<number>(0);
 
-  // RAF-based timer — re-runs on pause toggle or slide change
+  // Reset progress when section leaves the viewport
   useEffect(() => {
-    if (paused) return;
+    if (!inView) {
+      cancelAnimationFrame(rafRef.current);
+      progressRef.current = 0;
+      setProgress(0);
+    }
+  }, [inView]);
+
+  // RAF-based timer — only runs when section is visible and not paused
+  useEffect(() => {
+    if (paused || !inView) return;
 
     const startP = progressRef.current; // resume from current position when unpausing
     let t0: number | null = null;
@@ -102,7 +114,7 @@ export default function Work() {
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [paused, activeIndex]);
+  }, [paused, inView, activeIndex]);
 
   const handleDotClick = useCallback((i: number) => {
     cancelAnimationFrame(rafRef.current);
@@ -115,9 +127,12 @@ export default function Work() {
 
   return (
     <section
-      className="relative px-6 py-12 md:px-10 md:py-16 lg:px-xl lg:py-l w-full max-w-[1440px] mx-auto flex flex-col gap-12 md:gap-16"
+      ref={sectionRef}
+      className="relative px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{ zIndex: 10000 }}
     >
+      <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
+
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <motion.div
         className="flex flex-col gap-6 items-center text-center"
@@ -130,7 +145,7 @@ export default function Work() {
           {t("work.eyebrow")}
         </p>
         <p
-          className="font-display text-heading-3 md:text-heading-2 bg-clip-text text-transparent"
+          className="font-display text-heading-4 md:text-heading-2 bg-clip-text text-transparent"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
             backgroundSize: "250% 250%",
@@ -198,6 +213,8 @@ export default function Work() {
           onDotClick={handleDotClick}
         />
       </motion.div>
+
+      </div>
     </section>
   );
 }
