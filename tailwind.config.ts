@@ -77,24 +77,25 @@ const config: Config = {
         "btn-lg":    ["18px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/L
         "btn-md":    ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/M
         "link":      ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "500" }], // Link
-        "label":     ["14px", { lineHeight: "20px", letterSpacing: "8px",fontWeight: "600" }], // Uppercase
+        "label":     ["14px", { lineHeight: "20px", letterSpacing: "1.12px", fontWeight: "600" }], // Uppercase
       },
 
       // ─── Spacing (4 px base unit) ────────────────────────────────────────
       // Numeric tokens match Tailwind's built-in scale (1 = 4px).
       // Named tokens are section/layout-level additions.
       spacing: {
-        "4.5": "18px", // py for primary/lg → 18+20+18 = 56px
-        1:  "4px",
-        2:  "8px",
-        3:  "12px",
-        4:  "16px",
-        6:  "24px",
-        8:  "32px",
-        10: "40px",
-        12: "48px",
-        16: "64px",
-        20: "80px",
+        1:    "4px",
+        1.5:  "6px",   // LanguageToggleItem inner padding
+        2:    "8px",
+        2.5:  "10px",  // WorkController gap
+        3:    "12px",
+        4:    "16px",
+        6:    "24px",
+        8:    "32px",
+        10:   "40px",
+        12:   "48px",
+        16:   "64px",
+        20:   "80px",
         // Section spacing
         xs:  "40px",
         s:   "64px",
@@ -109,7 +110,7 @@ const config: Config = {
         glass: "24px", // Blur token — BACKGROUND_BLUR radius: 24
       },
       boxShadow: {
-        "btn-glow": "0px 0px 20px 0px rgba(255,255,255,0.48)", // Primary button hover — white glow
+        "btn-glow": "var(--shadow-btn-glow)", // Primary button hover — adapts per theme (globals.css)
       },
       dropShadow: {
         illustration: "0 -3.65px 29.18px rgba(0,0,0,0.72)", // Illustration token
