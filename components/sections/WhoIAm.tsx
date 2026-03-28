@@ -13,13 +13,13 @@ export default function WhoIAm() {
 
   return (
     <section
-      className="relative px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
+      className="relative px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
     >
-      <div className="grid grid-cols-1 gap-5 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full lg:grid-cols-12 lg:gap-10">
+      <div className="grid grid-cols-1 gap-6 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full lg:grid-cols-12 lg:gap-10">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
@@ -30,7 +30,7 @@ export default function WhoIAm() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
         <SquircleCard
-          className="light-card relative flex flex-col justify-between p-6 xl:p-8 overflow-hidden w-full h-[480px] lg:h-full"
+          className="light-card relative flex flex-col gap-6 p-6 xl:p-8 overflow-hidden w-full lg:h-full lg:justify-between lg:gap-0"
           style={{ zIndex: 10000, background: "var(--color-bg-surface)" }}
         >
           {/* Decorative badge — Figma: left 263.59px, top 2.9px, 132.856×132.856, rotate 15deg *<Image
@@ -105,7 +105,7 @@ export default function WhoIAm() {
 
         {/* ── Clients Section ───────────────────────────────────── */}
         <motion.div
-          className="flex flex-col gap-5 md:gap-12 w-full lg:col-span-7"
+          className="flex flex-col gap-8 md:gap-12 w-full lg:col-span-7"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -143,7 +143,7 @@ export default function WhoIAm() {
           </SquircleCard>
 
           {/* Caption */}
-          <p className="font-body text-s text-text-secondary pl-4 md:pl-8">
+          <p className="font-body text-m text-text-secondary lg:pl-8">
             {t("whoiam.clientsCaption")}
           </p>
         </motion.div>

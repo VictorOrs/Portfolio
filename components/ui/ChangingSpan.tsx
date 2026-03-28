@@ -40,9 +40,9 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
       className="inline-flex items-center justify-center overflow-hidden"
       style={{
         fontSize: fluid ? fontSize : undefined,
-        height:       fluid ? "1.3em"   : "114px",
-        paddingLeft:  fluid ? "0.36em"  : "2rem",
-        paddingRight: fluid ? "0.36em"  : "2rem",
+        height:       fluid ? "1.3em"   : "104px",
+        paddingLeft:  fluid ? "0.36em"  : "1.5rem",
+        paddingRight: fluid ? "0.36em"  : "1.5rem",
         paddingTop:   fluid ? "0.11em"  : "10px",
         borderRadius: "9999px",
         backgroundColor: "var(--color-btn-primary-bg)",

@@ -14,7 +14,7 @@ export default function Footer() {
   return (
     <footer className="w-full flex flex-col">
       {/* ── Main content ──────────────────────────────────────────────── */}
-      <div className="px-6 pt-8 pb-6 md:px-10 md:pt-12 md:pb-8 lg:px-s xl:px-xl 2xl:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10">
+      <div className="px-6 pt-xs pb-8 md:px-10 lg:px-s xl:px-xl 2xl:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10">
 
         <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
 

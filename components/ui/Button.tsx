@@ -23,9 +23,8 @@ export const buttonVariants = cva(
         ],
       },
       size: {
-        // Outer padding matches Figma: p-[var(--4,16px)] for L, p-[var(--3,12px)] for M
-        lg: "p-4 gap-2 rounded-full",
-        md: "p-3 gap-1 rounded-full",
+        lg: "p-3 lg:p-4 gap-1 lg:gap-2 rounded-full text-s lg:text-sm", // md on mobile, lg on desktop
+        md: "p-3 gap-1 rounded-full text-s",
       },
     },
     defaultVariants: {
@@ -35,10 +34,13 @@ export const buttonVariants = cva(
   }
 );
 
-// Inner label wrapper — matches Figma inner container: pt-[3px] px-[var(--1,4px)]
-// pt-[3px]: optical top adjustment for Nohemi descenders
-// px-1: 4px horizontal inset (spacing token 1)
-const labelWrapperClass = "flex items-center justify-center pt-1 px-1 leading-5";
+// Inner label wrapper — optical top offset for Nohemi descenders, no bottom padding
+// lg: pt-1 px-2 (4px top, 8px sides)
+// md: pt-1 px-1 (4px top, 4px sides) — secondary size m spec
+const labelClass: Record<string, string> = {
+  lg: "flex items-center justify-center pt-1 px-1 lg:px-2 leading-5",
+  md: "flex items-center justify-center pt-1 px-1 leading-5",
+};
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
@@ -53,7 +55,7 @@ export default function Button({ variant, size, className, icon, children, ...pr
     >
       {icon}
       {children && (
-        <span className={labelWrapperClass}>
+        <span className={labelClass[size ?? "lg"]}>
           {children}
         </span>
       )}

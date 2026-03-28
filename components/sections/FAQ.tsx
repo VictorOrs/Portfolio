@@ -94,7 +94,7 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 lg:items-start">
+    <section className="px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 lg:items-start">
 
       {/* ── At lg: 8-col wrapper (stacked); at xl: display:contents → children become direct grid items ── */}
       <div className="flex flex-col gap-8 col-span-full md:col-start-2 md:col-span-10 lg:gap-m xl:contents">
@@ -107,11 +107,11 @@ export default function FAQ() {
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease }}
         >
-          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary text-center lg:text-left">
             {t("faq.eyebrow")}
           </p>
           <p
-            className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line lg:whitespace-nowrap xl:whitespace-pre-line"
+            className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center lg:text-left lg:whitespace-nowrap xl:whitespace-pre-line"
             style={{
               backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
               backgroundSize: "250% 250%",

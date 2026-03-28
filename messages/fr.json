@@ -1,6 +1,7 @@
 {
   "navbar": {
     "menu": "Menu",
+    "close": "Fermer",
     "bookCall": "Me contacter",
     "sendEmail": "Envoyer un email"
   },
@@ -16,7 +17,8 @@
   },
   "hero": {
     "headline": "Accélérez \nvotre croissance\ngrâce à du ",
-    "headlineMobile": "Accélérez\nvotre\ncroissance\ngrâce à du "
+    "headlineMobile": "Accélérez votre\ncroissance\ngrâce à du ",
+    "headlineMobileXs": "Accélérez\nvotre\ncroissance\ngrâce à du "
   },
   "process": {
     "title": "Comment\nla magie\nopère ?",

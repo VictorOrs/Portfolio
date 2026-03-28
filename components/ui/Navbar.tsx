@@ -1,13 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import Logo from "@/components/ui/Logo";
+import ChevronIcon from "@/components/ui/ChevronIcon";
 import { useTranslation } from "@/lib/i18n";
 import MailIcon from "@/components/ui/MailIcon";
+
+const MENU_LINKS: { key: string; href: string; chevron?: true }[] = [
+  { key: "services",  href: "/services" },
+  { key: "useCases",  href: "/use-cases", chevron: true },
+  { key: "pricing",   href: "/pricing" },
+];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const spring = { duration: 0.35, ease };
@@ -62,7 +70,7 @@ export default function Navbar() {
     <motion.header
       animate={{ y: visible ? 0 : "-100%" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
+      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 nav:px-16 nav:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
     >
       {/* Color gradient overlay */}
       <div
@@ -87,25 +95,62 @@ export default function Navbar() {
         icon={<BurgerIcon open={menuOpen} />}
         onClick={() => setMenuOpen(p => !p)}
         aria-expanded={menuOpen}
-        className="hidden md:inline-flex lg:hidden relative"
+        className="hidden md:inline-flex nav:hidden relative"
       >
-        {t("navbar.menu")}
+        {menuOpen ? t("navbar.close") : t("navbar.menu")}
       </Button>
 
       {/* Logo — desktop */}
-      <Logo variant="flat" className="relative shrink-0 hidden lg:block" />
+      <Logo variant="flat" className="relative shrink-0 hidden nav:block" />
 
       {/* NavGroup — desktop only */}
-      <div className="hidden lg:block absolute left-1/2 top-10 -translate-x-1/2 z-10">
+      <div className="hidden nav:block absolute left-1/2 top-10 -translate-x-1/2 z-10">
         <NavGroup scrolled={scrolled} />
       </div>
+
+      {/* Mobile menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease }}
+            className="nav:hidden absolute top-full left-0 right-0 mt-2 mx-4 rounded-[20px] bg-background-surface overflow-hidden"
+            style={{ boxShadow: "0px 8px 48px 0px rgba(0,0,0,0.24)" }}
+          >
+            <nav className="flex flex-col p-2">
+              {MENU_LINKS.map(({ key, href, chevron }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-between px-4 py-3 rounded-xl font-display text-s text-text-secondary hover:text-text-primary hover:bg-alpha transition-colors duration-150"
+                >
+                  {t(`nav.${key}`)}
+                  {chevron && <ChevronIcon size={20} />}
+                </Link>
+              ))}
+            </nav>
+            <div className="flex flex-col gap-2 p-4 pt-0">
+              <Button variant="secondary" size="lg" icon={<MailIcon />} className="w-full">
+                {t("navbar.sendEmail")}
+              </Button>
+              <Button variant="primary" size="lg" className="w-full">
+                {t("navbar.bookCall")}
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Buttons */}
       <div className="relative flex items-center gap-3 lg:gap-4 shrink-0">
         <LanguageToggle scrolled={scrolled} />
 
-        {/* Mail icon — tablet+ */}
-        <div className="hidden md:block">
+        {/* Mail icon — sm+ (425px+) */}
+        <div className="hidden sm:block">
           <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
         </div>
 

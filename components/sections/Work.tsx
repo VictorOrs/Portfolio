@@ -68,11 +68,7 @@ export default function Work() {
   const [cardH, setCardH]             = useState(540);
 
   useEffect(() => {
-    const update = () => {
-      if (window.innerWidth < 768) setCardH(300);
-      else if (window.innerWidth < 1024) setCardH(420);
-      else setCardH(540);
-    };
+    const update = () => setCardH(window.innerWidth < 768 ? 420 : 540);
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -128,7 +124,7 @@ export default function Work() {
   return (
     <section
       ref={sectionRef}
-      className="relative px-6 py-8 md:px-10 md:py-12 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
+      className="relative px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{ zIndex: 10000 }}
     >
       <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
@@ -159,7 +155,7 @@ export default function Work() {
       {/* ── Card carousel ──────────────────────────────────────────────────── */}
       <motion.div
         className="relative"
-        style={{ height: cardH + 30 }}
+        style={{ minHeight: cardH + 30 }}
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.05 }}

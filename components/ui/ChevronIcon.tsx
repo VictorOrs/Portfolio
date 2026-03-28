@@ -17,7 +17,7 @@ export default function ChevronIcon({ className, size = 24 }: Props) {
       <path
         d="M6 9L12 15L18 9"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -1,17 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { ComponentProps } from "react";
+import { ComponentProps, ReactNode } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 type NavLinkProps = ComponentProps<typeof Link> & {
   isHovered?: boolean;
+  trailingIcon?: ReactNode;
 };
 
-export default function NavLink({ className, children, isHovered, ...props }: NavLinkProps) {
+export default function NavLink({ className, children, isHovered, trailingIcon, ...props }: NavLinkProps) {
   return (
     <Link
-      className={`relative inline-flex items-center justify-center p-2 rounded-full font-display text-s transition-colors duration-200 ${isHovered ? "text-text-primary" : "text-text-secondary"}${className ? ` ${className}` : ""}`}
+      className={`relative inline-flex items-center justify-center px-3 py-2 rounded-full font-display text-s transition-colors duration-200 ${isHovered ? "text-text-primary" : "text-text-secondary"}${className ? ` ${className}` : ""}`}
       {...props}
     >
       <AnimatePresence>
@@ -27,9 +28,12 @@ export default function NavLink({ className, children, isHovered, ...props }: Na
           />
         )}
       </AnimatePresence>
-      <span className="relative z-10 flex items-center justify-center pt-1 px-2 leading-5">
+      <span className="relative z-10 flex items-center justify-center pt-1 px-1 leading-5">
         {children}
       </span>
+      {trailingIcon && (
+        <span className="relative z-10">{trailingIcon}</span>
+      )}
     </Link>
   );
 }

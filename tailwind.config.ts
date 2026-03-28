@@ -10,6 +10,12 @@ const config: Config = {
   darkMode: "class",
   theme: {
     extend: {
+      // ─── Breakpoints ─────────────────────────────────────────────────────
+      screens: {
+        xs:  "686px",   // hero 3-line → 4-line transition
+        nav: "1200px",  // burger → NavGroup transition
+      },
+
       // ─── Colors ─────────────────────────────────────────────────────────
       // All values reference CSS variables defined in globals.css.
       // Semantic tokens change between :root (light) and .dark.

@@ -31,8 +31,8 @@
   /* ── Typography scale ── */
   --font-size-3xl: 88px;  --line-height-3xl: 96px;
   --font-size-2xl: 64px;  --line-height-2xl: 72px;
-  --font-size-xl:  48px;  --line-height-xl:  56px;
-  --font-size-l:   32px;  --line-height-l:   40px;
+  --font-size-xl:  36px;  --line-height-xl:  44px;
+  --font-size-l:   28px;  --line-height-l:   40px;
   --font-size-m:   20px;  --line-height-m:   32px;
   --font-size-sm:  18px;  --line-height-sm:  20px;
   --font-size-s:   16px;  --line-height-s:   20px;
@@ -68,11 +68,19 @@
   --color-white:                #FCFFFE;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 425px) {
   :root {
     --font-size-3xl: 53px;  --line-height-3xl: 56px;
-    --font-size-2xl: 48px;  --line-height-2xl: 52px;
-    --font-size-xl:  40px;  --line-height-xl:  48px;
+    --font-size-2xl: 44px;  --line-height-2xl: 52px;
+    --font-size-xl:  28px;  --line-height-xl:  36px;
+    --font-size-m:   18px;  --line-height-m:   28px;
+    --hero-font-mobile: var(--font-size-3xl); /* 53px */
+  }
+}
+
+@media (min-width: 426px) {
+  :root {
+    --hero-font-mobile: var(--font-size-2xl); /* 64px */
   }
 }
 

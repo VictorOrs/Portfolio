@@ -39,12 +39,17 @@ async function fetchBitmap(url: string): Promise<ImageBitmap> {
 }
 
 const CANVAS_ZOOM    = 1.25;
+const CANVAS_ZOOM_SM = 0.9;  // reduced zoom for 426px–1023px
 const CANVAS_OFFSET_X = 12; // px shift to the right
 
-function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap): void {
+function getCanvasZoom(): number {
+  return window.innerWidth >= 1024 || window.innerWidth <= 425 ? CANVAS_ZOOM : CANVAS_ZOOM_SM;
+}
+
+function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap, zoom = CANVAS_ZOOM): void {
   const cw    = ctx.canvas.width;
   const ch    = ctx.canvas.height;
-  const scale = Math.min(cw / bmp.width, ch / bmp.height) * CANVAS_ZOOM;
+  const scale = Math.min(cw / bmp.width, ch / bmp.height) * zoom;
   const dx    = (cw - bmp.width  * scale) / 2 + CANVAS_OFFSET_X;
   const dy    = (ch - bmp.height * scale) / 2;
   ctx.clearRect(0, 0, cw, ch);
@@ -138,7 +143,7 @@ export default function Process() {
       canvas.height = height;
       const ctx = ctxRef.current;
       const bmp = bitmapsRef.current[frameRef.current];
-      if (ctx && bmp) drawContained(ctx, bmp);
+      if (ctx && bmp) drawContained(ctx, bmp, getCanvasZoom());
     };
     sizeCanvas();
     window.addEventListener("resize", sizeCanvas);
@@ -173,7 +178,7 @@ export default function Process() {
         frameRef.current = clamped;
         const ctx = ctxRef.current;
         const bmp = bitmaps[clamped];
-        if (ctx && bmp) drawContained(ctx, bmp);
+        if (ctx && bmp) drawContained(ctx, bmp, getCanvasZoom());
       }
 
       rafRef.current = requestAnimationFrame(tick);
@@ -192,83 +197,121 @@ export default function Process() {
   return (
     <section ref={containerRef} className="relative h-[300vh]">
 
-      <div className="sticky top-0 h-screen flex flex-col justify-center gap-6 px-6 py-8 md:flex-row md:items-center md:gap-m md:px-10 md:py-l lg:px-s xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto z-[10000] relative overflow-hidden">
+      {/* Grid wrapper — 10-col centered on mobile/tablet like other sections, block on desktop */}
+      <div className="px-6 md:px-10 lg:p-0 h-full w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:block">
 
-        {/* ── Left column ────────────────────────────────────────────────────── */}
-        <motion.div
-          className="flex flex-col gap-8 md:gap-[80px] w-full md:w-[400px] md:shrink-0"
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-        >
+      <div className="sticky top-0 h-screen flex flex-col justify-center gap-6 col-span-full md:col-start-2 md:col-span-10 lg:w-full lg:px-s xl:px-xl 2xl:px-xl lg:max-w-[1440px] lg:mx-auto z-[10000] relative overflow-hidden">
 
-          {/* Title + sparkle */}
-          <div className="relative">
-            <p
-              className="font-display text-2xl bg-clip-text text-transparent whitespace-pre"
-              style={{
-                backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-                backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
-              }}
-            >
-              {t("process.title")}
-            </p>
+        {/* ── Inner row: transparent on mobile, flex-row items-stretch on desktop
+               so cube height = left column height (not h-screen) ── */}
+        {/* 4 col text | 1 col gap | 5 col cube */}
+        <div className="contents lg:grid lg:grid-cols-10 lg:gap-10 lg:w-full">
 
-            <div
-              aria-hidden
-              className="absolute pointer-events-none"
-              style={{
-                left: SP_X,
-                top:  SP_Y,
-                width:  "55.891px",
-                height: "43.18px",
-                backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-                backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
-                WebkitMaskImage:  "url(/img/process/sparkle.svg)",
-                WebkitMaskSize:   "100% 100%",
-                WebkitMaskRepeat: "no-repeat",
-                maskImage:        "url(/img/process/sparkle.svg)",
-                maskSize:         "100% 100%",
-                maskRepeat:       "no-repeat",
-              } as React.CSSProperties}
-            />
-          </div>
+        {/* ── Left column wrapper: contents on mobile (title+explanation become
+               direct flex items, orderable against cube), col-span-4 on desktop ── */}
+        <div className="contents lg:flex lg:flex-col lg:gap-[80px] lg:col-span-4">
 
-          {/* Step info — fixed height prevents layout jump between steps */}
-          <div className="h-[110px] md:h-[200px] overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={stepIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{    opacity: 0, y: -10 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="flex flex-col gap-4"
-            >
-              <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-                {String(stepIndex + 1).padStart(2, "0")}. {t(`process.step${stepIndex + 1}Title`)}
+          {/* Title + sparkle — order 1 on mobile */}
+          <motion.div
+            className="order-1 lg:order-none"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="relative">
+              <p
+                className="font-display text-2xl bg-clip-text text-transparent whitespace-normal w-full lg:whitespace-pre lg:w-auto"
+                style={{
+                  backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                  backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
+                }}
+              >
+                {t("process.title")}
+                {/* Mobile sparkle — inline right after last word */}
+                <span
+                  className="lg:hidden inline-block align-text-bottom ml-2"
+                  aria-hidden
+                  style={{
+                    width:  "55.891px",
+                    height: "43.18px",
+                    backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                    backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+                    backgroundPosition: `${SHIFT_X}px ${SHIFT_Y}px`,
+                    WebkitMaskImage:  "url(/img/process/sparkle.svg)",
+                    WebkitMaskSize:   "100% 100%",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskImage:        "url(/img/process/sparkle.svg)",
+                    maskSize:         "100% 100%",
+                    maskRepeat:       "no-repeat",
+                  } as React.CSSProperties}
+                />
               </p>
-              <p className="font-body text-s md:text-m text-text-primary">
-                {t(`process.step${stepIndex + 1}Body`)}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-          </div>
 
-        </motion.div>
+              {/* Desktop sparkle — absolute positioned */}
+              <div
+                aria-hidden
+                className="absolute pointer-events-none hidden lg:block"
+                style={{
+                  left: SP_X,
+                  top:  SP_Y,
+                  width:  "55.891px",
+                  height: "43.18px",
+                  backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                  backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
+                  WebkitMaskImage:  "url(/img/process/sparkle.svg)",
+                  WebkitMaskSize:   "100% 100%",
+                  WebkitMaskRepeat: "no-repeat",
+                  maskImage:        "url(/img/process/sparkle.svg)",
+                  maskSize:         "100% 100%",
+                  maskRepeat:       "no-repeat",
+                } as React.CSSProperties}
+              />
+            </div>
+          </motion.div>
 
-        {/* ── Right column — cube animation ───────────────────────────────────── */}
+          {/* Step info — order 3 on mobile */}
+          <motion.div
+            className="order-3 lg:order-none"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+          >
+            <div className="h-[110px] lg:h-[200px] overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={stepIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{    opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex flex-col gap-4"
+              >
+                <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+                  {String(stepIndex + 1).padStart(2, "0")}. {t(`process.step${stepIndex + 1}Title`)}
+                </p>
+                <p className="font-body text-s lg:text-m text-text-primary">
+                  {t(`process.step${stepIndex + 1}Body`)}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            </div>
+          </motion.div>
+
+        </div>{/* end left column wrapper */}
+
+        {/* ── Cube — order 2 on mobile, 5 cols starting at col 6 on desktop ──── */}
         <motion.div
-          className="flex-1"
+          className="order-2 lg:order-none lg:col-start-6 lg:col-span-5"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
-        <SquircleCard className="relative w-full bg-background-surface overflow-hidden h-[160px] md:h-[400px] lg:h-[636px]" style={{ zIndex: 10000 }}>
+        <SquircleCard className="relative w-full bg-background-surface overflow-hidden h-[360px] min-[426px]:h-[380px] lg:h-full" style={{ zIndex: 10000 }}>
 
           <div ref={cardInnerRef} className="absolute inset-0">
 
@@ -279,7 +322,7 @@ export default function Process() {
               style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
             />
 
-            {/* Vignette overlay — fades edges to bg-surface */}
+            {/* Vignette overlay — hidden below 425px */}
             <div
               aria-hidden
               className="absolute inset-0 pointer-events-none"
@@ -292,7 +335,11 @@ export default function Process() {
         </SquircleCard>
         </motion.div>
 
-      </div>
+        </div>{/* end inner row */}
+
+      </div>{/* end sticky */}
+
+      </div>{/* end grid wrapper */}
     </section>
   );
 }

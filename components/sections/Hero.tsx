@@ -30,20 +30,32 @@ export default function Hero() {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 420], [1, 0]);
 
-  // Split headline so the ChangingSpan sits inline on the last line
+  // Split headline so the ChangingSpan sits inline on the last line (desktop)
   const headline = t("hero.headline");
   const headlineLines = headline.split("\n");
   const prevLines = headlineLines.slice(0, -1).join("\n");
   const lastLine  = headlineLines[headlineLines.length - 1];
 
+  // 3-line split for xs+ (≥ 686px, < lg)
+  const headlineMobile = t("hero.headlineMobile");
+  const headlineMobileLines = headlineMobile.split("\n");
+  const prevLinesMobile = headlineMobileLines.slice(0, -1).join("\n");
+  const lastLineMobile  = headlineMobileLines[headlineMobileLines.length - 1];
+
+  // 4-line split for < xs (< 686px)
+  const headlineMobileXs = t("hero.headlineMobileXs");
+  const headlineMobileXsLines = headlineMobileXs.split("\n");
+  const prevLinesMobileXs = headlineMobileXsLines.slice(0, -1).join("\n");
+  const lastLineMobileXs  = headlineMobileXsLines[headlineMobileXsLines.length - 1];
+
   return (
     // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
-    <section className="relative h-[50vh] lg:h-[55vh]">
+    <section className="relative h-[540px] xs:h-[390px] lg:h-[55vh]">
 
       {/* ── Mobile / tablet layout (< lg) — fixed, same mechanism as desktop ── */}
       <motion.div
-        className="lg:hidden fixed inset-x-0 pointer-events-none"
-        style={{ top: FIXED_TOP_MOBILE, zIndex: 0, opacity }}
+        className="lg:hidden fixed inset-x-0 pointer-events-none top-[260px]"
+        style={{ zIndex: 0, opacity }}
       >
         <motion.div
           className="px-6 md:px-10 grid grid-cols-12 gap-4 md:gap-6"
@@ -52,16 +64,24 @@ export default function Hero() {
           transition={{ duration: 1.4, ease }}
         >
           <div className="col-span-full md:col-start-2 md:col-span-10">
-            {/* Full headline — mobile-specific 4-line split */}
+            {/* < 686px: 4 lines de texte dans un seul <p> pour un gradient continu, span en dessous */}
             <p
-              className="font-display text-3xl whitespace-pre"
+              className="xs:hidden font-display text-3xl sm:text-2xl whitespace-pre"
               style={gradientTextStyle}
             >
-              {t("hero.headlineMobile")}
+              {prevLinesMobileXs}{"\n"}{lastLineMobileXs}
             </p>
+            <div className="xs:hidden mt-3">
+              <ChangingSpan fontSize="var(--hero-font-mobile)" />
+            </div>
 
-            {/* ChangingSpan — own line below the title */}
-            <ChangingSpan fontSize="var(--font-size-2xl)" />
+            {/* ≥ 686px: 3 lignes + span inline — tout dans un seul <p> pour un gradient continu */}
+            <p
+              className="hidden xs:block font-display text-2xl whitespace-pre"
+              style={gradientTextStyle}
+            >
+              {prevLinesMobile}{"\n"}{lastLineMobile}<ChangingSpan fontSize="var(--font-size-2xl)" />
+            </p>
           </div>
         </motion.div>
       </motion.div>
@@ -73,7 +93,7 @@ export default function Hero() {
       >
         {/* Entrance animation */}
         <motion.div
-          className="relative h-[312px] w-full"
+          className="relative h-[288px] w-full"
           initial={{ opacity: 0, y: 28 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.4, ease }}
@@ -91,7 +111,7 @@ export default function Hero() {
             aria-hidden
             style={{
               backgroundImage: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%)",
-              backgroundSize: "100% 104px",
+              backgroundSize: "100% 96px",
               backgroundRepeat: "repeat-y",
               WebkitBackgroundClip: "text",
               backgroundClip: "text",

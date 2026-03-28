@@ -1,6 +1,7 @@
 {
   "navbar": {
     "menu": "Menu",
+    "close": "Close",
     "bookCall": "Book a call",
     "sendEmail": "Send an email"
   },
@@ -16,7 +17,8 @@
   },
   "hero": {
     "headline": "Speed up \nyour growth through\nsuccessful ",
-    "headlineMobile": "Speed up\nyour growth\nthrough\nsuccessful "
+    "headlineMobile": "Speed up your\ngrowth through\nsuccessful ",
+    "headlineMobileXs": "Speed up\nyour growth\nthrough\nsuccessful "
   },
   "process": {
     "title": "How does\nthe magic\nhappen",

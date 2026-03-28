@@ -44,7 +44,7 @@ export interface WorkCardProps {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function WorkCard({
-  height = 540,
+  height = 420,
   logo,
   title,
   showWorkedOn = false,
@@ -60,7 +60,7 @@ export default function WorkCard({
     <div
       className="relative w-full rounded-[40px] overflow-hidden bg-background-surface"
       style={{
-        height,
+        minHeight: height,
         boxShadow: "0px -3.648px 29.184px 0px rgba(0,0,0,0.72)",
       }}
     >

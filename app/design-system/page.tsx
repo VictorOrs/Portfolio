@@ -15,6 +15,9 @@ import MinusIcon from "@/components/ui/MinusIcon";
 import PlayPauseButton from "@/components/ui/PlayPauseButton";
 import WorkCard from "@/components/ui/WorkCard";
 import WorkController from "@/components/ui/WorkController";
+import ChevronIcon from "@/components/ui/ChevronIcon";
+import NavLink from "@/components/ui/NavLink";
+import NavGroup from "@/components/ui/NavGroup";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -316,6 +319,7 @@ function TabIcons() {
           { label: "LinkedInIcon", node: <LinkedInIcon /> },
           { label: "DribbbleIcon", node: <DribbbleIcon /> },
           { label: "MailIcon",     node: <MailIcon /> },
+          { label: "ChevronIcon",  node: <ChevronIcon /> },
           { label: "Logo",         node: <Logo /> },
           { label: "PlayIcon",     node: <PlayIcon /> },
           { label: "PauseIcon",    node: <PauseIcon /> },
@@ -418,6 +422,35 @@ function TabWorkCard() {
   );
 }
 
+function TabNavigation() {
+  return (
+    <div className="flex flex-col gap-10">
+      <Subsection title="NavLink — variants">
+        <div className="p-8 bg-background-surface rounded-2xl flex flex-wrap gap-4 items-center">
+          <NavLink href="#">Services</NavLink>
+          <NavLink href="#" trailingIcon={<ChevronIcon size={16} />}>Use cases</NavLink>
+          <NavLink href="#">Pricing</NavLink>
+        </div>
+      </Subsection>
+      <Subsection title="NavGroup">
+        <div className="p-8 bg-background-surface rounded-2xl flex justify-center">
+          <NavGroup />
+        </div>
+        <div className="p-8 bg-background-base rounded-2xl flex justify-center">
+          <NavGroup scrolled />
+        </div>
+      </Subsection>
+      <Subsection title="Notes">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
+          <li><code className="text-text-accent font-mono text-[14px]">trailingIcon</code> renders as sibling after the text span — not wrapped in <code className="text-text-accent font-mono text-[14px]">pt-1 px-1</code></li>
+          <li>Hover pill uses <code className="text-text-accent font-mono text-[14px]">layoutId=&quot;nav-pill&quot;</code> — shared across all NavLinks in the same AnimatePresence</li>
+          <li>NavGroup manages <code className="text-text-accent font-mono text-[14px]">hoveredKey</code> state and passes <code className="text-text-accent font-mono text-[14px]">isHovered</code> to each NavLink</li>
+        </ul>
+      </Subsection>
+    </div>
+  );
+}
+
 // ── Nav config ────────────────────────────────────────────────────────────────
 
 const TABS = [
@@ -432,6 +465,7 @@ const TABS = [
   { id: "playpause",    label: "PlayPauseButton",  content: <TabPlayPauseButton /> },
   { id: "controller",  label: "WorkController",   content: <TabWorkController /> },
   { id: "workcard",    label: "WorkCard",          content: <TabWorkCard /> },
+  { id: "navigation",  label: "Navigation",        content: <TabNavigation /> },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────
