@@ -8,8 +8,6 @@ import { GRADIENT_STOPS } from "@/lib/gradient";
 
 // 80px (main pt navbar) + 177px (section pt-xl) = natural viewport y of the title
 const FIXED_TOP = 80 + 177;
-// 80px (navbar) + 80px (pt-20) = natural viewport y of the mobile title
-const FIXED_TOP_MOBILE = 80 + 80;
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -29,12 +27,6 @@ export default function Hero() {
   // Global scroll in px — more reliable than target-based progress on a fixed-content spacer
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 420], [1, 0]);
-
-  // Split headline so the ChangingSpan sits inline on the last line (desktop)
-  const headline = t("hero.headline");
-  const headlineLines = headline.split("\n");
-  const prevLines = headlineLines.slice(0, -1).join("\n");
-  const lastLine  = headlineLines[headlineLines.length - 1];
 
   // 3-line split for xs+ (≥ 686px, < lg)
   const headlineMobile = t("hero.headlineMobile");
