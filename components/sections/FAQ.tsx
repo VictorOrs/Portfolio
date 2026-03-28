@@ -54,7 +54,7 @@ function FAQItem({
         onClick={onToggle}
         aria-expanded={open}
       >
-        <p className="flex-1 font-body font-medium text-body-m md:text-body text-text-primary">
+        <p className="flex-1 font-body font-medium text-s md:text-m text-text-primary">
           {question}
         </p>
         <PlusMinusIcon open={open} />
@@ -68,7 +68,7 @@ function FAQItem({
       >
         <div style={{ overflow: "hidden", minHeight: 0 }}>
           <motion.p
-            className="font-body text-[13px] leading-5 md:text-body-m text-text-secondary pt-3 md:pt-4"
+            className="font-body text-s text-text-secondary pt-3 md:pt-4"
             animate={{ opacity: open ? 1 : 0 }}
             transition={{ duration: 0.25, ease }}
           >
@@ -111,7 +111,7 @@ export default function FAQ() {
             {t("faq.eyebrow")}
           </p>
           <p
-            className="font-display text-heading-4 md:text-heading-2 bg-clip-text text-transparent whitespace-pre-line lg:whitespace-nowrap xl:whitespace-pre-line"
+            className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line lg:whitespace-nowrap xl:whitespace-pre-line"
             style={{
               backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
               backgroundSize: "250% 250%",

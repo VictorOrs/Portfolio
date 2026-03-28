@@ -59,6 +59,17 @@ Animated cycling pill in the hero. Uses framer-motion `motion.span` with `layout
 - Keep components small and readable
 - No defensive over-engineering
 
+### Performance
+
+Write code that preserves frame rate. Dropped frames are a bug.
+
+- **Animations**: only animate `transform` and `opacity` — never `width`, `height`, `top`, `left`, `margin`, `padding`, or any property that triggers layout or paint. Use `will-change: transform` sparingly on elements with heavy continuous animations.
+- **RAF loops**: one loop per concern (see `GradientTracker`). Never start a new `requestAnimationFrame` loop inside a component — reuse or lift existing ones.
+- **Framer-motion**: prefer `layout` over animating size directly. Use `layoutId` for shared transitions. Avoid animating properties that force reflow.
+- **Event listeners**: always use `{ passive: true }` on `scroll` and `touchmove` listeners. Always clean up in the `useEffect` return.
+- **JS for layout**: never — use CSS (Tailwind, `position`, `grid`, `flex`). JS layout reads cause forced reflows.
+- **Images**: always set explicit `width`/`height` or use `fill` + a sized container. Avoid layout shift (CLS).
+
 ### Fonts
 
 - **Nohemi** (display): loaded via `@font-face` in `globals.css` from `/public/fonts/`. Weights: 500, 600.

@@ -8,6 +8,8 @@ import { GRADIENT_STOPS } from "@/lib/gradient";
 
 // 80px (main pt navbar) + 177px (section pt-xl) = natural viewport y of the title
 const FIXED_TOP = 80 + 177;
+// 80px (navbar) + 80px (pt-20) = natural viewport y of the mobile title
+const FIXED_TOP_MOBILE = 80 + 80;
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -33,33 +35,34 @@ export default function Hero() {
   const headlineLines = headline.split("\n");
   const prevLines = headlineLines.slice(0, -1).join("\n");
   const lastLine  = headlineLines[headlineLines.length - 1];
-  const fluidSize = "calc((100vw - 3rem) / 6)";
 
   return (
     // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
-    <section className="relative lg:h-[55vh]">
+    <section className="relative h-[50vh] lg:h-[55vh]">
 
-      {/* ── Mobile / tablet layout (< lg) — in normal flow, fades on scroll ── */}
+      {/* ── Mobile / tablet layout (< lg) — fixed, same mechanism as desktop ── */}
       <motion.div
-        className="lg:hidden pointer-events-none px-6 py-10 md:px-10 md:py-16 grid grid-cols-12 gap-4 md:gap-6"
-        style={{ opacity }}
+        className="lg:hidden fixed inset-x-0 pointer-events-none"
+        style={{ top: FIXED_TOP_MOBILE, zIndex: 0, opacity }}
       >
         <motion.div
-          className="col-span-full md:col-start-2 md:col-span-10"
+          className="px-6 md:px-10 grid grid-cols-12 gap-4 md:gap-6"
           initial={{ opacity: 0, y: 28 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.4, ease }}
         >
-          {/* Full headline — mobile-specific 4-line split */}
-          <p
-            className="font-display whitespace-pre"
-            style={{ ...gradientTextStyle, fontSize: fluidSize, lineHeight: "1.2" }}
-          >
-            {t("hero.headlineMobile")}
-          </p>
+          <div className="col-span-full md:col-start-2 md:col-span-10">
+            {/* Full headline — mobile-specific 4-line split */}
+            <p
+              className="font-display text-3xl whitespace-pre"
+              style={gradientTextStyle}
+            >
+              {t("hero.headlineMobile")}
+            </p>
 
-          {/* ChangingSpan — own line below the title */}
-          <ChangingSpan fontSize={fluidSize} />
+            {/* ChangingSpan — own line below the title */}
+            <ChangingSpan fontSize="var(--font-size-2xl)" />
+          </div>
         </motion.div>
       </motion.div>
 
@@ -76,7 +79,7 @@ export default function Hero() {
           transition={{ duration: 1.4, ease }}
         >
           <p
-            className="absolute top-0 left-0 h-full font-display text-display-1 whitespace-pre"
+            className="absolute top-0 left-0 h-full font-display text-3xl whitespace-pre"
             style={gradientTextStyle}
           >
             {t("hero.headline")}
@@ -84,7 +87,7 @@ export default function Hero() {
 
           {/* Inner shadow overlay */}
           <p
-            className="absolute top-0 left-0 h-full font-display text-display-1 whitespace-pre pointer-events-none"
+            className="absolute top-0 left-0 h-full font-display text-3xl whitespace-pre pointer-events-none"
             aria-hidden
             style={{
               backgroundImage: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%)",

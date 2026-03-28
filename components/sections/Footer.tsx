@@ -29,14 +29,14 @@ export default function Footer() {
           {/* Heading — "Interested?" hardcoded #666 per Figma, independent of token */}
           <div className="flex flex-col gap-4 items-center">
             <div className="text-center">
-              <p className="font-display text-[26px] leading-8 md:text-heading-2 text-text-secondary">
+              <p className="font-display text-2xl text-text-secondary">
                 {t("footer.interested")}
               </p>
-              <p className="font-display text-[26px] leading-8 md:text-heading-2 text-text-primary">
+              <p className="font-display text-2xl text-text-primary">
                 {t("footer.getInTouch")}
               </p>
             </div>
-            <p className="font-body text-body-m text-text-secondary text-center">
+            <p className="font-body text-s text-text-secondary text-center">
               {t("footer.subtitle")}
             </p>
           </div>
@@ -60,7 +60,7 @@ export default function Footer() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.0, ease, delay: 0.1 }}
         >
-          <p className="font-body text-body-m text-text-secondary">{t("footer.madeWithLove")}</p>
+          <p className="font-body text-s text-text-secondary">{t("footer.madeWithLove")}</p>
           <div className="flex gap-8 items-center">
             <a
               href="#"
@@ -69,10 +69,10 @@ export default function Footer() {
             >
               <LinkedInIcon />
             </a>
-            <a href="#" className="font-display text-link text-text-secondary hover:text-text-primary transition-colors">
+            <a href="#" className="font-display text-s text-text-secondary hover:text-text-primary transition-colors">
               {t("footer.privacy")}
             </a>
-            <a href="#" className="font-display text-link text-text-secondary hover:text-text-primary transition-colors">
+            <a href="#" className="font-display text-s text-text-secondary hover:text-text-primary transition-colors">
               {t("footer.legalNotice")}
             </a>
           </div>
@@ -83,7 +83,7 @@ export default function Footer() {
 
       {/* ── Copyright bar ─────────────────────────────────────────────── */}
       <div className="w-full bg-background-surface flex items-center justify-center py-4">
-        <p className="font-body text-body-m text-text-secondary">{t("footer.copyright")}</p>
+        <p className="font-body text-s text-text-secondary">{t("footer.copyright")}</p>
       </div>
     </footer>
   );

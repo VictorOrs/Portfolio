@@ -18,7 +18,7 @@ function EnumaIllustration() {
         alt=""
         fill
         unoptimized
-        className="object-cover object-right"
+        className="object-cover object-right opacity-[0.72]"
       />
     </div>
   );
@@ -44,7 +44,7 @@ export default function Work() {
         logo: { src: "/img/work/enuma_logo.svg", alt: "enuma" },
         title: t("work.enumaTitle"),
         showWorkedOn: true,
-        ctaPrimary:   { label: t("work.learnMore"),                href: "#" },
+        ctaPrimary:   { label: t("work.learnMore"),                href: "/work/enuma" },
         ctaSecondary: { label: t("work.enumaCta"), href: "https://www.enuma-collective.com" },
         illustration: <EnumaIllustration />,
       },
@@ -145,7 +145,7 @@ export default function Work() {
           {t("work.eyebrow")}
         </p>
         <p
-          className="font-display text-heading-4 md:text-heading-2 bg-clip-text text-transparent"
+          className="font-display text-2xl bg-clip-text text-transparent"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
             backgroundSize: "250% 250%",

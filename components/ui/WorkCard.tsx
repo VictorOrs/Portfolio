@@ -2,6 +2,7 @@
 
 import React, { useId } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { buttonVariants } from "@/components/ui/Button";
 
@@ -70,31 +71,28 @@ export default function WorkCard({
         </div>
       )}
 
-      {/* Gradient overlay — radial gradient matching Figma node 1694:2761 */}
-      {hasContent && (
-        <svg
-          aria-hidden
-          className="absolute inset-0 pointer-events-none w-full h-full"
-          viewBox="0 0 1060 540"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <radialGradient
-              id={gradId}
-              gradientUnits="userSpaceOnUse"
-              cx="0"
-              cy="0"
-              r="10"
-              gradientTransform="matrix(-16.8 46.823 -87.5 -29.81 817 -0.000073145)"
-            >
-              <stop offset="0.46989" style={{ stopColor: "var(--color-bg-surface)", stopOpacity: 0 }} />
-              <stop offset="0.93503" style={{ stopColor: "var(--color-bg-surface)", stopOpacity: 1 }} />
-            </radialGradient>
-          </defs>
-          <rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradId})`} />
-        </svg>
-      )}
+
+      {/* Gradient overlay — radial gradient Figma node 1723:1770 */}
+      <svg
+        aria-hidden
+        className="absolute inset-0 pointer-events-none w-full h-full"
+        viewBox="0 0 1060 540"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient
+            id={gradId}
+            gradientUnits="userSpaceOnUse"
+            cx="0" cy="0" r="10"
+            gradientTransform="matrix(-16.8 46.823 -87.5 -29.81 817 -0.000073145)"
+          >
+            <stop offset="0.46989" stopColor="rgba(32,32,32,0)" />
+            <stop offset="0.93503" stopColor="rgba(32,32,32,0.32)" />
+          </radialGradient>
+        </defs>
+        <rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradId})`} />
+      </svg>
 
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
       {hasContent && (
@@ -119,7 +117,7 @@ export default function WorkCard({
                 />
               )}
               {title && (
-                <p className="font-display text-[18px] leading-6 md:text-heading-4 text-white whitespace-pre-line">
+                <p className="font-display text-l text-white whitespace-pre-line">
                   {title}
                 </p>
               )}
@@ -168,7 +166,7 @@ export default function WorkCard({
                       "linear-gradient(to right, var(--color-bg-surface) 31%, transparent 100%)",
                   }}
                 />
-                <p className="absolute left-0 top-1/2 -translate-y-1/2 font-body text-body-m text-text-secondary whitespace-nowrap">
+                <p className="absolute left-0 top-1/2 -translate-y-1/2 font-body text-s text-text-secondary whitespace-nowrap">
                   Worked on
                 </p>
 
@@ -190,12 +188,12 @@ export default function WorkCard({
           {(ctaPrimary || ctaSecondary) && (
             <div className="flex gap-4">
               {ctaPrimary && (
-                <a
+                <Link
                   href={ctaPrimary.href}
                   className={buttonVariants({ variant: "primary", size: "md" })}
                 >
                   <span className="pt-1 px-1">{ctaPrimary.label}</span>
-                </a>
+                </Link>
               )}
               {ctaSecondary && (
                 <a

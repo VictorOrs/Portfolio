@@ -66,7 +66,7 @@ export default function WhoIAm() {
             <div className="flex flex-col gap-1">
               {/* Name + social icons */}
               <div className="flex items-center gap-3">
-                <span className="font-display text-heading-4 text-text-primary whitespace-nowrap">
+                <span className="font-display text-l text-text-primary whitespace-nowrap">
                   Victor Oursin
                 </span>
                 <div className="flex items-center gap-1.5">
@@ -77,14 +77,14 @@ export default function WhoIAm() {
               </div>
 
               {/* Role */}
-              <p className="text-label tracking-[1.12px] uppercase text-text-secondary">
+              <p className="text-xs tracking-[1.12px] uppercase text-text-secondary">
                 {t("whoiam.role")}
               </p>
             </div>
           </div>
 
           {/* Bio */}
-          <p className="font-body text-body-m md:text-body text-text-secondary leading-6 md:leading-8">
+          <p className="font-body text-s md:text-m text-text-secondary leading-6 md:leading-8">
             {t("whoiam.bioPrefix")}{" "}
             <strong className="font-medium text-text-primary">{t("whoiam.bioYears")}</strong>
             {t("whoiam.bioMid")}{" "}
@@ -116,7 +116,7 @@ export default function WhoIAm() {
           <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading — centré à 88px du haut (Figma: top-[88px] -translate-y-1/2) */}
-            <h2 className="absolute left-8 top-[88px] -translate-y-1/2 font-display text-heading-4 text-text-primary leading-10 whitespace-pre">
+            <h2 className="absolute left-8 top-[88px] -translate-y-1/2 font-display text-l text-text-primary leading-10 whitespace-pre">
               {t("whoiam.clientsHeading")}
             </h2>
 
@@ -143,7 +143,7 @@ export default function WhoIAm() {
           </SquircleCard>
 
           {/* Caption */}
-          <p className="font-body text-body-m text-text-secondary pl-4 md:pl-8">
+          <p className="font-body text-s text-text-secondary pl-4 md:pl-8">
             {t("whoiam.clientsCaption")}
           </p>
         </motion.div>

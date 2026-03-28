@@ -122,35 +122,35 @@ function TabColors() {
 function TabTypography() {
   return (
     <div className="flex flex-col gap-10">
-      <TypoRow token="display-1" size="88px" lh="104px" w="500" font="Nohemi">
-        <p className="font-display text-display-1 text-text-primary">Speed up</p>
+      <TypoRow token="3xl" size="88px→53px" lh="96px→56px" w="500" font="Nohemi">
+        <p className="font-display text-3xl text-text-primary">Speed up</p>
       </TypoRow>
-      <TypoRow token="heading-2" size="64px" lh="72px" w="500" font="Nohemi">
-        <p className="font-display text-heading-2 text-text-primary">Section title</p>
+      <TypoRow token="2xl" size="64px→48px" lh="72px→52px" w="500" font="Nohemi">
+        <p className="font-display text-2xl text-text-primary">Section title</p>
       </TypoRow>
-      <TypoRow token="heading-3" size="48px" lh="56px" w="500" font="Nohemi">
-        <p className="font-display text-heading-3 text-text-primary">Section title</p>
+      <TypoRow token="xl" size="48px→40px" lh="56px→48px" w="500" font="Nohemi">
+        <p className="font-display text-xl text-text-primary">Section title</p>
       </TypoRow>
-      <TypoRow token="heading-4" size="32px" lh="40px" w="500" font="Nohemi">
-        <p className="font-display text-heading-4 text-text-primary">Card heading</p>
+      <TypoRow token="l" size="32px" lh="40px" w="500" font="Nohemi">
+        <p className="font-display text-l text-text-primary">Card heading</p>
       </TypoRow>
-      <TypoRow token="body" size="20px" lh="32px" w="400" font="Inter">
-        <p className="font-body text-body text-text-primary">Body copy goes here.</p>
+      <TypoRow token="m" size="20px" lh="32px" w="400" font="Inter">
+        <p className="font-body text-m text-text-primary">Body copy goes here.</p>
       </TypoRow>
-      <TypoRow token="body-m" size="16px" lh="24px" w="400" font="Inter">
-        <p className="font-body text-body-m text-text-primary">Body medium — Worked on</p>
+      <TypoRow token="s" size="16px" lh="20px" w="400" font="Inter">
+        <p className="font-body text-s text-text-primary">Body medium — Worked on</p>
       </TypoRow>
-      <TypoRow token="btn-lg" size="18px" lh="20px" w="600" font="Nohemi">
-        <p className="font-display text-btn-lg text-text-primary">Book a call</p>
+      <TypoRow token="sm" size="18px" lh="20px" w="600" font="Nohemi">
+        <p className="font-display text-sm text-text-primary">Book a call</p>
       </TypoRow>
-      <TypoRow token="btn-md" size="16px" lh="20px" w="600" font="Nohemi">
-        <p className="font-display text-btn-md text-text-primary">Learn more</p>
+      <TypoRow token="s" size="16px" lh="20px" w="600" font="Nohemi">
+        <p className="font-display text-s text-text-primary">Learn more</p>
       </TypoRow>
-      <TypoRow token="link" size="16px" lh="20px" w="500" font="Inter">
-        <p className="font-body text-link text-text-primary">See all projects</p>
+      <TypoRow token="s" size="16px" lh="20px" w="500" font="Inter">
+        <p className="font-body text-s text-text-primary">See all projects</p>
       </TypoRow>
-      <TypoRow token="label" size="14px" lh="20px" w="600" font="Inter" tracking="8px">
-        <p className="font-body text-label text-text-primary uppercase">01. Discovery</p>
+      <TypoRow token="xs" size="14px" lh="20px" w="600" font="Inter" tracking="1.12px">
+        <p className="font-body text-xs text-text-primary uppercase">01. Discovery</p>
       </TypoRow>
     </div>
   );
@@ -236,7 +236,7 @@ function TabButton() {
         </div>
       </Subsection>
       <Subsection title="Notes">
-        <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>Shimmer + glow owned by <code className="text-text-accent font-mono text-[14px]">.btn-primary</code> in globals.css</li>
           <li>Add <code className="text-text-accent font-mono text-[14px]">.light-card</code> to parent to suppress shimmer on light bg</li>
           <li><code className="text-text-accent font-mono text-[14px]">buttonVariants</code> exported for use on <code className="text-text-accent font-mono text-[14px]">&lt;a&gt;</code> / <code className="text-text-accent font-mono text-[14px]">&lt;Link&gt;</code></li>
@@ -279,7 +279,7 @@ function TabSquircleCard() {
         </div>
       </Subsection>
       <Subsection title="Notes">
-        <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>Drop-in <code className="text-text-accent font-mono text-[14px]">&lt;div&gt;</code> — accepts all HTML div props</li>
           <li>SSR-safe: fallback <code className="text-text-accent font-mono text-[14px]">border-radius</code>, then <code className="text-text-accent font-mono text-[14px]">clip-path</code> after hydration</li>
           <li>Uses <code className="text-text-accent font-mono text-[14px]">ResizeObserver</code> to stay accurate on resize</li>
@@ -298,7 +298,7 @@ function TabChangingSpan() {
         </div>
       </Subsection>
       <Subsection title="Notes">
-        <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>Cycling pill via framer-motion <code className="text-text-accent font-mono text-[14px]">layout</code> + <code className="text-text-accent font-mono text-[14px]">AnimatePresence mode=&quot;popLayout&quot;</code></li>
           <li>Height fixed at <code className="text-text-accent font-mono text-[14px]">104px</code> via inline style — prevents framer-motion interpolation</li>
           <li><code className="text-text-accent font-mono text-[14px]">borderRadius</code> also inline for the same reason</li>
@@ -343,7 +343,7 @@ function TabPlayPauseButton() {
         </div>
       </Subsection>
       <Subsection title="Notes">
-        <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>SVG path morphing via <code className="text-text-accent font-mono text-[14px]">useMotionValue</code> + standalone <code className="text-text-accent font-mono text-[14px]">animate()</code></li>
           <li>Both paths share M L L L Z command structure for smooth interpolation</li>
           <li>Wraps <code className="text-text-accent font-mono text-[14px]">Button variant=&quot;secondary&quot; size=&quot;md&quot;</code></li>
@@ -371,7 +371,7 @@ function TabWorkController() {
         </div>
       </Subsection>
       <Subsection title="Notes">
-        <ul className="font-body text-body text-text-secondary flex flex-col gap-1 list-disc list-inside">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
           <li>Active dot morphs to progress bar via <code className="text-text-accent font-mono text-[14px]">motion.button animate=&#123;&#123; width &#125;&#125;</code></li>
           <li>Dark mode tokens: <code className="text-text-accent font-mono text-[14px]">bg-alpha-revert</code>, <code className="text-text-accent font-mono text-[14px]">outline-alpha</code></li>
         </ul>
@@ -468,7 +468,7 @@ export default function DesignSystemPage() {
         {/* ── Content ───────────────────────────────────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-10 pb-20">
           <div className="flex flex-col gap-2 border-b border-alpha pb-6">
-            <h1 className="font-display text-heading-3 text-text-primary">{current.label}</h1>
+            <h1 className="font-display text-xl text-text-primary">{current.label}</h1>
           </div>
           {current.content}
         </div>

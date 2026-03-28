@@ -52,7 +52,7 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
       <AnimatePresence mode="popLayout">
         <motion.span
           key={`${lang}-${types[index]}`}
-          className={`font-display whitespace-nowrap${fluid ? "" : " text-display-1"}`}
+          className={`font-display whitespace-nowrap${fluid ? "" : " text-3xl"}`}
           initial={{ opacity: 0, y: "-100%" }}
           animate={{ opacity: 1, y: "0%" }}
           exit={{ opacity: 0, y: "100%" }}

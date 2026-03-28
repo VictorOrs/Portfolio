@@ -206,7 +206,7 @@ export default function Process() {
           {/* Title + sparkle */}
           <div className="relative">
             <p
-              className="font-display text-heading-4 md:text-heading-2 bg-clip-text text-transparent whitespace-pre"
+              className="font-display text-2xl bg-clip-text text-transparent whitespace-pre"
               style={{
                 backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
                 backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
@@ -251,7 +251,7 @@ export default function Process() {
               <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
                 {String(stepIndex + 1).padStart(2, "0")}. {t(`process.step${stepIndex + 1}Title`)}
               </p>
-              <p className="font-body text-body-m md:text-body text-text-primary">
+              <p className="font-body text-s md:text-m text-text-primary">
                 {t(`process.step${stepIndex + 1}Body`)}
               </p>
             </motion.div>

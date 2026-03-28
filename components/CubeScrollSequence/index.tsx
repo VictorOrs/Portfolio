@@ -162,7 +162,7 @@ export default function CubeScrollSequence() {
               className="h-8 w-8 animate-spin rounded-full border-2 border-text-secondary"
               style={{ borderTopColor: "var(--color-text-primary)" }}
             />
-            <p className="font-body text-label text-text-secondary tabular-nums">
+            <p className="font-body text-xs text-text-secondary tabular-nums">
               {loadPct}%
             </p>
           </div>

@@ -9,7 +9,10 @@
     "about": "About",
     "process": "Process",
     "work": "Work",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "services": "Services",
+    "useCases": "Use cases",
+    "pricing": "Pricing"
   },
   "hero": {
     "headline": "Speed up \nyour growth through\nsuccessful ",

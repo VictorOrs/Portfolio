@@ -28,6 +28,16 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
+  /* ── Typography scale ── */
+  --font-size-3xl: 88px;  --line-height-3xl: 96px;
+  --font-size-2xl: 64px;  --line-height-2xl: 72px;
+  --font-size-xl:  48px;  --line-height-xl:  56px;
+  --font-size-l:   32px;  --line-height-l:   40px;
+  --font-size-m:   20px;  --line-height-m:   32px;
+  --font-size-sm:  18px;  --line-height-sm:  20px;
+  --font-size-s:   16px;  --line-height-s:   20px;
+  --font-size-xs:  14px;  --line-height-xs:  20px;
+
   /* Backgrounds */
   --color-bg-base:    #F5F5F5;
   --color-bg-surface: #E0E0E0;
@@ -56,6 +66,14 @@
   --color-accent-purple-dark:   #5A3A88;
   --color-accent-purple-light:  #F4EBFF;
   --color-white:                #FCFFFE;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --font-size-3xl: 53px;  --line-height-3xl: 56px;
+    --font-size-2xl: 48px;  --line-height-2xl: 52px;
+    --font-size-xl:  40px;  --line-height-xl:  48px;
+  }
 }
 
 .dark {

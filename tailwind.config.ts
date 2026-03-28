@@ -66,18 +66,17 @@ const config: Config = {
         body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, labels
       },
 
-      // ─── Font sizes (with paired line-heights & weights) ────────────────
+      // ─── Font sizes — responsive via CSS vars (see globals.css) ────────
+      // Desktop values in :root, mobile overrides in @media (max-width: 768px).
       fontSize: {
-        "display-1": ["88px", { lineHeight: "104px", letterSpacing: "0", fontWeight: "500" }], // Title/H1
-        "heading-2": ["64px", { lineHeight: "72px",  letterSpacing: "0",  fontWeight: "500" }], // Title/H2
-        "heading-3": ["48px", { lineHeight: "56px", letterSpacing: "0",  fontWeight: "500" }], // Title/H3
-        "heading-4": ["32px", { lineHeight: "40px", letterSpacing: "0",  fontWeight: "500" }], // Title/H4
-        "body":      ["20px", { lineHeight: "32px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/L — R
-        "body-m":   ["16px", { lineHeight: "24px", letterSpacing: "0",  fontWeight: "400" }], // Paragraph/M — R (use font-medium for M variant)
-        "btn-lg":    ["18px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/L
-        "btn-md":    ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "600" }], // Button/M
-        "link":      ["16px", { lineHeight: "20px", letterSpacing: "0",  fontWeight: "500" }], // Link
-        "label":     ["14px", { lineHeight: "20px", letterSpacing: "1.12px", fontWeight: "600" }], // Uppercase
+        "3xl": ["var(--font-size-3xl)", { lineHeight: "var(--line-height-3xl)", fontWeight: "500" }], // H1
+        "2xl": ["var(--font-size-2xl)", { lineHeight: "var(--line-height-2xl)", fontWeight: "500" }], // H2
+        "xl":  ["var(--font-size-xl)",  { lineHeight: "var(--line-height-xl)",  fontWeight: "500" }], // H3
+        "l":   ["var(--font-size-l)",   { lineHeight: "var(--line-height-l)",   fontWeight: "500" }], // H4
+        "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400" }], // Paragraph/L
+        "sm":  ["var(--font-size-sm)",  { lineHeight: "var(--line-height-sm)",  fontWeight: "600" }], // Button/L
+        "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400" }], // Paragraph/M · Link · Button/M
+        "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600" }], // Uppercase/Label
       },
 
       // ─── Spacing (4 px base unit) ────────────────────────────────────────
