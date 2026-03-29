@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
@@ -19,13 +19,6 @@ const MOVE_Y   = 50;
 // mouse position (grad-x-dec = 0.45, grad-y-dec = 0.5 — GradientTracker init)
 const SHIFT_X  = Math.round(MOVE_X * 0.45);
 const SHIFT_Y  = Math.round(MOVE_Y * 0.10);
-// Sparkle offset from the title's top-left corner — EN default
-// left:483 − px-xl:177 = 306 px;  top:179 − py-l:120 = 59 px
-const SP_X_EN = 306;
-const SP_Y_EN = 59;
-// FR: sparkle next to "magie" (line 2, y ≈ 72px + offset)
-const SP_X_FR = 258;
-const SP_Y_FR = 70;
 
 const STEPS = [
   {
@@ -56,9 +49,27 @@ const STEPS = [
 
 export default function Process() {
   const { t, lang } = useTranslation();
-  const SP_X = lang === "fr" ? SP_X_FR : SP_X_EN;
-  const SP_Y = lang === "fr" ? SP_Y_FR : SP_Y_EN;
   const wrapperRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const titleRef = useRef<HTMLParagraphElement>(null);
+  const lastLineRef = useRef<HTMLSpanElement>(null);
+  const [spPos, setSpPos] = useState<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const measure = () => {
+      if (!titleRef.current || !lastLineRef.current) return;
+      const titleRect = titleRef.current.getBoundingClientRect();
+      const lineRect  = lastLineRef.current.getBoundingClientRect();
+      setSpPos({
+        x: Math.round(lineRect.right  - titleRect.left),
+        y: Math.round(lineRect.top    - titleRect.top),
+      });
+    };
+
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (lastLineRef.current) ro.observe(lastLineRef.current);
+    return () => ro.disconnect();
+  }, [lang]);
 
   const CARD_TOP = 80;
 
@@ -88,6 +99,13 @@ export default function Process() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const titleLines = t("process.title").split("\n");
+  const lastLine   = titleLines[titleLines.length - 1];
+  const otherLines = titleLines.slice(0, -1).join("\n");
+
+  const SP_X = spPos?.x ?? 0;
+  const SP_Y = spPos?.y ?? 0;
+
   return (
     <section className="relative flex gap-xs items-start px-xl py-l w-full max-w-[1440px] mx-auto">
 
@@ -96,6 +114,7 @@ export default function Process() {
 
         {/* Title */}
         <p
+          ref={titleRef}
           className="w-full font-display font-medium text-[64px] leading-[72px] bg-clip-text text-transparent whitespace-pre"
           style={{
             backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
@@ -103,29 +122,31 @@ export default function Process() {
             backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
           }}
         >
-          {t("process.title")}
+          {otherLines}{"\n"}<span ref={lastLineRef}>{lastLine}</span>
         </p>
 
-        {/* Sparkle — inside the sticky wrapper so it travels with the title */}
-        <div
-          aria-hidden
-          className="absolute pointer-events-none"
-          style={{
-            left: SP_X,
-            top: SP_Y,
-            width: "55.891px",
-            height: "43.18px",
-            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-            backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-            backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
-            WebkitMaskImage: "url(/img/process/sparkle.svg)",
-            WebkitMaskSize: "100% 100%",
-            WebkitMaskRepeat: "no-repeat",
-            maskImage: "url(/img/process/sparkle.svg)",
-            maskSize: "100% 100%",
-            maskRepeat: "no-repeat",
-          } as React.CSSProperties}
-        />
+        {/* Sparkle — anchored to top-right of last word (EN: "happen", FR: "opère ?") */}
+        {spPos && (
+          <div
+            aria-hidden
+            className="absolute pointer-events-none"
+            style={{
+              left: SP_X,
+              top: SP_Y,
+              width: "55.891px",
+              height: "43.18px",
+              backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+              backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
+              backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
+              WebkitMaskImage: "url(/img/process/sparkle.svg)",
+              WebkitMaskSize: "100% 100%",
+              WebkitMaskRepeat: "no-repeat",
+              maskImage: "url(/img/process/sparkle.svg)",
+              maskSize: "100% 100%",
+              maskRepeat: "no-repeat",
+            } as React.CSSProperties}
+          />
+        )}
       </div>
 
       {/* ── Right column — cards stack on top of each other ────────────────── */}
