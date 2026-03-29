@@ -4,6 +4,7 @@ import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import GradientTracker from "@/components/GradientTracker";
 import Grain from "@/components/Grain";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,7 @@ export default function RootLayout({
         <I18nProvider>
           {children}
         </I18nProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
