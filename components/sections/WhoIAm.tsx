@@ -113,33 +113,40 @@ export default function WhoIAm() {
         >
 
           {/* Client logos card */}
-          <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
+          <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden max-[425px]:h-[220px] min-[426px]:max-md:min-h-[422px] md:max-lg:min-h-[472px]" style={{ zIndex: 10000 }}>
 
-            {/* Heading — centré à 88px du haut (Figma: top-[88px] -translate-y-1/2) */}
-            <h2 className="absolute left-8 top-[88px] -translate-y-1/2 font-display text-l text-text-primary leading-10 whitespace-pre">
+            {/* Heading */}
+            <h2 className="absolute left-8 top-[88px] -translate-y-1/2 max-[425px]:top-8 max-[425px]:translate-y-0 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
               {t("whoiam.clientsHeading")}
             </h2>
 
-            {/* Moso — top right, partially above fold */}
-            <Image
-              src="/img/moso.svg" alt="Moso" width={296} height={261} unoptimized
-              className="absolute rounded-[16px]"
-              style={{ left: 352, top: -57, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
-            />
+            {/* Logo group */}
+            <div className="absolute left-8 right-[-16px] bottom-[-72px] max-[425px]:bottom-[-44px] flex gap-6 items-end">
 
-            {/* Enuma — bottom left */}
-            <Image
-              src="/img/enuma.svg" alt="Enuma" width={296} height={261} unoptimized
-              className="absolute rounded-[16px]"
-              style={{ left: 32, top: 166, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" }}
-            />
+              {/* Left — Enuma, offset via padding-bottom */}
+              <div className="flex-1 min-w-0 pb-16 max-[425px]:pb-8">
+                <Image
+                  src="/img/enuma.svg" alt="Enuma" width={296} height={261} unoptimized
+                  className="w-full h-auto rounded-[16px]"
+                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" }}
+                />
+              </div>
 
-            {/* Dialog — bottom right */}
-            <Image
-              src="/img/dialog.svg" alt="Dialog" width={296} height={261} unoptimized
-              className="absolute rounded-[16px]"
-              style={{ left: 352, top: 228, boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
-            />
+              {/* Right — Moso (top) + Dialog (bottom), stacked */}
+              <div className="flex-1 min-w-0 flex flex-col gap-6">
+                <Image
+                  src="/img/moso.svg" alt="Moso" width={296} height={261} unoptimized
+                  className="w-full h-auto rounded-[16px]"
+                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
+                />
+                <Image
+                  src="/img/dialog.svg" alt="Dialog" width={296} height={261} unoptimized
+                  className="w-full h-auto rounded-[16px]"
+                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
+                />
+              </div>
+
+            </div>
           </SquircleCard>
 
           {/* Caption */}

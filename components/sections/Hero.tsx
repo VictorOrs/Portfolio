@@ -58,7 +58,7 @@ export default function Hero() {
           <div className="col-span-full md:col-start-2 md:col-span-10">
             {/* < 686px: 4 lines de texte dans un seul <p> pour un gradient continu, span en dessous */}
             <p
-              className="xs:hidden font-display text-3xl sm:text-2xl whitespace-pre"
+              className="xs:hidden font-display text-3xl min-[426px]:text-2xl whitespace-pre"
               style={gradientTextStyle}
             >
               {prevLinesMobileXs}{"\n"}{lastLineMobileXs}
