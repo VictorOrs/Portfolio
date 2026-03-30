@@ -116,7 +116,7 @@ export default function WhoIAm() {
           <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden max-[425px]:h-[220px] min-[426px]:max-md:min-h-[422px] md:max-lg:min-h-[472px]" style={{ zIndex: 10000 }}>
 
             {/* Heading */}
-            <h2 className="absolute left-8 top-[88px] -translate-y-1/2 max-[425px]:top-8 max-[425px]:translate-y-0 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
+            <h2 className="absolute left-6 top-[88px] -translate-y-1/2 max-[425px]:top-6 max-[425px]:translate-y-0 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
               {t("whoiam.clientsHeading")}
             </h2>
 

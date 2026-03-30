@@ -12,13 +12,13 @@ import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
 
 function EnumaIllustration() {
   return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden>
+    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-104px] max-md:right-[-372px] max-md:left-[20px] max-md:bottom-[72px] pointer-events-none" aria-hidden>
       <Image
         src="/img/work/enuma_illustration.png"
         alt=""
         fill
         unoptimized
-        className="object-cover object-right opacity-[0.72]"
+        className="object-cover opacity-[0.72]"
       />
     </div>
   );

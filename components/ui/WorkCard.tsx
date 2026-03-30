@@ -96,7 +96,7 @@ export default function WorkCard({
 
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
       {hasContent && (
-        <div className="absolute bottom-0 left-0 right-0 px-5 py-5 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
+        <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
 
           {/* Logo + Title + Worked on */}
           <div className="flex flex-col gap-4 md:gap-6">
@@ -117,7 +117,7 @@ export default function WorkCard({
                 />
               )}
               {title && (
-                <p className="font-display text-l text-white whitespace-pre-line">
+                <p className="font-display text-l text-white whitespace-normal md:whitespace-pre-line">
                   {title}
                 </p>
               )}
@@ -129,8 +129,8 @@ export default function WorkCard({
                 className="relative overflow-hidden w-full md:w-[575px]"
                 style={{ height: 40 }}
               >
-                {/* Scrolling logos — offset 107px to leave room for "Worked on" label */}
-                <div className="absolute inset-y-0" style={{ left: 107 }}>
+                {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label */}
+                <div className="absolute inset-y-0 left-0 md:left-[107px]">
                   <motion.div
                     className="flex items-center gap-8 h-full w-max"
                     animate={{ x: ["0%", "-50%"] }}
@@ -159,14 +159,10 @@ export default function WorkCard({
                 {/* Left fade + "Worked on" label */}
                 <div
                   aria-hidden
-                  className="absolute inset-y-0 left-0 pointer-events-none"
-                  style={{
-                    width: 320,
-                    background:
-                      "linear-gradient(to right, var(--color-bg-surface) 31%, transparent 100%)",
-                  }}
+                  className="absolute inset-y-0 left-0 pointer-events-none w-[90px] md:w-[320px]"
+                  style={{ background: "linear-gradient(to right, var(--color-bg-surface) 31%, transparent 100%)" }}
                 />
-                <p className="absolute left-0 top-1/2 -translate-y-1/2 font-body text-s text-text-secondary whitespace-nowrap">
+                <p className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 font-body text-s text-text-secondary whitespace-nowrap">
                   Worked on
                 </p>
 
@@ -190,7 +186,7 @@ export default function WorkCard({
               {ctaPrimary && (
                 <Link
                   href={ctaPrimary.href}
-                  className={buttonVariants({ variant: "primary", size: "md" })}
+                  className={`${buttonVariants({ variant: "primary", size: "md" })} flex-1 md:flex-none`}
                 >
                   <span className="pt-1 px-1">{ctaPrimary.label}</span>
                 </Link>
@@ -200,7 +196,7 @@ export default function WorkCard({
                   href={ctaSecondary.href}
                   target={ctaSecondary.href.startsWith("http") ? "_blank" : undefined}
                   rel={ctaSecondary.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className={buttonVariants({ variant: "secondary", size: "md" })}
+                  className={`${buttonVariants({ variant: "secondary", size: "md" })} flex-1 md:flex-none`}
                 >
                   <span className="pt-1 px-1">{ctaSecondary.label}</span>
                 </a>
