@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { useLoading } from "@/lib/loading";
@@ -16,16 +16,13 @@ const MOVE_X  = 120;
 const MOVE_Y  = 50;
 const SHIFT_X = Math.round(MOVE_X * 0.45);
 const SHIFT_Y = Math.round(MOVE_Y * 0.10);
-// Sparkle offsets — EN default / FR (next to "magie")
-const SP_X_EN = 306;
-const SP_Y_EN = 59;
-const SP_X_FR = 258;
-const SP_Y_FR = 70;
 
 // ── Frame sequence ────────────────────────────────────────────────────────────
 const DESKTOP_TOTAL = 363;
 const MOBILE_TOTAL  = 182;
 const MOBILE_BP     = 768;
+const STEP_COUNT    = 4;
+const STEP_DURATION = 4000; // ms
 
 function frameUrl(mobile: boolean, idx: number): string {
   const n = String(idx + 1).padStart(3, "0");
@@ -38,9 +35,9 @@ async function fetchBitmap(url: string): Promise<ImageBitmap> {
   return createImageBitmap(blob);
 }
 
-const CANVAS_ZOOM    = 1.25;
-const CANVAS_ZOOM_SM = 0.9;  // reduced zoom for 426px–1023px
-const CANVAS_OFFSET_X = 12; // px shift to the right
+const CANVAS_ZOOM     = 1.25;
+const CANVAS_ZOOM_SM  = 0.9;
+const CANVAS_OFFSET_X = 12;
 
 function getCanvasZoom(): number {
   return window.innerWidth >= 1024 || window.innerWidth <= 425 ? CANVAS_ZOOM : CANVAS_ZOOM_SM;
@@ -61,24 +58,44 @@ export default function Process() {
   const { t, lang } = useTranslation();
   const { setProgress, setLoaded: setGlobalLoaded } = useLoading();
 
-  const SP_X = lang === "fr" ? SP_X_FR : SP_X_EN;
-  const SP_Y = lang === "fr" ? SP_Y_FR : SP_Y_EN;
-
-  // Scroll zone
-  const containerRef   = useRef<HTMLDivElement>(null);
-
   // Canvas
-  const canvasRef      = useRef<HTMLCanvasElement>(null);
-  const cardInnerRef   = useRef<HTMLDivElement>(null);
-  const ctxRef         = useRef<CanvasRenderingContext2D | null>(null);
-  const bitmapsRef     = useRef<ImageBitmap[]>([]);
-  const frameRef       = useRef(0);
-  const progressRef    = useRef(0);
-  const stepIndexRef   = useRef(0);
-  const rafRef         = useRef<number>(0);
+  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const cardInnerRef = useRef<HTMLDivElement>(null);
+  const ctxRef       = useRef<CanvasRenderingContext2D | null>(null);
+  const bitmapsRef   = useRef<ImageBitmap[]>([]);
+  const frameRef     = useRef(0);
+  const rafRef       = useRef<number>(0);
 
-  const [framesLoaded, setFramesLoaded] = useState(false);
-  const [stepIndex,    setStepIndex]    = useState(0);
+  const [framesLoaded,  setFramesLoaded]  = useState(false);
+  const [stepIndex,     setStepIndex]     = useState(0);
+  const [textVisible,   setTextVisible]   = useState(true);
+  // timerKey resets the auto-advance cycle on manual step click
+  const [timerKey, setTimerKey] = useState(0);
+
+  // Sparkle — measured via getClientRects() on the title span
+  const lastLineRef  = useRef<HTMLSpanElement>(null);
+  const titleWrapRef = useRef<HTMLDivElement>(null);
+  const [sparkleLeft, setSparkleLeft] = useState(0);
+  const [sparkleTop,  setSparkleTop]  = useState(0);
+
+  useLayoutEffect(() => {
+    const update = () => {
+      const span = lastLineRef.current;
+      const wrap = titleWrapRef.current;
+      if (!span || !wrap) return;
+      // getClientRects() returns one rect per line box for inline elements
+      const rects = span.getClientRects();
+      if (!rects.length) return;
+      const last = rects[rects.length - 1];
+      const wr   = wrap.getBoundingClientRect();
+      setSparkleLeft(last.right - wr.left + 6);
+      setSparkleTop(48);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    if (lastLineRef.current) ro.observe(lastLineRef.current);
+    return () => ro.disconnect();
+  }, [lang]);
 
   // ── Load frames ─────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -126,90 +143,103 @@ export default function Process() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Canvas sizing + scroll + RAF ─────────────────────────────────────────────
+  // ── Canvas sizing ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!framesLoaded) return;
-
     const canvas    = canvasRef.current;
     const cardInner = cardInnerRef.current;
     if (!canvas || !cardInner) return;
 
     ctxRef.current = canvas.getContext("2d");
-    const reduced  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const sizeCanvas = () => {
       const { width, height } = cardInner.getBoundingClientRect();
       canvas.width  = width;
       canvas.height = height;
-      const ctx = ctxRef.current;
       const bmp = bitmapsRef.current[frameRef.current];
-      if (ctx && bmp) drawContained(ctx, bmp, getCanvasZoom());
+      if (ctxRef.current && bmp) drawContained(ctxRef.current, bmp, getCanvasZoom());
     };
     sizeCanvas();
     window.addEventListener("resize", sizeCanvas);
-
-    if (reduced) {
-      return () => window.removeEventListener("resize", sizeCanvas);
-    }
-
-    const onScroll = () => {
-      const el = containerRef.current;
-      if (!el) return;
-      const top   = el.getBoundingClientRect().top;
-      const range = el.offsetHeight - window.innerHeight;
-      if (range <= 0) return;
-      const p = Math.max(0, Math.min(1, -top / range));
-      progressRef.current = p;
-
-      // Step cycling — 4 equal segments
-      const next = Math.min(3, Math.floor(p * 4));
-      if (next !== stepIndexRef.current) {
-        stepIndexRef.current = next;
-        setStepIndex(next);
-      }
-    };
-
-    const tick = () => {
-      const bitmaps = bitmapsRef.current;
-      const target  = Math.round(progressRef.current * (bitmaps.length - 1));
-      const clamped = Math.max(0, Math.min(bitmaps.length - 1, target));
-
-      if (clamped !== frameRef.current) {
-        frameRef.current = clamped;
-        const ctx = ctxRef.current;
-        const bmp = bitmaps[clamped];
-        if (ctx && bmp) drawContained(ctx, bmp, getCanvasZoom());
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    rafRef.current = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", sizeCanvas);
-    };
+    return () => window.removeEventListener("resize", sizeCanvas);
   }, [framesLoaded]);
 
+  // ── Animate canvas to target frame over 2 s when step changes ───────────────
+  useEffect(() => {
+    if (!framesLoaded) return;
+    const bitmaps    = bitmapsRef.current;
+    const total      = bitmaps.length;
+    const target     = Math.round((stepIndex / (STEP_COUNT - 1)) * (total - 1));
+    const startFrame = frameRef.current;
+
+    cancelAnimationFrame(rafRef.current);
+
+    // Delay so step text + progress bar render first, then cube animates
+    const timeoutId = setTimeout(() => {
+      const startTime    = performance.now();
+      const ANIM_DURATION = 2000; // ms
+
+      const tick = (now: number) => {
+        const t      = Math.min(1, (now - startTime) / ANIM_DURATION);
+        // Ease in-out quad
+        const eased  = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        const frame  = Math.round(startFrame + (target - startFrame) * eased);
+
+        if (frame !== frameRef.current) {
+          frameRef.current = frame;
+          const bmp = bitmaps[frame];
+          if (ctxRef.current && bmp) drawContained(ctxRef.current, bmp, getCanvasZoom());
+        }
+
+        if (t < 1) rafRef.current = requestAnimationFrame(tick);
+      };
+      rafRef.current = requestAnimationFrame(tick);
+    }, 150);
+
+    return () => {
+      clearTimeout(timeoutId);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, [stepIndex, framesLoaded]);
+
+  // ── Auto-advance: dismiss text early, then advance step ─────────────────────
+  useEffect(() => {
+    // Fade out body text 300 ms before step changes
+    const dismissId = setTimeout(() => setTextVisible(false), STEP_DURATION - 300);
+    // Advance step and show new text
+    const advanceId = setTimeout(() => {
+      setStepIndex(prev => (prev + 1) % STEP_COUNT);
+      setTextVisible(true);
+    }, STEP_DURATION);
+    return () => {
+      clearTimeout(dismissId);
+      clearTimeout(advanceId);
+    };
+  }, [timerKey, stepIndex]);
+
+  const handleStepClick = useCallback((i: number) => {
+    setStepIndex(i);
+    setTextVisible(true);
+    setTimerKey(k => k + 1);
+  }, []);
+
+  // ── Shared styles ────────────────────────────────────────────────────────────
+  const gradStyle = {
+    backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+    backgroundSize:     `${GRAD_W}px ${GRAD_H}px`,
+    backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
+  };
+
+  const ease = [0.22, 1, 0.36, 1] as const;
+
   return (
-    <section ref={containerRef} className="relative h-[300vh]">
+    <section className="relative grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl w-full max-w-[1440px] mx-auto">
 
-      {/* Grid wrapper — 10-col centered on mobile/tablet like other sections, block on desktop */}
-      <div className="px-6 md:px-10 lg:p-0 h-full w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:block">
+      {/* 12-col centered wrapper — transparent to grid on lg+ */}
+      <div className="col-span-full flex flex-col gap-10 md:col-start-2 md:col-span-10 lg:contents">
 
-      <div className="sticky top-0 h-screen flex flex-col justify-center gap-6 col-span-full md:col-start-2 md:col-span-10 lg:w-full lg:px-s xl:px-xl 2xl:px-xl lg:max-w-[1440px] lg:mx-auto z-[10000] relative overflow-hidden">
-
-        {/* ── Inner row: transparent on mobile, flex-row items-stretch on desktop
-               so cube height = left column height (not h-screen) ── */}
-        {/* 4 col text | 1 col gap | 5 col cube */}
-        <div className="contents lg:grid lg:grid-cols-10 lg:gap-10 lg:w-full">
-
-        {/* ── Left column wrapper: contents on mobile (title+explanation become
-               direct flex items, orderable against cube), col-span-4 on desktop ── */}
-        <div className="contents lg:flex lg:flex-col lg:gap-[80px] lg:col-span-4">
+        {/* ── Left column wrapper — contents on mobile, flex col on desktop ────── */}
+        <div className="contents lg:flex lg:flex-col lg:gap-16 lg:col-start-1 lg:col-span-5">
 
           {/* Title + sparkle — order 1 on mobile */}
           <motion.div
@@ -217,129 +247,130 @@ export default function Process() {
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, ease }}
           >
-            <div className="relative">
+            <div ref={titleWrapRef} className="relative">
               <p
-                className="font-display text-2xl bg-clip-text text-transparent whitespace-normal w-full lg:whitespace-pre lg:w-auto"
-                style={{
-                  backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                  backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
-                }}
+                className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center lg:text-left"
+                style={gradStyle}
               >
-                {t("process.title")}
-                {/* Mobile sparkle — inline right after last word */}
-                <span
-                  className="lg:hidden inline-block align-text-bottom ml-2"
-                  aria-hidden
-                  style={{
-                    width:  "55.891px",
-                    height: "43.18px",
-                    backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                    backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-                    backgroundPosition: `${SHIFT_X}px ${SHIFT_Y}px`,
-                    WebkitMaskImage:  "url(/img/process/sparkle.svg)",
-                    WebkitMaskSize:   "100% 100%",
-                    WebkitMaskRepeat: "no-repeat",
-                    maskImage:        "url(/img/process/sparkle.svg)",
-                    maskSize:         "100% 100%",
-                    maskRepeat:       "no-repeat",
-                  } as React.CSSProperties}
-                />
+                <span ref={lastLineRef}>{t("process.title")}</span>
               </p>
-
-              {/* Desktop sparkle — absolute positioned */}
+              {/* Sparkle — sibling of <p>, positioned from last-line measurement */}
               <div
                 aria-hidden
-                className="absolute pointer-events-none hidden lg:block"
+                className="absolute pointer-events-none w-[56px] h-[43px] max-[425px]:w-[40px] max-[425px]:h-[31px]"
                 style={{
-                  left: SP_X,
-                  top:  SP_Y,
-                  width:  "55.891px",
-                  height: "43.18px",
-                  backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                  backgroundSize: `${GRAD_W}px ${GRAD_H}px`,
-                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${SP_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${SP_Y}px)`,
-                  WebkitMaskImage:  "url(/img/process/sparkle.svg)",
-                  WebkitMaskSize:   "100% 100%",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskImage:        "url(/img/process/sparkle.svg)",
-                  maskSize:         "100% 100%",
-                  maskRepeat:       "no-repeat",
+                  left: sparkleLeft,
+                  top:  sparkleTop,
+                  backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
+                  backgroundSize:     `${GRAD_W}px ${GRAD_H}px`,
+                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${sparkleLeft}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${sparkleTop}px)`,
+                  WebkitMaskImage:    "url(/img/process/sparkle.svg)",
+                  WebkitMaskSize:     "100% 100%",
+                  WebkitMaskRepeat:   "no-repeat",
+                  maskImage:          "url(/img/process/sparkle.svg)",
+                  maskSize:           "100% 100%",
+                  maskRepeat:         "no-repeat",
                 } as React.CSSProperties}
               />
             </div>
           </motion.div>
 
-          {/* Step info — order 3 on mobile */}
+          {/* Steps list — order 3 on mobile */}
           <motion.div
-            className="order-3 lg:order-none"
+            className="order-3 lg:order-none flex flex-col gap-6"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.05 }}
+            transition={{ duration: 1.2, ease }}
           >
-            <div className="h-[110px] lg:h-[200px] overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={stepIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{    opacity: 0, y: -10 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="flex flex-col gap-4"
+            {Array.from({ length: STEP_COUNT }, (_, i) => (
+              <button
+                key={i}
+                onClick={() => handleStepClick(i)}
+                className="relative text-left border-l-[3px] border-solid pl-6 flex flex-col w-full overflow-visible"
+                style={{ borderColor: "var(--color-alpha)" }}
               >
+                {/* Animated progress bar over active step border */}
+                {i === stepIndex && (
+                  <motion.div
+                    key={stepIndex}
+                    aria-hidden
+                    className="absolute left-[-3px] top-0 w-[3px] pointer-events-none"
+                    initial={{ scaleY: 0 }}
+                    animate={{ scaleY: 1 }}
+                    transition={{ duration: STEP_DURATION / 1000, ease: "linear" }}
+                    style={{
+                      height:          "100%",
+                      transformOrigin: "top",
+                      backgroundColor: "white",
+                    }}
+                  />
+                )}
+
                 <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-                  {String(stepIndex + 1).padStart(2, "0")}. {t(`process.step${stepIndex + 1}Title`)}
+                  {String(i + 1).padStart(2, "0")}. {t(`process.step${i + 1}Title`)}
                 </p>
-                <p className="font-body text-s lg:text-m text-text-primary">
-                  {t(`process.step${stepIndex + 1}Body`)}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-            </div>
+
+                <motion.div
+                  animate={{ gridTemplateRows: i === stepIndex ? "1fr" : "0fr" }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ display: "grid" }}
+                >
+                  <div style={{ overflow: "hidden", minHeight: 0 }}>
+                    <motion.p
+                      className="font-body text-m text-text-primary pt-3"
+                      animate={{ opacity: i === stepIndex && textVisible ? 1 : 0 }}
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {t(`process.step${i + 1}Body`)}
+                    </motion.p>
+                  </div>
+                </motion.div>
+              </button>
+            ))}
           </motion.div>
 
-        </div>{/* end left column wrapper */}
+        </div>
 
-        {/* ── Cube — order 2 on mobile, 5 cols starting at col 6 on desktop ──── */}
+        {/* ── Right: cube — 5 cols (col 7–11, col 6 = gap) ───────────────────── */}
         <motion.div
-          className="order-2 lg:order-none lg:col-start-6 lg:col-span-5"
+          className="aspect-video order-2 lg:order-none lg:aspect-auto lg:h-[570px] lg:col-start-7 lg:col-span-6"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+          transition={{ duration: 1.2, ease, delay: 0.1 }}
         >
-        <SquircleCard className="relative w-full bg-background-surface overflow-hidden h-[360px] min-[426px]:h-[380px] lg:h-full" style={{ zIndex: 10000 }}>
-
-          <div ref={cardInnerRef} className="absolute inset-0">
-
-            <canvas
-              ref={canvasRef}
-              aria-hidden
-              className="absolute inset-0"
-              style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
-            />
-
-            {/* Vignette overlay — hidden below 425px */}
-            <div
-              aria-hidden
-              className="absolute inset-0 pointer-events-none"
-              style={{
-                background: "radial-gradient(ellipse 107% 50% at center, transparent 43.5%, var(--color-bg-surface) 58.2%)",
-              }}
-            />
-
-          </div>
-        </SquircleCard>
+          <SquircleCard className="relative w-full h-full bg-background-surface overflow-hidden">
+            <div ref={cardInnerRef} className="absolute inset-0">
+              <canvas
+                ref={canvasRef}
+                aria-hidden
+                className="absolute inset-0"
+                style={{ opacity: framesLoaded ? 1 : 0, transition: "opacity 0.4s ease" }}
+              />
+              {/* Desktop vignette */}
+              <div
+                aria-hidden
+                className="hidden lg:block absolute inset-0 pointer-events-none"
+                style={{
+                  background: "radial-gradient(ellipse 107% 50% at center, transparent 43.5%, var(--color-bg-surface) 58.2%)",
+                }}
+              />
+              {/* Mobile vignette */}
+              <div
+                aria-hidden
+                className="lg:hidden absolute inset-0 pointer-events-none"
+                style={{
+                  background: "radial-gradient(ellipse 124% 100% at center, transparent 60%, var(--color-bg-surface) 100%)",
+                }}
+              />
+            </div>
+          </SquircleCard>
         </motion.div>
 
-        </div>{/* end inner row */}
-
-      </div>{/* end sticky */}
-
-      </div>{/* end grid wrapper */}
+      </div>
     </section>
   );
 }

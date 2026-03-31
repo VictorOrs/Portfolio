@@ -30,7 +30,7 @@
 :root {
   /* ── Typography scale ── */
   --font-size-3xl: 88px;  --line-height-3xl: 96px;
-  --font-size-2xl: 64px;  --line-height-2xl: 72px;
+  --font-size-2xl: 56px;  --line-height-2xl: 64px;
   --font-size-xl:  36px;  --line-height-xl:  44px;
   --font-size-l:   28px;  --line-height-l:   40px;
   --font-size-m:   20px;  --line-height-m:   32px;

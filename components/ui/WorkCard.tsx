@@ -117,7 +117,7 @@ export default function WorkCard({
                 />
               )}
               {title && (
-                <p className="font-display text-l text-white whitespace-normal md:whitespace-pre-line">
+                <p className="font-display text-l text-white whitespace-pre-line max-[425px]:whitespace-normal">
                   {title}
                 </p>
               )}

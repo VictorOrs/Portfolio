@@ -21,13 +21,14 @@
     "headlineMobileXs": "Speed up\nyour growth\nthrough\nsuccessful "
   },
   "process": {
-    "title": "How does\nthe magic\nhappen",
+    "title": "How does the\nmagic happen",
+    "titleMobile": "How does the\nmagic happen",
     "step1Title": "First meeting",
-    "step1Body": "Our collaboration kicks off with an introduction call, which helps me understand your needs. We'll discuss your goals, needs and ambitions for your project and if this looks like a great match, we dive into a deeper project spec.",
+    "step1Body": "We start with an introduction call, which helps me understand your needs. We'll discuss your goals, needs and ambitions. If this looks like a great match, we dive into a deeper project spec.",
     "step2Title": "Project kick-off",
-    "step2Body": "Building trust is a top priority for me when we work together. We'll stay in touch throughout the project to ensure transparency, and together we'll define the steps to be taken to launch your project in the best possible conditions.",
+    "step2Body": "Building trust together is a priority. We'll stay in touch to ensure transparency and define steps for a successful project launch.",
     "step3Title": "Proposal",
-    "step3Body": "Once we've gathered all the details about your project, we keep going by designing multiple proposals. For each milestone reached, I'll seek your approval. We can work on a daily basis compensation or opt for a project-based payment.",
+    "step3Body": "After gathering project details, we design proposals. For each milestone, I'll seek your approval. We can choose daily compensation or project-based payment.",
     "step4Title": "Delivery",
     "step4Body": "After completing your feedback, I'll hand over the final work to you. Afterward, I'll stay in touch to provide quality assurance, discuss potential new projects, or just keep in touch."
   },
@@ -43,7 +44,7 @@
   },
   "faq": {
     "eyebrow": "FAQ",
-    "title": "Any further\nquestions?",
+    "title": "Any further questions?",
     "q1": "Do you work exclusively via the collective?",
     "a1": "No, as a customer you decide whether to work with the collective, which I am a part, or exclusively with me, depending on your needs and budget.",
     "q2": "What services do you offer exactly?",

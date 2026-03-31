@@ -21,7 +21,8 @@
     "headlineMobileXs": "Accélérez\nvotre\ncroissance\ngrâce à du "
   },
   "process": {
-    "title": "Comment\nla magie\nopère ?",
+    "title": "Comment la\nmagie opère ?",
+    "titleMobile": "Comment\nla magie opère ?",
     "step1Title": "Premier contact",
     "step1Body": "Notre collaboration commence par un appel d'introduction qui m'aide à comprendre vos besoins. Nous discuterons de vos objectifs et ambitions pour votre projet, et si la collaboration semble prometteuse, nous approfondissons les spécifications.",
     "step2Title": "Lancement du projet",

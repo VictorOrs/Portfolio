@@ -79,9 +79,9 @@ const config: Config = {
         "2xl": ["var(--font-size-2xl)", { lineHeight: "var(--line-height-2xl)", fontWeight: "500" }], // H2
         "xl":  ["var(--font-size-xl)",  { lineHeight: "var(--line-height-xl)",  fontWeight: "500" }], // H3
         "l":   ["var(--font-size-l)",   { lineHeight: "var(--line-height-l)",   fontWeight: "500" }], // H4
-        "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400" }], // Paragraph/L
+        "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400", letterSpacing: "-0.5px" }], // Paragraph/L
         "sm":  ["var(--font-size-sm)",  { lineHeight: "var(--line-height-sm)",  fontWeight: "600" }], // Button/L
-        "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400" }], // Paragraph/M · Link · Button/M
+        "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400", letterSpacing: "-0.5px" }], // Paragraph/M · Link · Button/M
         "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600" }], // Uppercase/Label
       },
 

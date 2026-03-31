@@ -12,7 +12,7 @@ import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
 
 function EnumaIllustration() {
   return (
-    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-104px] max-md:right-[-372px] max-md:left-[20px] max-md:bottom-[72px] pointer-events-none" aria-hidden>
+    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-176px] max-md:right-[-160px] max-md:left-[24px] max-md:bottom-[96px] max-[425px]:top-[-104px] max-[425px]:right-[-372px] max-[425px]:left-[20px] max-[425px]:bottom-[72px] pointer-events-none" aria-hidden>
       <Image
         src="/img/work/enuma_illustration.png"
         alt=""
