@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { useLoading } from "@/lib/loading";
 import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
@@ -363,7 +363,7 @@ export default function Process() {
                 aria-hidden
                 className="lg:hidden absolute inset-0 pointer-events-none"
                 style={{
-                  background: "radial-gradient(ellipse 124% 100% at center, transparent 60%, var(--color-bg-surface) 100%)",
+                  background: "radial-gradient(ellipse 47% 38% at center, transparent 60%, var(--color-bg-surface) 100%)",
                 }}
               />
             </div>
