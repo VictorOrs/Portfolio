@@ -7,7 +7,6 @@ import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
 import LanguageToggle from "@/components/ui/LanguageToggle";
 import Logo from "@/components/ui/Logo";
-import ChevronIcon from "@/components/ui/ChevronIcon";
 import { useTranslation } from "@/lib/i18n";
 import MailIcon from "@/components/ui/MailIcon";
 
