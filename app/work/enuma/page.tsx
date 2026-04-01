@@ -20,7 +20,6 @@ const gradientText = {
   color: "transparent" as const,
 };
 
-const TAGS = ["Product Design", "Design System", "Brand Identity", "Webflow"];
 
 const STATS = [
   { label: "Role",          value: "Product & Brand Designer" },
