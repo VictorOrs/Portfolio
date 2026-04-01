@@ -6,14 +6,26 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
-      name: "question",
-      title: "Question",
+      name: "question_en",
+      title: "Question (EN)",
       type: "string",
       validation: (r) => r.required(),
     }),
     defineField({
-      name: "answer",
-      title: "Answer",
+      name: "question_fr",
+      title: "Question (FR)",
+      type: "string",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "answer_en",
+      title: "Answer (EN)",
+      type: "text",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "answer_fr",
+      title: "Answer (FR)",
       type: "text",
       validation: (r) => r.required(),
     }),
@@ -27,6 +39,6 @@ export default defineType({
     { title: "Order", name: "order", by: [{ field: "order", direction: "asc" }] },
   ],
   preview: {
-    select: { title: "question" },
+    select: { title: "question_en" },
   },
 });

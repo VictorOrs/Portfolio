@@ -6,7 +6,9 @@ import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
+import Link from "next/link";
 import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
+import { buttonVariants } from "@/components/ui/Button";
 
 // ── Enuma illustration ────────────────────────────────────────────────────────
 
@@ -45,8 +47,7 @@ function MosoIllustration() {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const DURATION    = 6000; // ms per slide
-const SLIDE_COUNT = 2;
+const DURATION = 6000; // ms per slide
 const ease        = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
@@ -76,6 +77,40 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
         illustration: <MosoIllustration />,
       },
     },
+    ...(!sliderOnly ? [{
+      id: "see-more",
+      card: {
+        lightMode: true,
+        illustration: (
+          <div className="absolute top-0 bottom-0 left-0 right-[-230px] md:right-[-140px] lg:right-0 max-[425px]:left-[-218px] max-[425px]:top-[-172px] max-[425px]:w-[1086px] max-[425px]:h-[540px] max-[425px]:bottom-auto pointer-events-none" aria-hidden>
+            <Image
+              src="/img/work/more.png"
+              alt=""
+              fill
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+        ),
+        customContent: (
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
+            <p className="font-display">
+              <span className="text-xl text-[#666]">{t("work.seeMoreLine1")}</span>
+              <br />
+              <span className="text-xl text-text-primary">{t("work.seeMoreLine2")}</span>
+              <br />
+              <span className="text-xl text-text-primary">{t("work.seeMoreLine3")}</span>
+            </p>
+            <Link
+              href="/work"
+              className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
+            >
+              <span className="pt-1 px-1">{t("work.seeAllWork")}</span>
+            </Link>
+          </div>
+        ),
+      } as WorkCardProps,
+    }] : []),
   ];
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -123,7 +158,7 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
       } else {
         progressRef.current = 0;
         setProgress(0);
-        setActiveIndex((prev) => (prev + 1) % SLIDE_COUNT);
+        setActiveIndex((prev) => (prev + 1) % SLIDES.length);
       }
     };
 
@@ -135,7 +170,7 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
 
   const goToSlide = useCallback((i: number) => {
     if (transitionLock.current) return;
-    const clamped = Math.max(0, Math.min(SLIDE_COUNT - 1, i));
+    const clamped = Math.max(0, Math.min(SLIDES.length - 1, i));
     if (clamped === activeIndex) return;
     transitionLock.current = true;
     cancelAnimationFrame(rafRef.current);
@@ -252,8 +287,8 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
       {!sliderOnly && (
         <motion.div
           className="sticky bottom-6 flex justify-center z-10"
-          initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.0, ease, delay: 0.2 }}
         >

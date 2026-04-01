@@ -83,16 +83,25 @@ function FAQItem({
 }
 
 // ── Types ────────────────────────────────────────────────────────────────
-export type FAQData = { _id: string; question: string; answer: string };
+export type FAQData = {
+  _id: string;
+  question_en: string;
+  question_fr: string;
+  answer_en: string;
+  answer_fr: string;
+};
 
 // ── Section ───────────────────────────────────────────────────────────────
 export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   // Use Sanity data if provided, otherwise fall back to i18n
   const items = sanityItems && sanityItems.length > 0
-    ? sanityItems.map((item) => ({ q: item.question, a: item.answer }))
+    ? sanityItems.map((item) => ({
+        q: lang === "fr" ? item.question_fr : item.question_en,
+        a: lang === "fr" ? item.answer_fr : item.answer_en,
+      }))
     : [
         { q: t("faq.q1"), a: t("faq.a1") },
         { q: t("faq.q2"), a: t("faq.a2") },
