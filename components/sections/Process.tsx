@@ -12,7 +12,7 @@ const DESKTOP_TOTAL = 363;
 const MOBILE_TOTAL  = 182;
 const MOBILE_BP     = 768;
 const STEP_COUNT    = 4;
-const STEP_DURATION = 4000; // ms
+const STEP_DURATION = 6000; // ms
 
 function frameUrl(mobile: boolean, idx: number): string {
   const n = String(idx + 1).padStart(3, "0");

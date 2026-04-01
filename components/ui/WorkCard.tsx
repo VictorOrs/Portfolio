@@ -116,7 +116,6 @@ export default function WorkCard({
                   alt={logo.alt}
                   width={110}
                   height={20}
-                  unoptimized
                   className="max-[425px]:!h-[18px]"
                   style={{
                     height: 20,
@@ -153,7 +152,6 @@ export default function WorkCard({
                           alt={logo.name}
                           width={80}
                           height={32}
-                          unoptimized
                           style={{
                             height: 40,
                             width: "auto",
