@@ -6,9 +6,7 @@ import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
-import Link from "next/link";
 import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
-import { buttonVariants } from "@/components/ui/Button";
 
 // ── Enuma illustration ────────────────────────────────────────────────────────
 
@@ -48,12 +46,12 @@ function MosoIllustration() {
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const DURATION    = 6000; // ms per slide
-const SLIDE_COUNT = 3;
+const SLIDE_COUNT = 2;
 const ease        = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
 
-export default function Work() {
+export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
   const { t } = useTranslation();
 
   const SLIDES: Array<{ id: string; card: WorkCardProps }> = [
@@ -76,40 +74,6 @@ export default function Work() {
         ctaPrimary:   { label: t("work.learnMore"), href: "/work/moso" },
         ctaSecondary: { label: t("work.mosoCta"), href: "https://www.motionsociety.com" },
         illustration: <MosoIllustration />,
-      },
-    },
-    {
-      id: "see-more",
-      card: {
-        lightMode: true,
-        illustration: (
-          <div className="absolute top-0 bottom-0 left-0 right-[-230px] md:right-[-140px] lg:right-0 max-[425px]:left-[-218px] max-[425px]:top-[-172px] max-[425px]:w-[1086px] max-[425px]:h-[540px] max-[425px]:bottom-auto pointer-events-none" aria-hidden>
-            <Image
-              src="/img/work/more.png"
-              alt=""
-              fill
-              unoptimized
-              className="object-cover"
-            />
-          </div>
-        ),
-        customContent: (
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
-            <p className="font-display">
-              <span className="text-xl text-[#666]">{t("work.seeMoreLine1")}</span>
-              <br />
-              <span className="text-xl text-text-primary">{t("work.seeMoreLine2")}</span>
-              <br />
-              <span className="text-xl text-text-primary">{t("work.seeMoreLine3")}</span>
-            </p>
-            <Link
-              href="/work"
-              className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
-            >
-              <span className="pt-1 px-1">{t("work.seeAllWork")}</span>
-            </Link>
-          </div>
-        ),
       },
     },
   ];
@@ -141,9 +105,9 @@ export default function Work() {
     }
   }, [inView]);
 
-  // RAF-based timer — only runs when section is visible and not paused
+  // RAF-based timer — only runs when section is visible, not paused, and not sliderOnly
   useEffect(() => {
-    if (paused || !inView) return;
+    if (sliderOnly || paused || !inView) return;
 
     const startP = progressRef.current; // resume from current position when unpausing
     let t0: number | null = null;
@@ -231,34 +195,36 @@ export default function Work() {
       <div className="flex flex-col gap-8 md:gap-16 col-span-full xl:col-start-2 xl:col-span-10">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
-      <motion.div
-        className="flex flex-col gap-6 items-center text-center"
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 1.2, ease }}
-      >
-        <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-          {t("work.eyebrow")}
-        </p>
-        <p
-          className="font-display text-2xl bg-clip-text text-transparent"
-          style={{
-            backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
-            backgroundSize: "250% 250%",
-            backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
-          }}
+      {!sliderOnly && (
+        <motion.div
+          className="flex flex-col gap-6 items-center text-center"
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1.2, ease }}
         >
-          {t("work.titlePrefix")} {t("work.titleHighlight")}
-        </p>
-      </motion.div>
+          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+            {t("work.eyebrow")}
+          </p>
+          <p
+            className="font-display text-2xl bg-clip-text text-transparent"
+            style={{
+              backgroundImage: `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+              backgroundSize: "250% 250%",
+              backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
+            }}
+          >
+            {t("work.titlePrefix")} {t("work.titleHighlight")}
+          </p>
+        </motion.div>
+      )}
 
       {/* ── Horizontal slider ────────────────────────────────────────────── */}
       <motion.div
         ref={sliderRef}
         className="overflow-visible touch-pan-y"
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 1.2, ease, delay: 0.1 }}
         onPointerDown={onPointerDown}
@@ -283,22 +249,24 @@ export default function Work() {
       </motion.div>
 
       {/* ── Sticky controller ─────────────────────────────────────────────── */}
-      <motion.div
-        className="sticky bottom-6 flex justify-center z-10"
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 1.0, ease, delay: 0.2 }}
-      >
-        <WorkController
-          count={SLIDES.length}
-          activeIndex={activeIndex}
-          progress={progress}
-          paused={paused}
-          onTogglePause={() => setPaused((p) => !p)}
-          onDotClick={goToSlide}
-        />
-      </motion.div>
+      {!sliderOnly && (
+        <motion.div
+          className="sticky bottom-6 flex justify-center z-10"
+          initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 1.0, ease, delay: 0.2 }}
+        >
+          <WorkController
+            count={SLIDES.length}
+            activeIndex={activeIndex}
+            progress={progress}
+            paused={paused}
+            onTogglePause={() => setPaused((p) => !p)}
+            onDotClick={goToSlide}
+          />
+        </motion.div>
+      )}
 
       </div>
     </section>

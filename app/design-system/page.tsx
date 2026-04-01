@@ -114,7 +114,7 @@ function TabColors() {
       <Subsection title="Button / Primary">
         <div className="grid grid-cols-4 gap-6">
           <ColorSwatch token="btn.primary.bg"    cssVar="--color-btn-primary-bg"       hex="#090909" dark="#E0E0E0" />
-          <ColorSwatch token="btn.primary.hover" cssVar="--color-btn-primary-bg-hover" hex="#202020" dark="#FFFFFF" />
+          <ColorSwatch token="btn.primary.hover" cssVar="--color-btn-primary-bg-hover" hex="#1C1C1C" dark="#FFFFFF" />
           <ColorSwatch token="btn.primary.text"  cssVar="--color-btn-primary-text"     hex="#F5F5F5" dark="#090909" />
         </div>
       </Subsection>

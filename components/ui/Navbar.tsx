@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
@@ -48,6 +49,8 @@ function BurgerIcon({ open }: { open: boolean }) {
 
 export default function Navbar() {
   const { t } = useTranslation();
+  const pathname = usePathname();
+  const isUseCase = pathname.startsWith("/work/");
   const [visible, setVisible] = useState(true);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -73,7 +76,7 @@ export default function Navbar() {
     >
       {/* Color gradient overlay */}
       <div
-        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out ${scrolled ? "opacity-100" : "opacity-0"}`}
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ease-out ${scrolled || isUseCase ? "opacity-100" : "opacity-0"}`}
         style={{ background: "linear-gradient(to bottom, var(--color-bg-base) 0%, transparent 100%)" }}
       />
 
@@ -162,7 +165,7 @@ export default function Navbar() {
 
         {/* Book a call — tablet+ */}
         <div className="hidden md:block">
-          <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="min-w-[132px] lg:w-[144px]">{t("navbar.bookCall")}</Button>
+          <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="lg:min-w-[139px]">{t("navbar.bookCall")}</Button>
         </div>
       </div>
     </motion.header>

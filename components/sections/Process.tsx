@@ -71,19 +71,22 @@ export default function Process() {
   const [sparkleLeft, setSparkleLeft] = useState(0);
   const [sparkleTop,  setSparkleTop]  = useState(0);
 
+  const prevWidthRef = useRef(0);
+
   useLayoutEffect(() => {
     const update = () => {
       const span = lastLineRef.current;
       const wrap = titleWrapRef.current;
       if (!span || !wrap) return;
-      // getClientRects() returns one rect per line box for inline elements
+      const wr = wrap.getBoundingClientRect();
+      // Skip if width hasn't changed (avoids unnecessary state updates)
+      if (Math.round(wr.width) === prevWidthRef.current) return;
+      prevWidthRef.current = Math.round(wr.width);
       const rects = span.getClientRects();
       if (!rects.length) return;
       const last = rects[rects.length - 1];
-      const wr   = wrap.getBoundingClientRect();
       setSparkleLeft(last.right - wr.left + 6);
       setSparkleTop(48);
-      // Store parent dimensions as CSS vars for sparkle gradient continuity
       wrap.style.setProperty("--tw", `${wr.width}px`);
       wrap.style.setProperty("--th", `${wr.height}px`);
     };
@@ -244,8 +247,8 @@ export default function Process() {
           {/* Title + sparkle — order 1 on mobile */}
           <motion.div
             className="order-1 min-[944px]:order-none"
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 1.2, ease }}
           >
@@ -280,8 +283,8 @@ export default function Process() {
           {/* Steps list — order 3 on mobile */}
           <motion.div
             className="order-3 min-[944px]:order-none flex flex-col gap-6"
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 1.2, ease }}
           >
@@ -337,8 +340,8 @@ export default function Process() {
         {/* ── Right: cube — 5 cols (col 7–11, col 6 = gap) ───────────────────── */}
         <motion.div
           className="aspect-video order-2 min-[944px]:order-none min-[944px]:aspect-auto min-[944px]:h-[570px] min-[944px]:col-start-6 min-[944px]:col-span-5 xl:col-start-7"
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 1.2, ease, delay: 0.1 }}
         >

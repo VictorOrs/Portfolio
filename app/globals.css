@@ -1,3 +1,6 @@
+/* ─── Inter from Google Fonts (400, 500, 600) ────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
 /* ─── Nohemi font ───────────────────────────────────────────────────────────
    Place the corresponding .woff2 files in /public/fonts/ before deploying.
    ────────────────────────────────────────────────────────────────────────── */
@@ -53,7 +56,7 @@
 
   /* Button / Primary */
   --color-btn-primary-bg:       #090909;
-  --color-btn-primary-bg-hover: #202020;
+  --color-btn-primary-bg-hover: #1C1C1C;
   --color-btn-primary-text:     #f5f5f5;
   --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.48);
 
@@ -108,6 +111,11 @@
 
 html {
   background: var(--color-bg-base);
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 body {
@@ -161,12 +169,12 @@ body {
 .light-card {
   --color-bg-base:              #F5F5F5;
   --color-bg-surface:           #E0E0E0;
-  --color-text-primary:         #202020;
+  --color-text-primary:         #1C1C1C;
   --color-text-secondary:       #666666;
   --color-alpha:                #09090914;
   --color-alpha-revert:         #ffffff14;
   --color-btn-primary-bg:       #090909;
-  --color-btn-primary-bg-hover: #202020;
+  --color-btn-primary-bg-hover: #1C1C1C;
   --color-btn-primary-text:     #f5f5f5;
   --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.48);
 }

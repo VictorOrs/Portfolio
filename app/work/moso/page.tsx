@@ -54,21 +54,22 @@ function Eyebrow({ children }: { children: string }) {
 
 export default function MosoPage() {
   return (
-    <main className="min-h-screen bg-background-base flex flex-col pt-[80px]">
+    <main className="min-h-screen bg-background-base flex flex-col pt-[80px] overflow-x-clip">
       <Navbar />
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section
-        className="relative w-full max-w-[1440px] mx-auto overflow-hidden"
+        className="relative w-full max-w-[1440px] mx-auto overflow-visible"
         style={{ height: "80vh", minHeight: 480 }}
       >
-        <div className="absolute inset-0">
+        <div className="absolute top-[-80px] left-0 right-0 bottom-0 overflow-visible">
           <Image
             src="/img/work/moso_illustration.png"
             alt=""
             fill
             priority
-            className="object-cover object-top"
+            className="object-cover"
+            style={{ objectPosition: "300px -200px" }}
           />
         </div>
 
@@ -95,22 +96,11 @@ export default function MosoPage() {
             unoptimized
           />
 
-          <div className="flex flex-wrap gap-2">
-            {TAGS.map((tag) => (
-              <span
-                key={tag}
-                className="font-display text-s text-text-secondary px-4 py-1.5 rounded-full outline outline-2 outline-alpha"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
           <h1
-            className="font-display text-2xl xl:text-3xl max-w-[720px]"
+            className="font-display text-2xl max-w-[720px] whitespace-pre-line"
             style={gradientText}
           >
-            Internal product engine
+            {"Continuously shaping Moso's\ninternal product engine"}
           </h1>
 
           <p className="font-body text-s md:text-m text-text-secondary max-w-[520px] leading-6 md:leading-8">
@@ -126,9 +116,6 @@ export default function MosoPage() {
             >
               <span className="pt-1 px-1">Visit motionsociety.com</span>
             </a>
-            <Link href="/" className={buttonVariants({ variant: "secondary", size: "lg" })}>
-              <span className="pt-1 px-1">Back to portfolio</span>
-            </Link>
           </div>
         </motion.div>
       </section>

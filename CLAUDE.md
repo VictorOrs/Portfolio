@@ -31,6 +31,10 @@ Next.js 14 portfolio site using the **App Router**, TypeScript, Tailwind CSS, an
 - `lib/gradient.ts` — `GRADIENT_STOPS` constant (iridescent rainbow, 3× repeated with `#E0E0E0` separators). Used by `Hero` (text clip) and available for other consumers.
 - `messages/` — Translation files (`en.json`, `fr.json`). Add keys to both files when adding copy.
 
+### Grid system
+
+The entire site is built on a **12-column grid** with **40px gutters** (`gap-10`) and **64px margins** (`px-s`) on each side. On sections, use `grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10 px-6 md:px-10 lg:px-s`. Content sits within **10 columns centered** (`xl:col-start-2 xl:col-span-10`) at `≥ 1280px`. Below `1280px` (`< xl`), the grid is 10 columns and content spans `col-span-full`. Two-column layouts (e.g. Process, FAQ) use `contents` on the wrapper and explicit `col-start` / `col-span` on children. **Never use flexbox for section-level layout** — always use the grid system.
+
 ### Design system
 
 Defined in `tailwind.config.ts` and `app/globals.css`. **Never use raw hex values in components** — always use design tokens.

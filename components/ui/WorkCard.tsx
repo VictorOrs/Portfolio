@@ -93,8 +93,8 @@ export default function WorkCard({
             cx="0" cy="0" r="10"
             gradientTransform="matrix(-16.8 46.823 -87.5 -29.81 817 -0.000073145)"
           >
-            <stop offset="0.46989" stopColor="rgba(32,32,32,0)" />
-            <stop offset="0.93503" stopColor="rgba(32,32,32,0.32)" />
+            <stop offset="0.46989" stopColor="rgba(28,28,28,0)" />
+            <stop offset="0.93503" stopColor="rgba(28,28,28,0.32)" />
           </radialGradient>
         </defs>
         <rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradId})`} />

@@ -2,7 +2,7 @@
   "navbar": {
     "menu": "Menu",
     "close": "Fermer",
-    "bookCall": "Me contacter",
+    "bookCall": "Parlons-en",
     "sendEmail": "Envoyer un email"
   },
   "nav": {
@@ -19,13 +19,13 @@
     "title": "Comment la\nmagie opère ?",
     "titleMobile": "Comment\nla magie opère ?",
     "step1Title": "Premier contact",
-    "step1Body": "Notre collaboration commence par un appel d'introduction qui m'aide à comprendre vos besoins. Nous discuterons de vos objectifs et ambitions pour votre projet, et si la collaboration semble prometteuse, nous approfondissons les spécifications.",
+    "step1Body": "Notre collaboration commence par un appel d'introduction qui nous aide à comprendre vos besoins. Nous discuterons de vos objectifs et ambitions pour votre projet, et si la collaboration semble prometteuse, nous approfondissons les spécifications.",
     "step2Title": "Lancement du projet",
-    "step2Body": "La confiance est ma priorité absolue quand nous travaillons ensemble. Je resterai en contact tout au long du projet pour assurer la transparence, et nous définirons ensemble les étapes pour lancer votre projet dans les meilleures conditions.",
+    "step2Body": "La confiance est notre priorité absolue quand nous travaillons ensemble. Nous resterons en contact tout au long du projet pour assurer la transparence, et nous définirons ensemble les étapes pour lancer votre projet dans les meilleures conditions.",
     "step3Title": "Proposition",
-    "step3Body": "Une fois tous les détails de votre projet réunis, nous avançons en concevant plusieurs propositions. Pour chaque jalon atteint, je solliciterai votre validation. Nous pouvons travailler en compensation journalière ou opter pour un paiement au projet.",
+    "step3Body": "Une fois tous les détails de votre projet réunis, nous avançons en concevant plusieurs propositions. Pour chaque jalon atteint, nous solliciterons votre validation. Notre objectif est de vous impliquer autant que possible dans le processus.",
     "step4Title": "Livraison",
-    "step4Body": "Après avoir intégré vos retours, je vous remettrai le travail final. Par la suite, je resterai disponible pour l'assurance qualité, évoquer de nouveaux projets ou simplement garder le contact."
+    "step4Body": "Après avoir intégré vos retours, nous vous remettrons le travail final. Par la suite, nous resterons disponibles pour l'assurance qualité, évoquer de nouveaux projets ou simplement garder le contact."
   },
   "work": {
     "eyebrow": "Aperçu des",
@@ -47,15 +47,15 @@
     "eyebrow": "FAQ",
     "title": "Encore des\nquestions ?",
     "q1": "Travaillez-vous exclusivement via le collectif ?",
-    "a1": "Non, en tant que client vous décidez si vous souhaitez travailler avec le collectif dont je fais partie, ou exclusivement avec moi, selon vos besoins et votre budget.",
+    "a1": "Non, en tant que client vous décidez si vous souhaitez travailler avec le collectif dont nous faisons partie, ou exclusivement avec nous, selon vos besoins et votre budget.",
     "q2": "Quels services proposez-vous exactement ?",
-    "a2": "Je me concentre principalement sur le Product Design & l'UX UI Design, qu'il s'agisse d'une application/site existant ou d'un projet de zéro. Je suis qualifié pour vous aider à créer des visuels impactants, un design system bien organisé et facile à utiliser, et intégrer votre site sur Webflow.",
+    "a2": "Nous nous concentrons principalement sur le Product Design & l'UX UI Design, qu'il s'agisse d'une application/site existant ou d'un projet de zéro. Nous sommes qualifiés pour vous aider à créer des visuels impactants, un design system bien organisé et facile à utiliser, et intégrer votre site sur Webflow.",
     "q3": "Comment facturez-vous vos services ?",
-    "a3": "Je facture principalement en jours et n'accepte pas les contrats facturés à l'heure. Cependant, selon vos besoins et disponibilités, je peux facturer sur une base forfaitaire.",
+    "a3": "Nous facturons principalement en jours et n'acceptons pas les contrats facturés à l'heure. Cependant, selon vos besoins et disponibilités, nous pouvons facturer sur une base forfaitaire.",
     "q4": "Travaillez-vous uniquement à distance ou pouvez-vous rejoindre nos bureaux ?",
-    "a4": "Je travaille habituellement 100% à distance. Étant basé en France, je peux parfois me déplacer si votre bureau se trouve dans la région de Bordeaux ou à Paris.",
+    "a4": "Nous travaillons habituellement 100% à distance. Étant basés en France, nous pouvons parfois nous déplacer si votre bureau se trouve dans la région de Bordeaux ou à Paris.",
     "q5": "Travaillez-vous à l'international ?",
-    "a5": "Oui, je suis basé à Bali, en Indonésie, mais j'ai l'habitude de travailler avec des start-ups basées aux États-Unis et en Europe. De nos jours, la distance n'est plus un problème."
+    "a5": "Oui, nous sommes basés à Bali, en Indonésie, mais nous avons l'habitude de travailler avec des start-ups basées aux États-Unis et en Europe. De nos jours, la distance n'est plus un problème."
   },
   "footer": {
     "interested": "Intéressé ?",
@@ -75,11 +75,11 @@
     "role": "Designer Produit Freelance",
     "bioPrefix": "Avec plus de",
     "bioYears": "7 ans d'expérience",
-    "bioMid": ", je suis spécialisé dans la création de",
+    "bioMid": ", nous sommes spécialisés dans la création de",
     "bioSpeciality": "designs propres, centrés utilisateur et fonctionnels",
     "bioSuffix": "dans différents marchés, notamment",
     "bioMarkets": "la fintech, la data et le web3.",
     "clientsHeading": "La confiance de \nclients d'exception",
-    "clientsCaption": "Ces dernières années, j'ai eu l'opportunité de travailler sur une grande variété de projets avec des équipes formidables."
+    "clientsCaption": "Ces dernières années, nous avons eu l'opportunité de travailler sur une grande variété de projets avec des équipes formidables."
   }
 }

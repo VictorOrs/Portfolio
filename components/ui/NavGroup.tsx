@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import NavLink from "@/components/ui/NavLink";
 import ChevronIcon from "@/components/ui/ChevronIcon";
 import { useTranslation } from "@/lib/i18n";
@@ -18,6 +19,7 @@ const NAV_KEYS: { key: string; href: string; chevron?: true }[] = [
 
 export default function NavGroup({ scrolled = false, className }: NavGroupProps) {
   const { t } = useTranslation();
+  const pathname = usePathname();
   const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   return (
@@ -29,6 +31,7 @@ export default function NavGroup({ scrolled = false, className }: NavGroupProps)
           key={href}
           href={href}
           isHovered={hoveredKey === key}
+          isActive={pathname.startsWith(href)}
           onMouseEnter={() => setHoveredKey(key)}
           onMouseLeave={() => setHoveredKey(null)}
           trailingIcon={chevron ? <ChevronIcon size={20} /> : undefined}

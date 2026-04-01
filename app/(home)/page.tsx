@@ -3,7 +3,7 @@ import Hero from "@/components/sections/Hero";
 import WhoIAm from "@/components/sections/WhoIAm";
 import Process from "@/components/sections/Process";
 import Work from "@/components/sections/Work";
-import FAQ from "@/components/sections/FAQ";
+import FAQServer from "@/components/sections/FAQServer";
 import Footer from "@/components/sections/Footer";
 
 export default function Page() {
@@ -14,7 +14,7 @@ export default function Page() {
       <WhoIAm />
       <Work />
       <Process />
-      <FAQ />
+      <FAQServer />
       <Footer />
     </main>
   );

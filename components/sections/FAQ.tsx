@@ -82,18 +82,24 @@ function FAQItem({
   );
 }
 
+// ── Types ────────────────────────────────────────────────────────────────
+export type FAQData = { _id: string; question: string; answer: string };
+
 // ── Section ───────────────────────────────────────────────────────────────
-export default function FAQ() {
+export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
   const { t } = useTranslation();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  const items = [
-    { q: t("faq.q1"), a: t("faq.a1") },
-    { q: t("faq.q2"), a: t("faq.a2") },
-    { q: t("faq.q3"), a: t("faq.a3") },
-    { q: t("faq.q4"), a: t("faq.a4") },
-    { q: t("faq.q5"), a: t("faq.a5") },
-  ];
+  // Use Sanity data if provided, otherwise fall back to i18n
+  const items = sanityItems && sanityItems.length > 0
+    ? sanityItems.map((item) => ({ q: item.question, a: item.answer }))
+    : [
+        { q: t("faq.q1"), a: t("faq.a1") },
+        { q: t("faq.q2"), a: t("faq.a2") },
+        { q: t("faq.q3"), a: t("faq.a3") },
+        { q: t("faq.q4"), a: t("faq.a4") },
+        { q: t("faq.q5"), a: t("faq.a5") },
+      ];
 
   return (
     <section className="px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10 lg:items-start">
@@ -104,8 +110,8 @@ export default function FAQ() {
         {/* ── Header ────────────────────────────────────────────────── */}
         <motion.div
           className="flex flex-col gap-4 items-center md:items-start md:col-span-4 xl:col-start-2"
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease }}
         >
@@ -146,8 +152,8 @@ export default function FAQ() {
         {/* ── FAQ list ──────────────────────────────────────────────── */}
         <motion.div
           className="flex flex-col gap-5 md:gap-8 md:col-start-6 md:col-span-5 md:pt-10 xl:col-start-7"
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 1.2, ease, delay: 0.1 }}
         >

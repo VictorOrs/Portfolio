@@ -51,9 +51,9 @@ export default function Hero() {
       >
         <motion.div
           className="px-6 md:px-10 lg:px-s grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 max-w-[1440px] mx-auto w-full"
-          initial={{ opacity: 0, y: 28 }}
-          animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.4, ease }}
+          initial={{ opacity: 0, y: 28, filter: "blur(4px)" }}
+          animate={isLoaded ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1.4, ease, delay: 0.6 }}
         >
           <div className="col-span-full xl:col-start-2 xl:col-span-10">
             {/* < 686px: 4 lines de texte dans un seul <p> pour un gradient continu, span en dessous */}
@@ -86,9 +86,9 @@ export default function Hero() {
         {/* Entrance animation */}
         <motion.div
           className="relative h-[288px] w-full"
-          initial={{ opacity: 0, y: 28 }}
-          animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 1.4, ease }}
+          initial={{ opacity: 0, y: 28, filter: "blur(4px)" }}
+          animate={isLoaded ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+          transition={{ duration: 1.4, ease, delay: 0.6 }}
         >
           <p
             className="absolute top-0 left-0 h-full font-display text-3xl whitespace-pre"
@@ -115,9 +115,9 @@ export default function Hero() {
 
           <motion.div
             className="absolute bottom-0 left-[478px]"
-            initial={{ opacity: 0, y: 16 }}
-            animate={isLoaded ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 1.4, ease, delay: 0.15 }}
+            initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+            animate={isLoaded ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+            transition={{ duration: 1.4, ease, delay: 0.75 }}
           >
             <ChangingSpan />
           </motion.div>

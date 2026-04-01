@@ -2,7 +2,7 @@
   "navbar": {
     "menu": "Menu",
     "close": "Close",
-    "bookCall": "Book a call",
+    "bookCall": "Let's talk",
     "sendEmail": "Send an email"
   },
   "nav": {
@@ -19,13 +19,13 @@
     "title": "How does the\nmagic happen",
     "titleMobile": "How does the\nmagic happen",
     "step1Title": "First meeting",
-    "step1Body": "We start with an introduction call, which helps me understand your needs. We'll discuss your goals, needs and ambitions. If this looks like a great match, we dive into a deeper project spec.",
+    "step1Body": "We start with an introduction call, which helps us understand your needs. We'll discuss your goals, needs and ambitions. If this looks like a great match, we dive into a deeper project spec.",
     "step2Title": "Project kick-off",
     "step2Body": "Building trust together is a priority. We'll stay in touch to ensure transparency and define steps for a successful project launch.",
     "step3Title": "Proposal",
-    "step3Body": "After gathering project details, we design proposals. For each milestone, I'll seek your approval. We can choose daily compensation or project-based payment.",
+    "step3Body": "After gathering project details, we design proposals. For each milestone, we'll seek your approval. We aim to involve you as much as possible in the process.",
     "step4Title": "Delivery",
-    "step4Body": "After completing your feedback, I'll hand over the final work to you. Afterward, I'll stay in touch to provide quality assurance, discuss potential new projects, or just keep in touch."
+    "step4Body": "After completing your feedback, we'll hand over the final work to you. Afterward, we'll stay in touch to provide quality assurance, discuss potential new projects, or just keep in touch."
   },
   "work": {
     "eyebrow": "Quick look on",
@@ -47,15 +47,15 @@
     "eyebrow": "FAQ",
     "title": "Any further questions?",
     "q1": "Do you work exclusively via the collective?",
-    "a1": "No, as a customer you decide whether to work with the collective, which I am a part, or exclusively with me, depending on your needs and budget.",
+    "a1": "No, as a customer you decide whether to work with the collective, which we are a part of, or exclusively with us, depending on your needs and budget.",
     "q2": "What services do you offer exactly?",
-    "a2": "I focus mainly on Product Design & UX UI Design, whether from an existing application/website or from scratch. I'm qualified to help you create impactful visuals, an easy-to-use well-organised design system and integrate your website on Webflow.",
+    "a2": "We focus mainly on Product Design & UX UI Design, whether from an existing application/website or from scratch. We're qualified to help you create impactful visuals, an easy-to-use well-organised design system and integrate your website on Webflow.",
     "q3": "How do you bill your services?",
-    "a3": "I mainly invoice in days and do not accept contracts invoiced in hours. However, depending on your needs and availability, I can invoice on a per-project basis.",
+    "a3": "We mainly invoice in days and do not accept contracts invoiced in hours. However, depending on your needs and availability, we can invoice on a per-project basis.",
     "q4": "Do you work only remotely or can you join our offices?",
-    "a4": "I usually work 100% remote. As I'm based in France, I can sometimes travel if your office is in the Bordeaux area or in Paris.",
+    "a4": "We usually work 100% remote. As we're based in France, we can sometimes travel if your office is in the Bordeaux area or in Paris.",
     "q5": "Do you work internationally?",
-    "a5": "Yes, I'm based in Bali, in Indonesia, but I'm used to working with start-ups based in the U.S. and Europe. Nowadays, distance is no longer a problem."
+    "a5": "Yes, we're based in Bali, in Indonesia, but we're used to working with start-ups based in the U.S. and Europe. Nowadays, distance is no longer a problem."
   },
   "footer": {
     "interested": "Interested?",
@@ -75,11 +75,11 @@
     "role": "Freelance Product Designer",
     "bioPrefix": "With over",
     "bioYears": "7 years' experience",
-    "bioMid": ", I'm specialised in creating",
+    "bioMid": ", we're specialised in creating",
     "bioSpeciality": "clean, user-centric and functional designs",
     "bioSuffix": "in a variety of markets, including",
     "bioMarkets": "fintech, data & web3.",
     "clientsHeading": "Trusted by \ntop-tier clients",
-    "clientsCaption": "Over the last few years, I've had the opportunity to work on a wide range of projects with amazing teams."
+    "clientsCaption": "Over the last few years, we've had the opportunity to work on a wide range of projects with amazing teams."
   }
 }

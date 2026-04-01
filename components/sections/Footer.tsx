@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
@@ -17,11 +17,23 @@ const PAUSE_AFTER_TYPE = 2000;
 const PAUSE_AFTER_DELETE = 400;
 
 function TypingLocation() {
+  const spanRef = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(false);
   const [text, setText] = useState("");
   const [locIndex, setLocIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
+  // Only animate when visible in viewport
   useEffect(() => {
+    const el = spanRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return;
     const current = LOCATIONS[locIndex];
 
     if (!deleting) {
@@ -43,10 +55,10 @@ function TypingLocation() {
       setLocIndex((locIndex + 1) % LOCATIONS.length);
     }, PAUSE_AFTER_DELETE);
     return () => clearTimeout(id);
-  }, [text, deleting, locIndex]);
+  }, [text, deleting, locIndex, visible]);
 
   return (
-    <span>
+    <span ref={spanRef}>
       {text}
       <motion.span
         className="inline-block w-[2px] h-[14px] bg-text-secondary ml-[2px] align-middle"
@@ -71,8 +83,8 @@ export default function Footer() {
           {/* ── CTA card — forced light mode ───────────────────────── */}
           <motion.div
             className="light-card flex flex-col gap-8 items-center p-6 md:p-16 rounded-[40px] bg-background-surface overflow-hidden"
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 1.2, ease }}
           >
@@ -105,8 +117,8 @@ export default function Footer() {
         {/* ── Footer info — grid: logo 3 cols | gap 1 col | links 6 cols ── */}
         <motion.div
           className="col-span-full md:contents"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 16, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.0, ease, delay: 0.1 }}
         >

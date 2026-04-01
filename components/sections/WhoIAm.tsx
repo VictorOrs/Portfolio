@@ -24,8 +24,8 @@ export default function WhoIAm() {
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
           className="min-[900px]:col-span-4 h-full"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
@@ -92,8 +92,8 @@ export default function WhoIAm() {
         {/* ── Clients Section ───────────────────────────────────── */}
         <motion.div
           className="flex flex-col gap-8 md:gap-12 w-full min-[900px]:col-span-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
@@ -102,7 +102,7 @@ export default function WhoIAm() {
           <SquircleCard className="relative bg-background-surface max-[425px]:h-[220px] min-[426px]:min-h-[492px] min-[900px]:min-h-[372px] lg:min-h-0 lg:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading */}
-            <h2 className="absolute left-6 top-[88px] -translate-y-1/2 max-[425px]:top-6 max-[425px]:translate-y-0 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
+            <h2 className="absolute left-8 top-10 max-[425px]:left-6 max-[425px]:top-6 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
               {t("whoiam.clientsHeading")}
             </h2>
 

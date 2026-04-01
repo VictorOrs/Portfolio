@@ -55,22 +55,23 @@ function Eyebrow({ children }: { children: string }) {
 
 export default function EnumaPage() {
   return (
-    <main className="min-h-screen bg-background-base flex flex-col pt-[80px]">
+    <main className="min-h-screen bg-background-base flex flex-col pt-[80px] overflow-x-clip">
       <Navbar />
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section
-        className="relative w-full max-w-[1440px] mx-auto overflow-hidden"
+        className="relative w-full max-w-[1440px] mx-auto overflow-visible"
         style={{ height: "80vh", minHeight: 480 }}
       >
         {/* Illustration */}
-        <div className="absolute inset-0">
+        <div className="absolute top-[-80px] left-0 right-0 bottom-0 overflow-visible">
           <Image
             src="/img/work/enuma_illustration.png"
             alt=""
             fill
             priority
-            className="object-cover object-right opacity-[0.72]"
+            className="object-cover opacity-[0.72]"
+            style={{ objectPosition: "300px -200px" }}
           />
         </div>
 
@@ -99,22 +100,11 @@ export default function EnumaPage() {
             unoptimized
           />
 
-          <div className="flex flex-wrap gap-2">
-            {TAGS.map((tag) => (
-              <span
-                key={tag}
-                className="font-display text-s text-text-secondary px-4 py-1.5 rounded-full outline outline-2 outline-alpha"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
           <h1
-            className="font-display text-2xl xl:text-3xl max-w-[720px]"
+            className="font-display text-2xl max-w-[720px] whitespace-pre-line"
             style={gradientText}
           >
-            Lasting partnership
+            {"Lasting partnership as\nProduct & Brand Designer"}
           </h1>
 
           <p className="font-body text-s md:text-m text-text-secondary max-w-[520px] leading-6 md:leading-8">
@@ -130,9 +120,6 @@ export default function EnumaPage() {
             >
               <span className="pt-1 px-1">Visit enuma-collective.com</span>
             </a>
-            <Link href="/" className={buttonVariants({ variant: "secondary", size: "lg" })}>
-              <span className="pt-1 px-1">Back to portfolio</span>
-            </Link>
           </div>
         </motion.div>
       </section>

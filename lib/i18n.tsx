@@ -32,10 +32,14 @@ const I18nContext = createContext<I18nContextValue | null>(null);
 
 // ─── Provider ────────────────────────────────────────────────────────────────
 
+type Phase = "idle" | "exit" | "enter";
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Language>("en");
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [phase, setPhase] = useState<Phase>("idle");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number>(0);
 
   // Hydrate from localStorage on mount
   useEffect(() => {
@@ -45,12 +49,23 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   const setLang = useCallback((next: Language) => {
     if (timerRef.current) clearTimeout(timerRef.current);
+    cancelAnimationFrame(rafRef.current);
+
     setIsTransitioning(true);
+    setPhase("exit");
+
     timerRef.current = setTimeout(() => {
       setLangState(next);
       localStorage.setItem(STORAGE_KEY, next);
-      setIsTransitioning(false);
-    }, 120);
+      setPhase("enter");
+
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = requestAnimationFrame(() => {
+          setPhase("idle");
+          setIsTransitioning(false);
+        });
+      });
+    }, 200);
   }, []);
 
   // Resolve a dot-notated key like "nav.home" against the current message file
@@ -68,14 +83,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     [lang]
   );
 
+  const transitionStyle: React.CSSProperties =
+    phase === "exit"
+      ? { opacity: 0, transform: "translateY(-8px)", filter: "blur(4px)", transition: "opacity 200ms ease, transform 200ms ease, filter 200ms ease" }
+      : phase === "enter"
+        ? { opacity: 0, transform: "translateY(8px)", filter: "blur(4px)", transition: "none" }
+        : { opacity: 1, transform: "none", filter: "none", transition: "opacity 250ms ease, transform 250ms ease, filter 250ms ease" };
+
   return (
     <I18nContext.Provider value={{ lang, setLang, t, isTransitioning }}>
-      <div
-        style={{
-          opacity: isTransitioning ? 0 : 1,
-          transition: "opacity 120ms ease",
-        }}
-      >
+      <div style={transitionStyle}>
         {children}
       </div>
     </I18nContext.Provider>
