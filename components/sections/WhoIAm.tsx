@@ -13,41 +13,26 @@ export default function WhoIAm() {
 
   return (
     <section
-      className="relative px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
+      className="relative px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
     >
-      <div className="grid grid-cols-1 gap-6 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full lg:grid-cols-12 lg:gap-10">
+      <div className="grid grid-cols-1 gap-6 col-span-full min-[900px]:grid-cols-10 min-[900px]:gap-10 xl:col-start-2 xl:col-span-10">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
-          className="lg:col-span-5"
+          className="min-[900px]:col-span-4 h-full"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
         <SquircleCard
-          className="light-card relative flex flex-col gap-6 p-6 xl:p-8 overflow-hidden w-full lg:h-full lg:justify-between lg:gap-0"
+          className="light-card relative flex flex-col gap-6 p-6 xl:p-8 overflow-hidden w-full h-full min-[900px]:justify-between min-[900px]:gap-0"
           style={{ zIndex: 10000, background: "var(--color-bg-surface)" }}
         >
-          {/* Decorative badge — Figma: left 263.59px, top 2.9px, 132.856×132.856, rotate 15deg *<Image
-            src="/img/SVG export logo enuma.svg"
-            alt=""
-            aria-hidden
-            width={104}
-            height={104}
-            unoptimized
-            className="absolute pointer-events-none"
-            style={{
-              left: "279px",
-              top: "16px",
-              transform: "rotate(15deg)",
-            }}
-          />
-
           {/* Profile info */}
           <div className="flex flex-col gap-6">
             {/* Avatar */}
@@ -95,8 +80,8 @@ export default function WhoIAm() {
 
           {/* CTA buttons */}
           <div className="flex gap-4">
-            <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
-            <Button variant="primary" size="lg" className="flex-1">
+            <Button href="mailto:victor.oursin@gmail.com" variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
+            <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="flex-1">
               {t("navbar.bookCall")}
             </Button>
           </div>
@@ -105,7 +90,7 @@ export default function WhoIAm() {
 
         {/* ── Clients Section ───────────────────────────────────── */}
         <motion.div
-          className="flex flex-col gap-8 md:gap-12 w-full lg:col-span-7"
+          className="flex flex-col gap-8 md:gap-12 w-full min-[900px]:col-span-6"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, amount: 0.2 }}
@@ -113,7 +98,7 @@ export default function WhoIAm() {
         >
 
           {/* Client logos card */}
-          <SquircleCard className="relative bg-background-surface h-[280px] md:h-[414px] w-full overflow-hidden max-[425px]:h-[220px] min-[426px]:max-md:min-h-[422px] md:max-lg:min-h-[472px]" style={{ zIndex: 10000 }}>
+          <SquircleCard className="relative bg-background-surface max-[425px]:h-[220px] min-[426px]:min-h-[492px] min-[900px]:min-h-[372px] lg:min-h-0 lg:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading */}
             <h2 className="absolute left-6 top-[88px] -translate-y-1/2 max-[425px]:top-6 max-[425px]:translate-y-0 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
@@ -121,7 +106,7 @@ export default function WhoIAm() {
             </h2>
 
             {/* Logo group */}
-            <div className="absolute left-8 right-[-16px] bottom-[-72px] max-[425px]:bottom-[-44px] flex gap-6 items-end">
+            <div className="absolute left-6 md:left-8 right-[-16px] bottom-[-72px] max-[425px]:bottom-[-48px] flex gap-4 items-end">
 
               {/* Left — Enuma, offset via padding-bottom */}
               <div className="flex-1 min-w-0 pb-16 max-[425px]:pb-8">

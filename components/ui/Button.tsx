@@ -1,5 +1,5 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 
 // Exported so this can also be applied to links (<Link> / <a>)
 export const buttonVariants = cva(
@@ -42,23 +42,33 @@ const labelClass: Record<string, string> = {
   md: "flex items-center justify-center pt-1 px-1 leading-5",
 };
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants> & {
-    icon?: ReactNode; // rendered directly, outside the label span
-  };
+type ButtonBaseProps = VariantProps<typeof buttonVariants> & { icon?: ReactNode };
+
+type ButtonProps =
+  | (ButtonHTMLAttributes<HTMLButtonElement> & ButtonBaseProps & { href?: undefined })
+  | (AnchorHTMLAttributes<HTMLAnchorElement>  & ButtonBaseProps & { href: string });
 
 export default function Button({ variant, size, className, icon, children, ...props }: ButtonProps) {
-  return (
-    <button
-      className={buttonVariants({ variant, size, className })}
-      {...props}
-    >
+  const cls = buttonVariants({ variant, size, className });
+  const inner = (
+    <>
       {icon}
       {children && (
         <span className={labelClass[size ?? "lg"]}>
           {children}
         </span>
       )}
+    </>
+  );
+
+  if ("href" in props && props.href !== undefined) {
+    const { href, ...rest } = props as AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
+    return <a href={href} className={cls} {...rest}>{inner}</a>;
+  }
+
+  return (
+    <button className={cls} {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}>
+      {inner}
     </button>
   );
 }

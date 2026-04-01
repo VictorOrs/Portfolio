@@ -39,6 +39,10 @@ export interface WorkCardProps {
   ctaSecondary?: { label: string; href: string };
   /** Full-bleed illustration rendered as absolute background */
   illustration?: React.ReactNode;
+  /** Force light theme on the card */
+  lightMode?: boolean;
+  /** Custom content — replaces the standard bottom content when provided */
+  customContent?: React.ReactNode;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -51,6 +55,8 @@ export default function WorkCard({
   ctaPrimary,
   ctaSecondary,
   illustration,
+  lightMode = false,
+  customContent,
 }: WorkCardProps) {
   const uid = useId();
   const gradId = `card-grad-${uid.replace(/:/g, "")}`;
@@ -58,7 +64,7 @@ export default function WorkCard({
 
   return (
     <div
-      className="relative w-full rounded-[40px] overflow-hidden bg-background-surface"
+      className={`relative w-full rounded-[40px] overflow-hidden ${lightMode ? "light-card bg-[#E0E0E0]" : "bg-background-surface"}`}
       style={{
         minHeight: height,
         boxShadow: "0px -3.648px 29.184px 0px rgba(0,0,0,0.72)",
@@ -73,7 +79,7 @@ export default function WorkCard({
 
 
       {/* Gradient overlay — radial gradient Figma node 1723:1770 */}
-      <svg
+      {!lightMode && <svg
         aria-hidden
         className="absolute inset-0 pointer-events-none w-full h-full"
         viewBox="0 0 1060 540"
@@ -92,10 +98,13 @@ export default function WorkCard({
           </radialGradient>
         </defs>
         <rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradId})`} />
-      </svg>
+      </svg>}
+
+      {/* Custom content — replaces standard layout */}
+      {customContent}
 
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
-      {hasContent && (
+      {!customContent && hasContent && (
         <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
 
           {/* Logo + Title + Worked on */}
@@ -108,6 +117,7 @@ export default function WorkCard({
                   width={110}
                   height={20}
                   unoptimized
+                  className="max-[425px]:!h-[18px]"
                   style={{
                     height: 20,
                     width: "auto",
@@ -126,7 +136,7 @@ export default function WorkCard({
             {/* "Worked on" marquee */}
             {showWorkedOn && (
               <div
-                className="relative overflow-hidden w-full md:w-[575px]"
+                className="hidden min-[426px]:block relative overflow-hidden w-full md:w-[575px]"
                 style={{ height: 40 }}
               >
                 {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label */}

@@ -8,7 +8,7 @@ import Footer from "@/components/sections/Footer";
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-background-base flex flex-col pt-[80px]">
+    <main className="min-h-screen bg-background-base flex flex-col pt-[80px] overflow-x-clip">
       <Navbar />
       <Hero />
       <WhoIAm />

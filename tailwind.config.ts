@@ -12,7 +12,7 @@ const config: Config = {
     extend: {
       // ─── Breakpoints ─────────────────────────────────────────────────────
       screens: {
-        xs:  "686px",   // hero 3-line → 4-line transition
+        xs:  "480px",   // hero 3-line → 4-line transition
         nav: "1200px",  // burger → NavGroup transition
       },
 

@@ -1,21 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { useLoading } from "@/lib/loading";
-import { GRADIENT_STOPS_PROCESS } from "@/lib/gradient";
+import { GRADIENT_STOPS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
-
-// ── Gradient geometry ─────────────────────────────────────────────────────────
-const TITLE_W = 399;
-const TITLE_H = 144;
-const GRAD_W  = TITLE_W * 3;
-const GRAD_H  = TITLE_H * 2.5;
-const MOVE_X  = 120;
-const MOVE_Y  = 50;
-const SHIFT_X = Math.round(MOVE_X * 0.45);
-const SHIFT_Y = Math.round(MOVE_Y * 0.10);
 
 // ── Frame sequence ────────────────────────────────────────────────────────────
 const DESKTOP_TOTAL = 363;
@@ -58,6 +48,9 @@ export default function Process() {
   const { t, lang } = useTranslation();
   const { setProgress, setLoaded: setGlobalLoaded } = useLoading();
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView   = useInView(sectionRef, { amount: 0.3 });
+
   // Canvas
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const cardInnerRef = useRef<HTMLDivElement>(null);
@@ -90,6 +83,9 @@ export default function Process() {
       const wr   = wrap.getBoundingClientRect();
       setSparkleLeft(last.right - wr.left + 6);
       setSparkleTop(48);
+      // Store parent dimensions as CSS vars for sparkle gradient continuity
+      wrap.style.setProperty("--tw", `${wr.width}px`);
+      wrap.style.setProperty("--th", `${wr.height}px`);
     };
     update();
     const ro = new ResizeObserver(update);
@@ -202,11 +198,15 @@ export default function Process() {
     };
   }, [stepIndex, framesLoaded]);
 
-  // ── Auto-advance: dismiss text early, then advance step ─────────────────────
+  // Reset timerKey (and progress bar) each time the section enters the view
   useEffect(() => {
-    // Fade out body text 300 ms before step changes
+    if (isInView) setTimerKey(k => k + 1);
+  }, [isInView]);
+
+  // ── Auto-advance: only when section is in view ───────────────────────────────
+  useEffect(() => {
+    if (!isInView) return;
     const dismissId = setTimeout(() => setTextVisible(false), STEP_DURATION - 300);
-    // Advance step and show new text
     const advanceId = setTimeout(() => {
       setStepIndex(prev => (prev + 1) % STEP_COUNT);
       setTextVisible(true);
@@ -215,7 +215,7 @@ export default function Process() {
       clearTimeout(dismissId);
       clearTimeout(advanceId);
     };
-  }, [timerKey, stepIndex]);
+  }, [timerKey, stepIndex, isInView]);
 
   const handleStepClick = useCallback((i: number) => {
     setStepIndex(i);
@@ -225,25 +225,25 @@ export default function Process() {
 
   // ── Shared styles ────────────────────────────────────────────────────────────
   const gradStyle = {
-    backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-    backgroundSize:     `${GRAD_W}px ${GRAD_H}px`,
-    backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px)`,
+    backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+    backgroundSize:     "250% 250%",
+    backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
   };
 
   const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section className="relative grid grid-cols-12 gap-4 md:gap-6 lg:gap-10 px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl w-full max-w-[1440px] mx-auto">
+    <section ref={sectionRef} className="relative px-6 md:px-10 lg:px-s grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10 py-[60px] lg:py-l w-full max-w-[1440px] mx-auto">
 
       {/* 12-col centered wrapper — transparent to grid on lg+ */}
-      <div className="col-span-full flex flex-col gap-10 md:col-start-2 md:col-span-10 lg:contents">
+      <div className="col-span-full flex flex-col gap-10 min-[944px]:contents">
 
         {/* ── Left column wrapper — contents on mobile, flex col on desktop ────── */}
-        <div className="contents lg:flex lg:flex-col lg:gap-16 lg:col-start-1 lg:col-span-5">
+        <div className="contents min-[944px]:flex min-[944px]:flex-col min-[944px]:gap-16 min-[944px]:col-span-5 min-[1127px]:col-span-4 xl:col-start-2">
 
           {/* Title + sparkle — order 1 on mobile */}
           <motion.div
-            className="order-1 lg:order-none"
+            className="order-1 min-[944px]:order-none"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
@@ -251,21 +251,21 @@ export default function Process() {
           >
             <div ref={titleWrapRef} className="relative">
               <p
-                className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center lg:text-left"
+                className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center min-[944px]:text-left"
                 style={gradStyle}
               >
                 <span ref={lastLineRef}>{t("process.title")}</span>
               </p>
-              {/* Sparkle — sibling of <p>, positioned from last-line measurement */}
+              {/* Sparkle — fenêtre dans le même gradient que le titre, alignée en px */}
               <div
                 aria-hidden
                 className="absolute pointer-events-none w-[56px] h-[43px] max-[425px]:w-[40px] max-[425px]:h-[31px]"
                 style={{
                   left: sparkleLeft,
                   top:  sparkleTop,
-                  backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS_PROCESS})`,
-                  backgroundSize:     `${GRAD_W}px ${GRAD_H}px`,
-                  backgroundPosition: `calc(${-MOVE_X}px * var(--grad-x-dec, 0.55) + ${SHIFT_X}px - ${sparkleLeft}px) calc(${-MOVE_Y}px * var(--grad-y-dec, 0.5) + ${SHIFT_Y}px - ${sparkleTop}px)`,
+                  backgroundImage:    `linear-gradient(115deg, ${GRADIENT_STOPS})`,
+                  backgroundSize:     "calc(var(--tw, 400px) * 2.5) calc(var(--th, 144px) * 2.5)",
+                  backgroundPosition: `calc(var(--grad-x-dec, 0.55) * var(--tw, 400px) * -1.5 - ${sparkleLeft}px) calc(var(--grad-y-dec, 0.5) * var(--th, 144px) * -1.5 - 48px)`,
                   WebkitMaskImage:    "url(/img/process/sparkle.svg)",
                   WebkitMaskSize:     "100% 100%",
                   WebkitMaskRepeat:   "no-repeat",
@@ -279,7 +279,7 @@ export default function Process() {
 
           {/* Steps list — order 3 on mobile */}
           <motion.div
-            className="order-3 lg:order-none flex flex-col gap-6"
+            className="order-3 min-[944px]:order-none flex flex-col gap-6"
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.1 }}
@@ -295,7 +295,7 @@ export default function Process() {
                 {/* Animated progress bar over active step border */}
                 {i === stepIndex && (
                   <motion.div
-                    key={stepIndex}
+                    key={`${stepIndex}-${timerKey}`}
                     aria-hidden
                     className="absolute left-[-3px] top-0 w-[3px] pointer-events-none"
                     initial={{ scaleY: 0 }}
@@ -336,7 +336,7 @@ export default function Process() {
 
         {/* ── Right: cube — 5 cols (col 7–11, col 6 = gap) ───────────────────── */}
         <motion.div
-          className="aspect-video order-2 lg:order-none lg:aspect-auto lg:h-[570px] lg:col-start-7 lg:col-span-6"
+          className="aspect-video order-2 min-[944px]:order-none min-[944px]:aspect-auto min-[944px]:h-[570px] min-[944px]:col-start-6 min-[944px]:col-span-5 xl:col-start-7"
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
@@ -361,7 +361,7 @@ export default function Process() {
               {/* Mobile vignette */}
               <div
                 aria-hidden
-                className="lg:hidden absolute inset-0 pointer-events-none"
+                className="max-[425px]:hidden lg:hidden absolute inset-0 pointer-events-none"
                 style={{
                   background: "radial-gradient(ellipse 47% 38% at center, transparent 60%, var(--color-bg-surface) 100%)",
                 }}

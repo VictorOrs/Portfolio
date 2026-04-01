@@ -1,84 +1,181 @@
 "use client";
 
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import MailIcon from "@/components/ui/MailIcon";
-import LinkedInIcon from "@/components/ui/LinkedInIcon";
+import Logo from "@/components/ui/Logo";
 import { useTranslation } from "@/lib/i18n";
 
 const ease = [0.22, 1, 0.36, 1] as const;
+
+const LOCATIONS = ["Paris", "Bordeaux", "Bali"];
+const TYPE_SPEED = 100;
+const DELETE_SPEED = 60;
+const PAUSE_AFTER_TYPE = 2000;
+const PAUSE_AFTER_DELETE = 400;
+
+function TypingLocation() {
+  const [text, setText] = useState("");
+  const [locIndex, setLocIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = LOCATIONS[locIndex];
+
+    if (!deleting) {
+      if (text.length < current.length) {
+        const id = setTimeout(() => setText(current.slice(0, text.length + 1)), TYPE_SPEED);
+        return () => clearTimeout(id);
+      }
+      const id = setTimeout(() => setDeleting(true), PAUSE_AFTER_TYPE);
+      return () => clearTimeout(id);
+    }
+
+    if (text.length > 0) {
+      const id = setTimeout(() => setText(text.slice(0, -1)), DELETE_SPEED);
+      return () => clearTimeout(id);
+    }
+
+    const id = setTimeout(() => {
+      setDeleting(false);
+      setLocIndex((locIndex + 1) % LOCATIONS.length);
+    }, PAUSE_AFTER_DELETE);
+    return () => clearTimeout(id);
+  }, [text, deleting, locIndex]);
+
+  return (
+    <span>
+      {text}
+      <motion.span
+        className="inline-block w-[2px] h-[14px] bg-text-secondary ml-[2px] align-middle"
+        animate={{ opacity: [1, 0] }}
+        transition={{ duration: 0.6, repeat: Infinity, repeatType: "reverse" }}
+      />
+    </span>
+  );
+}
 
 export default function Footer() {
   const { t } = useTranslation();
 
   return (
     <footer className="w-full flex flex-col">
-      {/* ── Main content ──────────────────────────────────────────────── */}
-      <div className="px-6 pt-xs pb-8 md:px-10 lg:px-s xl:px-xl 2xl:px-xl lg:pt-l lg:pb-m w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10">
+      {/* ── Main content — 12-col grid ───────────────────────────────── */}
+      <div className="px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-x-4 md:gap-x-6 lg:gap-x-10 gap-y-[60px] lg:gap-y-[120px]">
 
-        <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
+        {/* Wrapper — 10 cols centered, stacked vertically with 120px gap */}
+        <div className="col-span-full xl:col-start-2 xl:col-span-10 flex flex-col gap-[60px] xl:gap-[120px]">
 
-        {/* ── CTA card — forced light mode ─────────────────────────── */}
-        <motion.div
-          className="light-card flex flex-col gap-5 md:gap-8 items-center p-6 md:p-16 rounded-[20px] md:rounded-[32px] bg-background-surface overflow-hidden"
-          initial={{ opacity: 0, y: 32 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 1.2, ease }}
-        >
-          {/* Heading — "Interested?" hardcoded #666 per Figma, independent of token */}
-          <div className="flex flex-col gap-4 items-center">
-            <div className="text-center">
-              <p className="font-display text-2xl text-text-secondary">
-                {t("footer.interested")}
-              </p>
-              <p className="font-display text-2xl text-text-primary">
-                {t("footer.getInTouch")}
+          {/* ── CTA card — forced light mode ───────────────────────── */}
+          <motion.div
+            className="light-card flex flex-col gap-8 items-center p-6 md:p-16 rounded-[40px] bg-background-surface overflow-hidden"
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 1.2, ease }}
+          >
+            <div className="flex flex-col gap-4 items-center">
+              <div className="text-center">
+                <p className="font-display text-2xl md:text-[64px] md:leading-[72px] text-text-secondary">
+                  {t("footer.interested")}
+                </p>
+                <p className="font-display text-2xl md:text-[64px] md:leading-[72px] text-text-primary">
+                  {t("footer.getInTouch")}
+                </p>
+              </div>
+              <p className="font-body text-m text-text-secondary text-center">
+                {t("footer.subtitle")}
               </p>
             </div>
-            <p className="font-body text-s text-text-secondary text-center">
-              {t("footer.subtitle")}
-            </p>
-          </div>
 
-          {/* Buttons */}
-          <div className="flex flex-col gap-3 md:flex-row md:gap-4 items-center w-full md:w-auto">
-            <Button variant="secondary" size="lg" icon={<MailIcon />} className="w-full md:w-auto">
-              {t("navbar.sendEmail")}
-            </Button>
-            <Button variant="primary" size="lg" className="w-full md:w-auto">
-              {t("navbar.bookCall")}
-            </Button>
-          </div>
-        </motion.div>
+            <div className="flex flex-col gap-3 md:flex-row md:gap-4 items-center w-full md:w-auto">
+              <Button href="mailto:victor.oursin@gmail.com" variant="secondary" size="lg" icon={<MailIcon />} className="w-full md:w-auto">
+                {t("navbar.sendEmail")}
+              </Button>
+              <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="w-full md:w-auto">
+                {t("navbar.bookCall")}
+              </Button>
+            </div>
+          </motion.div>
 
-        {/* ── Footer info row ───────────────────────────────────────── */}
+        </div>
+
+        {/* ── Footer info — grid: logo 3 cols | gap 1 col | links 6 cols ── */}
         <motion.div
-          className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+          className="col-span-full md:contents"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 1.0, ease, delay: 0.1 }}
         >
-          <p className="font-body text-s text-text-secondary">{t("footer.madeWithLove")}</p>
-          <div className="flex gap-8 items-center">
-            <a
-              href="#"
-              aria-label="LinkedIn"
-              className="text-text-secondary hover:text-text-primary transition-colors"
-            >
-              <LinkedInIcon />
-            </a>
-            <a href="#" className="font-display text-s text-text-secondary hover:text-text-primary transition-colors">
-              {t("footer.privacy")}
-            </a>
-            <a href="#" className="font-display text-s text-text-secondary hover:text-text-primary transition-colors">
-              {t("footer.legalNotice")}
-            </a>
+          {/* Left — logo mark + made with love */}
+          <div className="flex flex-col gap-8 md:col-span-3 xl:col-start-2 pt-[60px] md:pt-0">
+            <Logo variant="flat" className="w-8 h-8" />
+            <p className="font-body text-s text-text-secondary">
+              {t("footer.madeWithLove")}<TypingLocation />
+            </p>
+          </div>
+
+          {/* Right — three link columns */}
+          <div className="grid grid-cols-1 gap-10 min-[426px]:grid-cols-3 min-[426px]:gap-6 md:gap-10 md:col-start-5 md:col-span-6 xl:col-start-6 pt-10 min-[426px]:pt-6 md:pt-4">
+            {/* The Good */}
+            <div className="flex flex-col gap-6">
+              <p className="font-display font-medium text-s text-text-primary">
+                {t("footer.theGood")}
+              </p>
+              <div className="flex flex-col gap-4">
+                <Link href="/" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  {t("footer.home")}
+                </Link>
+                <Link href="/work" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  Work
+                </Link>
+                <Link href="/services" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  Services
+                </Link>
+                <Link href="/manifesto" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  Manifesto
+                </Link>
+              </div>
+            </div>
+
+            {/* The Boring */}
+            <div className="flex flex-col gap-6">
+              <p className="font-display font-medium text-s text-text-primary">
+                {t("footer.theBoring")}
+              </p>
+              <div className="flex flex-col gap-4">
+                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  {t("footer.privacy")}
+                </a>
+                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  {t("footer.legalNotice")}
+                </a>
+                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  {t("footer.help")}
+                </a>
+              </div>
+            </div>
+
+            {/* The Cool */}
+            <div className="flex flex-col gap-6">
+              <p className="font-display font-medium text-s text-text-primary">
+                {t("footer.theCool")}
+              </p>
+              <div className="flex flex-col gap-4">
+                <a href="https://www.linkedin.com/in/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  LinkedIn
+                </a>
+                <a href="https://www.instagram.com/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                  Instagram
+                </a>
+              </div>
+            </div>
           </div>
         </motion.div>
 
-        </div>
       </div>
 
       {/* ── Copyright bar ─────────────────────────────────────────────── */}

@@ -13,6 +13,8 @@ npm run lint     # Run ESLint
 
 No test framework is configured yet.
 
+**Do not run `npm run build`** unless explicitly asked by the user, or when diagnosing a deployment push error.
+
 ## Architecture
 
 Next.js 14 portfolio site using the **App Router**, TypeScript, Tailwind CSS, and framer-motion.

@@ -42,7 +42,7 @@ export default function Hero() {
 
   return (
     // Scroll spacer that drives the opacity. WhoIAm (z-10000) slides over the fixed title (z-0).
-    <section className="relative h-[540px] xs:h-[390px] lg:h-[55vh]">
+    <section className="relative h-[540px] xs:h-[390px] lg:h-[440px] xl:h-[55vh]">
 
       {/* ── Mobile / tablet layout (< lg) — fixed, same mechanism as desktop ── */}
       <motion.div
@@ -50,15 +50,15 @@ export default function Hero() {
         style={{ zIndex: 0, opacity }}
       >
         <motion.div
-          className="px-6 md:px-10 grid grid-cols-12 gap-4 md:gap-6"
+          className="px-6 md:px-10 lg:px-s grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 max-w-[1440px] mx-auto w-full"
           initial={{ opacity: 0, y: 28 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1.4, ease }}
         >
-          <div className="col-span-full md:col-start-2 md:col-span-10">
+          <div className="col-span-full xl:col-start-2 xl:col-span-10">
             {/* < 686px: 4 lines de texte dans un seul <p> pour un gradient continu, span en dessous */}
             <p
-              className="xs:hidden font-display text-3xl min-[426px]:text-2xl whitespace-pre"
+              className="xs:hidden font-display text-3xl whitespace-pre"
               style={gradientTextStyle}
             >
               {prevLinesMobileXs}{"\n"}{lastLineMobileXs}

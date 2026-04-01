@@ -11,10 +11,10 @@ import ChevronIcon from "@/components/ui/ChevronIcon";
 import { useTranslation } from "@/lib/i18n";
 import MailIcon from "@/components/ui/MailIcon";
 
-const MENU_LINKS: { key: string; href: string; chevron?: true }[] = [
-  { key: "services",  href: "/services" },
-  { key: "useCases",  href: "/use-cases", chevron: true },
-  { key: "pricing",   href: "/pricing" },
+const MENU_LINKS: { key: string; href: string }[] = [
+  { key: "work",       href: "/work" },
+  { key: "services",   href: "/services" },
+  { key: "manifesto",  href: "/manifesto" },
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -22,24 +22,24 @@ const spring = { duration: 0.35, ease };
 
 function BurgerIcon({ open }: { open: boolean }) {
   return (
-    <svg width={20} height={20} viewBox="0 0 20 20" fill="currentColor" aria-hidden className="shrink-0">
+    <svg width={24} height={24} viewBox="0 0 24 24" fill="currentColor" aria-hidden className="shrink-0">
       {/* Top bar */}
       <motion.rect
-        x="2" y="3.5" width="16" height="2" rx="1"
-        animate={{ rotate: open ? 45 : 0, y: open ? 4.5 : 0 }}
+        x="3" y="5" width="18" height="2" rx="1"
+        animate={{ rotate: open ? 45 : 0, y: open ? 5 : 0 }}
         style={{ transformBox: "fill-box", transformOrigin: "center" }}
         transition={spring}
       />
       {/* Middle bar */}
       <motion.rect
-        x="2" y="8" width="16" height="2" rx="1"
+        x="3" y="10" width="18" height="2" rx="1"
         animate={{ opacity: open ? 0 : 1, scaleX: open ? 0.4 : 1 }}
         transition={{ duration: 0.2, ease }}
       />
       {/* Bottom bar */}
       <motion.rect
-        x="2" y="12.5" width="16" height="2" rx="1"
-        animate={{ rotate: open ? -45 : 0, y: open ? -4.5 : 0 }}
+        x="3" y="15" width="18" height="2" rx="1"
+        animate={{ rotate: open ? -45 : 0, y: open ? -5 : 0 }}
         style={{ transformBox: "fill-box", transformOrigin: "center" }}
         transition={spring}
       />
@@ -70,7 +70,7 @@ export default function Navbar() {
     <motion.header
       animate={{ y: visible ? 0 : "-100%" }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 nav:px-16 nav:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
+      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
     >
       {/* Color gradient overlay */}
       <div
@@ -78,34 +78,37 @@ export default function Navbar() {
         style={{ background: "linear-gradient(to bottom, var(--color-bg-base) 0%, transparent 100%)" }}
       />
 
-      {/* Burger — mobile (icon only) */}
-      <Button
-        variant="secondary"
-        size="lg"
-        icon={<BurgerIcon open={menuOpen} />}
-        onClick={() => setMenuOpen(p => !p)}
-        aria-expanded={menuOpen}
-        className="md:hidden relative"
-      />
+      {/* Left side — burger on mobile/tablet, logo + NavGroup on desktop */}
+      <div className="relative flex items-center gap-14 shrink-0">
+        {/* Burger — mobile (icon only) */}
+        <Button
+          variant="secondary"
+          size="md"
+          icon={<BurgerIcon open={menuOpen} />}
+          onClick={() => setMenuOpen(p => !p)}
+          aria-expanded={menuOpen}
+          className="md:hidden"
+        />
 
-      {/* Burger — tablet (icon + label) */}
-      <Button
-        variant="secondary"
-        size="lg"
-        icon={<BurgerIcon open={menuOpen} />}
-        onClick={() => setMenuOpen(p => !p)}
-        aria-expanded={menuOpen}
-        className="hidden md:inline-flex nav:hidden relative"
-      >
-        {menuOpen ? t("navbar.close") : t("navbar.menu")}
-      </Button>
+        {/* Burger — tablet (icon + label) */}
+        <Button
+          variant="secondary"
+          size="md"
+          icon={<BurgerIcon open={menuOpen} />}
+          onClick={() => setMenuOpen(p => !p)}
+          aria-expanded={menuOpen}
+          className="hidden md:inline-flex lg:hidden"
+        >
+          {menuOpen ? t("navbar.close") : t("navbar.menu")}
+        </Button>
 
-      {/* Logo — desktop */}
-      <Logo variant="flat" className="relative shrink-0 hidden nav:block" />
+        {/* Logo — desktop */}
+        <Logo variant="flat" className="shrink-0 hidden lg:block" />
 
-      {/* NavGroup — desktop only */}
-      <div className="hidden nav:block absolute left-1/2 top-10 -translate-x-1/2 z-10">
-        <NavGroup scrolled={scrolled} />
+        {/* NavGroup — desktop only */}
+        <div className="hidden lg:block">
+          <NavGroup scrolled={scrolled} />
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -117,11 +120,11 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease }}
-            className="nav:hidden absolute top-full left-0 right-0 mt-2 mx-4 rounded-[20px] bg-background-surface overflow-hidden"
+            className="lg:hidden absolute top-full left-0 right-0 mt-2 mx-4 rounded-[20px] bg-background-surface overflow-hidden"
             style={{ boxShadow: "0px 8px 48px 0px rgba(0,0,0,0.24)" }}
           >
             <nav className="flex flex-col p-2">
-              {MENU_LINKS.map(({ key, href, chevron }) => (
+              {MENU_LINKS.map(({ key, href }) => (
                 <Link
                   key={href}
                   href={href}
@@ -129,15 +132,14 @@ export default function Navbar() {
                   className="flex items-center justify-between px-4 py-3 rounded-xl font-display text-s text-text-secondary hover:text-text-primary hover:bg-alpha transition-colors duration-150"
                 >
                   {t(`nav.${key}`)}
-                  {chevron && <ChevronIcon size={20} />}
                 </Link>
               ))}
             </nav>
             <div className="flex flex-col gap-2 p-4 pt-0">
-              <Button variant="secondary" size="lg" icon={<MailIcon />} className="w-full">
+              <Button href="mailto:victor.oursin@gmail.com" variant="secondary" size="lg" icon={<MailIcon />} className="w-full">
                 {t("navbar.sendEmail")}
               </Button>
-              <Button variant="primary" size="lg" className="w-full">
+              <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="w-full">
                 {t("navbar.bookCall")}
               </Button>
             </div>
@@ -151,17 +153,17 @@ export default function Navbar() {
 
         {/* Mail icon — sm+ (425px+) */}
         <div className="hidden sm:block">
-          <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
+          <Button href="mailto:victor.oursin@gmail.com" variant="secondary" size="lg" icon={<MailIcon />} aria-label={t("navbar.sendEmail")} />
         </div>
 
         {/* Book a call — mobile */}
         <div className="md:hidden">
-          <Button variant="primary" size="md">{t("navbar.bookCall")}</Button>
+          <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="md">{t("navbar.bookCall")}</Button>
         </div>
 
         {/* Book a call — tablet+ */}
         <div className="hidden md:block">
-          <Button variant="primary" size="lg" className="w-[144px]">{t("navbar.bookCall")}</Button>
+          <Button href="https://calendly.com/victor-oursin/30min" target="_blank" rel="noopener noreferrer" variant="primary" size="lg" className="min-w-[132px] lg:w-[144px]">{t("navbar.bookCall")}</Button>
         </div>
       </div>
     </motion.header>

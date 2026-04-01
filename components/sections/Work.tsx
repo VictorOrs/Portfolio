@@ -1,18 +1,20 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
+import Link from "next/link";
 import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
+import { buttonVariants } from "@/components/ui/Button";
 
 // ── Enuma illustration ────────────────────────────────────────────────────────
 
 function EnumaIllustration() {
   return (
-    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-176px] max-md:right-[-160px] max-md:left-[24px] max-md:bottom-[96px] max-[425px]:top-[-104px] max-[425px]:right-[-372px] max-[425px]:left-[20px] max-[425px]:bottom-[72px] pointer-events-none" aria-hidden>
+    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-176px] max-md:right-[-160px] max-md:left-[24px] max-md:bottom-[96px] max-[425px]:top-[-250px] max-[425px]:bottom-[150px] max-[425px]:left-0 max-[425px]:right-0 pointer-events-none" aria-hidden>
       <Image
         src="/img/work/enuma_illustration.png"
         alt=""
@@ -24,7 +26,24 @@ function EnumaIllustration() {
   );
 }
 
-// ── Slide definitions ─────────────────────────────────────────────────────────
+// ── Moso illustration ────────────────────────────────────────────────────────
+
+function MosoIllustration() {
+  return (
+    <div
+      className="absolute inset-0 max-md:top-[-90px] max-md:right-[-470px] max-md:left-[-28px] max-[425px]:top-[-60px] max-[425px]:right-[-162px] max-[425px]:left-0 pointer-events-none"
+      aria-hidden
+    >
+      <Image
+        src="/img/work/moso_illustration.png"
+        alt=""
+        fill
+        unoptimized
+        className="object-cover object-top"
+      />
+    </div>
+  );
+}
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -50,12 +69,48 @@ export default function Work() {
       },
     },
     {
-      id: "slide-2",
-      card: {},
+      id: "moso",
+      card: {
+        logo: { src: "/img/work/moso_logo.svg", alt: "moso" },
+        title: t("work.mosoTitle"),
+        ctaPrimary:   { label: t("work.learnMore"), href: "/work/moso" },
+        ctaSecondary: { label: t("work.mosoCta"), href: "https://www.motionsociety.com" },
+        illustration: <MosoIllustration />,
+      },
     },
     {
-      id: "slide-3",
-      card: {},
+      id: "see-more",
+      card: {
+        lightMode: true,
+        illustration: (
+          <div className="absolute top-0 bottom-0 left-0 right-[-230px] md:right-[-140px] lg:right-0 max-[425px]:left-[-218px] max-[425px]:top-[-172px] max-[425px]:w-[1086px] max-[425px]:h-[540px] max-[425px]:bottom-auto pointer-events-none" aria-hidden>
+            <Image
+              src="/img/work/more.png"
+              alt=""
+              fill
+              unoptimized
+              className="object-cover"
+            />
+          </div>
+        ),
+        customContent: (
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
+            <p className="font-display">
+              <span className="text-xl text-[#666]">{t("work.seeMoreLine1")}</span>
+              <br />
+              <span className="text-xl text-text-primary">{t("work.seeMoreLine2")}</span>
+              <br />
+              <span className="text-xl text-text-primary">{t("work.seeMoreLine3")}</span>
+            </p>
+            <Link
+              href="/work"
+              className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
+            >
+              <span className="pt-1 px-1">{t("work.seeAllWork")}</span>
+            </Link>
+          </div>
+        ),
+      },
     },
   ];
 
@@ -112,22 +167,68 @@ export default function Work() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [paused, inView, activeIndex]);
 
-  const handleDotClick = useCallback((i: number) => {
+  const transitionLock = useRef(false);
+
+  const goToSlide = useCallback((i: number) => {
+    if (transitionLock.current) return;
+    const clamped = Math.max(0, Math.min(SLIDE_COUNT - 1, i));
+    if (clamped === activeIndex) return;
+    transitionLock.current = true;
     cancelAnimationFrame(rafRef.current);
     progressRef.current = 0;
     setProgress(0);
-    setActiveIndex(i);
+    setActiveIndex(clamped);
+    setTimeout(() => { transitionLock.current = false; }, 700);
+  }, [activeIndex]);
+
+  // ── Swipe / drag detection ──────────────────────────────────────────────────
+  const sliderRef    = useRef<HTMLDivElement>(null);
+  const dragStartX   = useRef(0);
+  const isDragging   = useRef(false);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    dragStartX.current = e.clientX;
+    isDragging.current = true;
   }, []);
 
-  const nextIndex = (activeIndex + 1) % SLIDE_COUNT;
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    const delta = e.clientX - dragStartX.current;
+    if (delta < -50)      goToSlide(activeIndex + 1);
+    else if (delta > 50)  goToSlide(activeIndex - 1);
+  }, [activeIndex, goToSlide]);
+
+  // ── Trackpad horizontal wheel ───────────────────────────────────────────────
+  useEffect(() => {
+    const el = sliderRef.current;
+    if (!el) return;
+    let locked = false;
+    let lockTimer: number;
+
+    const onWheel = (e: WheelEvent) => {
+      if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (locked) return;
+
+      if (e.deltaX > 30)       { goToSlide(activeIndex + 1); locked = true; }
+      else if (e.deltaX < -30) { goToSlide(activeIndex - 1); locked = true; }
+
+      clearTimeout(lockTimer);
+      lockTimer = window.setTimeout(() => { locked = false; }, 500);
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => { el.removeEventListener("wheel", onWheel); clearTimeout(lockTimer); };
+  }, [activeIndex, goToSlide]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative px-6 py-[60px] md:px-10 lg:px-s lg:py-l xl:px-xl 2xl:px-xl w-full max-w-[1440px] mx-auto grid grid-cols-12 gap-4 md:gap-6 lg:gap-10"
+      className="relative px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{ zIndex: 10000 }}
     >
-      <div className="flex flex-col gap-8 md:gap-16 col-span-full md:col-start-2 md:col-span-10 lg:col-span-full">
+      <div className="flex flex-col gap-8 md:gap-16 col-span-full xl:col-start-2 xl:col-span-10">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <motion.div
@@ -152,49 +253,38 @@ export default function Work() {
         </p>
       </motion.div>
 
-      {/* ── Card carousel ──────────────────────────────────────────────────── */}
+      {/* ── Horizontal slider ────────────────────────────────────────────── */}
       <motion.div
-        className="relative"
-        style={{ minHeight: cardH + 30 }}
+        ref={sliderRef}
+        className="overflow-visible touch-pan-y"
         initial={{ opacity: 0, y: 32 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 1.2, ease, delay: 0.1 }}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => { isDragging.current = false; }}
       >
-        {/* Behind card — next slide peeking from bottom */}
-        <div
-          aria-hidden
-          className="absolute inset-x-4 bottom-0 pointer-events-none overflow-hidden rounded-[40px]"
-          style={{
-            height: cardH,
-            zIndex: 1,
-            opacity: 0.4,
-            transform: "scaleX(0.97)",
-            transformOrigin: "center bottom",
-          }}
+        <motion.div
+          className="flex gap-6"
+          animate={{ x: `calc(${-activeIndex * 100}% - ${activeIndex * 24}px)` }}
+          transition={{ duration: 0.65, ease }}
         >
-          <WorkCard {...SLIDES[nextIndex].card} height={cardH} />
-        </div>
-
-        {/* Active card */}
-        <div className="absolute inset-x-0 top-0" style={{ zIndex: 2 }}>
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              key={activeIndex}
-              initial={{ y: 50, scale: 0.95, opacity: 0 }}
-              animate={{ y: 0, scale: 1, opacity: 1 }}
-              exit={{ y: -24, opacity: 0 }}
-              transition={{ duration: 0.65, ease }}
+          {SLIDES.map((slide, i) => (
+            <div
+              key={slide.id}
+              className={`w-full shrink-0${i !== activeIndex ? " cursor-pointer" : ""}`}
+              onClick={() => i !== activeIndex && goToSlide(i)}
             >
-              <WorkCard {...SLIDES[activeIndex].card} height={cardH} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+              <WorkCard {...slide.card} height={cardH} />
+            </div>
+          ))}
+        </motion.div>
       </motion.div>
 
-      {/* ── Controller ─────────────────────────────────────────────────────── */}
+      {/* ── Sticky controller ─────────────────────────────────────────────── */}
       <motion.div
-        className="flex justify-center"
+        className="sticky bottom-6 flex justify-center z-10"
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
@@ -206,7 +296,7 @@ export default function Work() {
           progress={progress}
           paused={paused}
           onTogglePause={() => setPaused((p) => !p)}
-          onDotClick={handleDotClick}
+          onDotClick={goToSlide}
         />
       </motion.div>
 

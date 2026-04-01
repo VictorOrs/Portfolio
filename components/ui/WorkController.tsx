@@ -25,7 +25,7 @@ export default function WorkController({
   return (
     <div className="flex items-center gap-4">
       {/* Progress pill — dark-mode: alpha-revert bg + alpha outline */}
-      <div className="flex items-center gap-[10px] p-5 rounded-[30px] bg-alpha-revert outline outline-2 outline-alpha outline-offset-[-2px]">
+      <div className="flex items-center gap-[10px] p-5 rounded-[30px] bg-alpha-revert backdrop-blur-glass outline outline-2 outline-alpha outline-offset-[-2px]">
         {Array.from({ length: count }).map((_, i) => {
           const isActive = i === activeIndex;
           return (

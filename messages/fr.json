@@ -6,14 +6,9 @@
     "sendEmail": "Envoyer un email"
   },
   "nav": {
-    "home": "Accueil",
-    "about": "À propos",
-    "process": "Processus",
     "work": "Projets",
-    "faq": "FAQ",
     "services": "Services",
-    "useCases": "Use cases",
-    "pricing": "Tarifs"
+    "manifesto": "Méthode"
   },
   "hero": {
     "headline": "Accélérez \nvotre croissance\ngrâce à du ",
@@ -39,7 +34,13 @@
     "workedOn": "Collaboré avec",
     "enumaTitle": "Un partenariat durable en tant que\nProduct & Brand Designer",
     "enumaCta": "View website",
+    "mosoTitle": "Façonner en continu le moteur\nproduit interne de Moso",
+    "mosoCta": "Voir le site",
     "learnMore": "En savoir plus",
+    "seeMoreLine1": "Continuez,",
+    "seeMoreLine2": "Il y a encore",
+    "seeMoreLine3": "plus à voir.",
+    "seeAllWork": "Voir tout",
     "cta": "Voir sur enuma-collective.com"
   },
   "faq": {
@@ -60,7 +61,12 @@
     "interested": "Intéressé ?",
     "getInTouch": "Entrons en contact",
     "subtitle": "Notre parcours design commence maintenant.",
-    "madeWithLove": "Fait avec amour ❤️ en France",
+    "madeWithLove": "Fait avec amour ❤️ à ",
+    "theGood": "The Good",
+    "theBoring": "The Boring",
+    "theCool": "The Cool",
+    "home": "Accueil",
+    "help": "Aide",
     "privacy": "Confidentialité",
     "legalNotice": "Mentions légales",
     "copyright": "© 2026 Victor Oursin. Tous droits réservés."
