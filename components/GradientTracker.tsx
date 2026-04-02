@@ -6,8 +6,6 @@ function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
 }
 
-const STORAGE_KEY = "tilt-permission";
-
 type DOEWithPermission = typeof DeviceOrientationEvent & {
   requestPermission?: () => Promise<string>;
 };
@@ -44,31 +42,19 @@ export default function GradientTracker() {
 
     function startOrientation() {
       if (orientationStarted.current) return;
-      // On iOS, don't listen until permission is confirmed in localStorage
-      const DOE = DeviceOrientationEvent as unknown as DOEWithPermission;
-      if (typeof DOE.requestPermission === "function") {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored !== "granted") {
-          return;
-        }
-      }
       orientationStarted.current = true;
       window.addEventListener("deviceorientation", onOrientation, { passive: true });
     }
 
-    // ── iOS: request permission on first touch ────────────────────────────
+    // ── iOS: request permission on first touch every session ──────────────
     function onFirstTouch() {
       const DOE = DeviceOrientationEvent as unknown as DOEWithPermission;
       if (typeof DOE.requestPermission !== "function") return;
       DOE.requestPermission()
         .then((state) => {
-          if (state === "granted") {
-            localStorage.setItem(STORAGE_KEY, "granted");
-            startOrientation();
-          }
+          if (state === "granted") startOrientation();
         })
-        .catch((err) => {
-        });
+        .catch(() => {});
     }
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
@@ -77,14 +63,8 @@ export default function GradientTracker() {
     if ("ontouchstart" in window) {
       const DOE = DeviceOrientationEvent as unknown as DOEWithPermission;
       if (typeof DOE.requestPermission === "function") {
-        // iOS — check prior permission
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored === "granted") {
-          startOrientation();
-        } else {
-          // First visit — request on first touch
-          document.body.addEventListener("touchend", onFirstTouch, { once: true });
-        }
+        // iOS — always request on first touch
+        document.addEventListener("touchend", onFirstTouch, { once: true });
       } else if ("DeviceOrientationEvent" in window) {
         // Android — no permission needed
         startOrientation();
