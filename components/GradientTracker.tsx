@@ -1,9 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 function clamp(v: number, min: number, max: number) {
   return Math.min(max, Math.max(min, v));
+}
+
+const STORAGE_KEY = "tilt-permission";
+
+type DOEWithPermission = typeof DeviceOrientationEvent & {
+  requestPermission?: () => Promise<string>;
+};
+
+function needsIOSPermission(): boolean {
+  if (typeof window === "undefined") return false;
+  if (!("ontouchstart" in window)) return false;
+  const DOE = DeviceOrientationEvent as unknown as DOEWithPermission;
+  return typeof DOE.requestPermission === "function";
 }
 
 export default function GradientTracker() {
@@ -13,6 +27,43 @@ export default function GradientTracker() {
   const currentY = useRef(50);
   const raf = useRef<number>(0);
   const usingOrientation = useRef(false);
+  const orientationStarted = useRef(false);
+
+  const [showPrompt, setShowPrompt] = useState(false);
+
+  const startOrientation = useCallback(() => {
+    if (orientationStarted.current) return;
+    orientationStarted.current = true;
+
+    function onOrientation(e: DeviceOrientationEvent) {
+      if (e.gamma == null || e.beta == null) return;
+      usingOrientation.current = true;
+      targetX.current = clamp(((e.gamma + 45) / 90) * 100, 0, 100);
+      targetY.current = clamp(((e.beta + 30) / 60) * 100, 0, 100);
+    }
+
+    window.addEventListener("deviceorientation", onOrientation, { passive: true });
+  }, []);
+
+  // iOS permission prompt handler
+  const handlePermissionTap = useCallback(() => {
+    const DOE = DeviceOrientationEvent as unknown as DOEWithPermission;
+    if (typeof DOE.requestPermission === "function") {
+      DOE.requestPermission()
+        .then((state) => {
+          if (state === "granted") {
+            localStorage.setItem(STORAGE_KEY, "granted");
+            startOrientation();
+          } else {
+            localStorage.setItem(STORAGE_KEY, "denied");
+          }
+        })
+        .catch(() => {
+          localStorage.setItem(STORAGE_KEY, "denied");
+        });
+    }
+    setShowPrompt(false);
+  }, [startOrientation]);
 
   useEffect(() => {
     history.scrollRestoration = "manual";
@@ -27,55 +78,19 @@ export default function GradientTracker() {
       targetY.current = (e.clientY / window.innerHeight) * 100;
     }
 
-    // ── Device orientation (mobile) ───────────────────────────────────────
-    function onOrientation(e: DeviceOrientationEvent) {
-      if (e.gamma == null || e.beta == null) return;
-      usingOrientation.current = true;
-      // gamma: -45..45 → 0..100,  beta: -30..30 → 0..100
-      targetX.current = clamp(((e.gamma + 45) / 90) * 100, 0, 100);
-      targetY.current = clamp(((e.beta + 30) / 60) * 100, 0, 100);
-    }
-
-    function startOrientation() {
-      window.addEventListener("deviceorientation", onOrientation, { passive: true });
-    }
-
-    // iOS 13+ requires permission from a user gesture
-    function requestOrientationPermission() {
-      const DOE = DeviceOrientationEvent as unknown as {
-        requestPermission?: () => Promise<string>;
-      };
-      if (typeof DOE.requestPermission === "function") {
-        DOE.requestPermission().then((state) => {
-          if (state === "granted") startOrientation();
-        }).catch(() => {});
-      }
-    }
-
-    // Try to enable orientation on first touch (user gesture for iOS)
-    function onFirstTouch() {
-      window.removeEventListener("touchstart", onFirstTouch);
-      const DOE = DeviceOrientationEvent as unknown as {
-        requestPermission?: () => Promise<string>;
-      };
-      if (typeof DOE.requestPermission === "function") {
-        requestOrientationPermission();
-      } else if ("DeviceOrientationEvent" in window) {
-        startOrientation();
-      }
-    }
-
-    // Desktop: always listen to mouse
     window.addEventListener("mousemove", onMouseMove, { passive: true });
 
-    // Mobile: check orientation support
+    // ── Mobile orientation ────────────────────────────────────────────────
     if ("ontouchstart" in window) {
-      const DOE = DeviceOrientationEvent as unknown as {
-        requestPermission?: () => Promise<string>;
-      };
-      if (typeof DOE.requestPermission === "function") {
-        // iOS — needs user gesture
-        window.addEventListener("touchstart", onFirstTouch, { passive: true, once: true });
+      if (needsIOSPermission()) {
+        // iOS — check localStorage for prior permission
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored === "granted") {
+          startOrientation();
+        } else if (stored !== "denied") {
+          // First visit — show prompt
+          setShowPrompt(true);
+        }
       } else if ("DeviceOrientationEvent" in window) {
         // Android — no permission needed
         startOrientation();
@@ -99,11 +114,25 @@ export default function GradientTracker() {
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("deviceorientation", onOrientation);
-      window.removeEventListener("touchstart", onFirstTouch);
       cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [startOrientation]);
 
-  return null;
+  return (
+    <AnimatePresence>
+      {showPrompt && (
+        <motion.button
+          key="tilt-prompt"
+          onClick={handlePermissionTap}
+          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] px-4 py-3 rounded-full bg-alpha-revert backdrop-blur-glass outline outline-2 outline-alpha outline-offset-[-2px] font-display text-s text-text-secondary cursor-pointer"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 8 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <span className="pt-1 px-1">Enable tilt effect</span>
+        </motion.button>
+      )}
+    </AnimatePresence>
+  );
 }
