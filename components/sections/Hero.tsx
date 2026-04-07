@@ -9,8 +9,6 @@ import { useLoading } from "@/lib/loading";
 // 80px (main pt navbar) + 177px (section pt-xl) = natural viewport y of the title
 const FIXED_TOP = 80 + 177;
 
-const ease: [number, number, number, number] = [0.22, 1, 0.36, 1];
-
 const heroTextStyle = {
   color: "#B3B3B3",
   mixBlendMode: "color-dodge" as const,
