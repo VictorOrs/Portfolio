@@ -18,6 +18,7 @@ import WorkController from "@/components/ui/WorkController";
 import ChevronIcon from "@/components/ui/ChevronIcon";
 import NavLink from "@/components/ui/NavLink";
 import NavGroup from "@/components/ui/NavGroup";
+import LanguageToggle from "@/components/ui/LanguageToggle";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -211,12 +212,13 @@ function TabButton() {
     <div className="flex flex-col gap-10">
       <Subsection title="Variants × Sizes">
         <div className="flex flex-wrap gap-6 items-center p-8 bg-background-surface rounded-2xl">
-          <Button variant="primary"   size="lg">Book a call</Button>
-          <Button variant="primary"   size="md">Book a call</Button>
+          <Button variant="primary"   size="lg">Let&apos;s talk</Button>
+          <Button variant="primary"   size="md">Let&apos;s talk</Button>
           <Button variant="secondary" size="lg">Learn more</Button>
           <Button variant="secondary" size="md">Learn more</Button>
           <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label="Mail" />
           <Button variant="primary"   size="lg" icon={<MailIcon />}>Send email</Button>
+          <Button href="#" variant="primary" size="lg">Link button</Button>
         </div>
       </Subsection>
       <Subsection title="Props">
@@ -240,9 +242,10 @@ function TabButton() {
       </Subsection>
       <Subsection title="Notes">
         <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
+          <li>Pass <code className="text-text-accent font-mono text-[14px]">href</code> to render as <code className="text-text-accent font-mono text-[14px]">&lt;a&gt;</code> instead of <code className="text-text-accent font-mono text-[14px]">&lt;button&gt;</code></li>
           <li>Shimmer + glow owned by <code className="text-text-accent font-mono text-[14px]">.btn-primary</code> in globals.css</li>
           <li>Add <code className="text-text-accent font-mono text-[14px]">.light-card</code> to parent to suppress shimmer on light bg</li>
-          <li><code className="text-text-accent font-mono text-[14px]">buttonVariants</code> exported for use on <code className="text-text-accent font-mono text-[14px]">&lt;a&gt;</code> / <code className="text-text-accent font-mono text-[14px]">&lt;Link&gt;</code></li>
+          <li><code className="text-text-accent font-mono text-[14px]">buttonVariants</code> exported for use on custom <code className="text-text-accent font-mono text-[14px]">&lt;Link&gt;</code> elements</li>
         </ul>
       </Subsection>
     </div>
@@ -399,16 +402,32 @@ function TabWorkCard() {
       <Subsection title="Empty card">
         <WorkCard />
       </Subsection>
+      <Subsection title="Light mode variant">
+        <div className="max-w-[400px]">
+          <WorkCard
+            lightMode
+            height={300}
+            customContent={
+              <div className="absolute bottom-0 left-0 right-0 p-6 flex flex-col gap-6">
+                <p className="font-display text-xl text-text-primary">Custom content</p>
+                <span className="font-body text-s text-text-secondary">lightMode + customContent</span>
+              </div>
+            }
+          />
+        </div>
+      </Subsection>
       <Subsection title="Props">
         <div className="grid grid-cols-3 gap-4 font-mono text-[13px]">
           {[
-            { prop: "height",       type: "number",    note: "default: 540" },
-            { prop: "logo",         type: "{ src, alt }", note: "above title" },
-            { prop: "title",        type: "string",    note: "whitespace-pre-line" },
-            { prop: "showWorkedOn", type: "boolean",   note: "scrolling marquee" },
-            { prop: "ctaPrimary",   type: "{ label, href }", note: "primary button" },
-            { prop: "ctaSecondary", type: "{ label, href }", note: "secondary button" },
-            { prop: "illustration", type: "ReactNode", note: "absolute bg layer" },
+            { prop: "height",        type: "number",    note: "default: 420" },
+            { prop: "logo",          type: "{ src, alt }", note: "above title" },
+            { prop: "title",         type: "string",    note: "whitespace-pre-line" },
+            { prop: "showWorkedOn",  type: "boolean",   note: "scrolling marquee" },
+            { prop: "ctaPrimary",    type: "{ label, href }", note: "primary button" },
+            { prop: "ctaSecondary",  type: "{ label, href }", note: "secondary button" },
+            { prop: "illustration",  type: "ReactNode", note: "absolute bg layer" },
+            { prop: "lightMode",     type: "boolean",   note: "force light theme" },
+            { prop: "customContent", type: "ReactNode", note: "replaces standard content" },
           ].map(({ prop, type, note }) => (
             <div key={prop} className="bg-background-surface rounded-xl p-4 flex flex-col gap-2">
               <span className="text-text-accent">{prop}</span>
@@ -425,11 +444,11 @@ function TabWorkCard() {
 function TabNavigation() {
   return (
     <div className="flex flex-col gap-10">
-      <Subsection title="NavLink — variants">
+      <Subsection title="NavLink — states">
         <div className="p-8 bg-background-surface rounded-2xl flex flex-wrap gap-4 items-center">
-          <NavLink href="#">Services</NavLink>
-          <NavLink href="#" trailingIcon={<ChevronIcon size={16} />}>Use cases</NavLink>
-          <NavLink href="#">Pricing</NavLink>
+          <NavLink href="#">Work</NavLink>
+          <NavLink href="#" isActive>Services</NavLink>
+          <NavLink href="#">Method</NavLink>
         </div>
       </Subsection>
       <Subsection title="NavGroup">
@@ -442,9 +461,46 @@ function TabNavigation() {
       </Subsection>
       <Subsection title="Notes">
         <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
-          <li><code className="text-text-accent font-mono text-[14px]">trailingIcon</code> renders as sibling after the text span — not wrapped in <code className="text-text-accent font-mono text-[14px]">pt-1 px-1</code></li>
+          <li><code className="text-text-accent font-mono text-[14px]">isActive</code> highlights the link in <code className="text-text-accent font-mono text-[14px]">text-text-primary</code> — detected via <code className="text-text-accent font-mono text-[14px]">usePathname()</code></li>
           <li>Hover pill uses <code className="text-text-accent font-mono text-[14px]">layoutId=&quot;nav-pill&quot;</code> — shared across all NavLinks in the same AnimatePresence</li>
           <li>NavGroup manages <code className="text-text-accent font-mono text-[14px]">hoveredKey</code> state and passes <code className="text-text-accent font-mono text-[14px]">isHovered</code> to each NavLink</li>
+          <li>Burger breakpoint at <code className="text-text-accent font-mono text-[14px]">lg</code> (1024px) — icon only below <code className="text-text-accent font-mono text-[14px]">md</code>, icon + label between <code className="text-text-accent font-mono text-[14px]">md</code>–<code className="text-text-accent font-mono text-[14px]">lg</code></li>
+        </ul>
+      </Subsection>
+    </div>
+  );
+}
+
+function TabLanguageToggle() {
+  return (
+    <div className="flex flex-col gap-10">
+      <Subsection title="Preview">
+        <div className="p-8 bg-background-surface rounded-2xl flex gap-8 items-center">
+          <div className="flex flex-col gap-2 items-center">
+            <LanguageToggle />
+            <span className="font-mono text-[11px] text-text-secondary">Desktop (lg+)</span>
+          </div>
+          <div className="flex flex-col gap-2 items-center">
+            <LanguageToggle />
+            <span className="font-mono text-[11px] text-text-secondary">Mobile (&lt;lg)</span>
+          </div>
+        </div>
+      </Subsection>
+      <Subsection title="Props">
+        <div className="grid grid-cols-3 gap-4 font-mono text-[13px]">
+          <div className="bg-background-surface rounded-xl p-4 flex flex-col gap-2">
+            <span className="text-text-accent">scrolled</span>
+            <span className="text-text-secondary">boolean</span>
+            <span className="text-text-secondary text-[11px]">adds bg-alpha-revert on scroll</span>
+          </div>
+        </div>
+      </Subsection>
+      <Subsection title="Notes">
+        <ul className="font-body text-m text-text-secondary flex flex-col gap-1 list-disc list-inside">
+          <li>Glass style: <code className="text-text-accent font-mono text-[14px]">backdrop-blur-glass</code> + <code className="text-text-accent font-mono text-[14px]">outline-alpha</code></li>
+          <li>Responsive padding: <code className="text-text-accent font-mono text-[14px]">p-1.5</code> below <code className="text-text-accent font-mono text-[14px]">lg</code>, <code className="text-text-accent font-mono text-[14px]">p-2</code> above</li>
+          <li>Active item has <code className="text-text-accent font-mono text-[14px]">outline-btn-primary-bg</code> ring</li>
+          <li>Language persisted in <code className="text-text-accent font-mono text-[14px]">localStorage</code> via <code className="text-text-accent font-mono text-[14px]">useTranslation()</code></li>
         </ul>
       </Subsection>
     </div>
@@ -466,6 +522,7 @@ const TABS = [
   { id: "controller",  label: "WorkController",   content: <TabWorkController /> },
   { id: "workcard",    label: "WorkCard",          content: <TabWorkCard /> },
   { id: "navigation",  label: "Navigation",        content: <TabNavigation /> },
+  { id: "langtoggle", label: "LanguageToggle",    content: <TabLanguageToggle /> },
 ];
 
 // ── Page ──────────────────────────────────────────────────────────────────────

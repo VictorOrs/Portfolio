@@ -92,7 +92,7 @@ export default function WorkPage() {
               <button
                 key={cat}
                 onClick={() => setActiveFilter(cat)}
-                className={`font-display text-s px-4 py-2 rounded-full transition-all duration-200 cursor-pointer ${
+                className={`font-body text-s px-4 py-2 rounded-full transition-all duration-200 cursor-pointer ${
                   activeFilter === cat
                     ? "bg-btn-primary-bg text-btn-primary-text"
                     : "outline outline-2 outline-alpha outline-offset-[-2px] text-text-secondary hover:text-text-primary hover:bg-alpha"

@@ -196,7 +196,7 @@ export default function WorkCard({
                   href={ctaPrimary.href}
                   className={`${buttonVariants({ variant: "primary", size: "md" })} flex-1 md:flex-none`}
                 >
-                  <span className="pt-1 px-1">{ctaPrimary.label}</span>
+                  <span className="py-0.5 px-1">{ctaPrimary.label}</span>
                 </Link>
               )}
               {ctaSecondary && (
@@ -206,7 +206,7 @@ export default function WorkCard({
                   rel={ctaSecondary.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className={`${buttonVariants({ variant: "secondary", size: "md" })} flex-1 md:flex-none`}
                 >
-                  <span className="pt-1 px-1">{ctaSecondary.label}</span>
+                  <span className="py-0.5 px-1">{ctaSecondary.label}</span>
                 </a>
               )}
             </div>

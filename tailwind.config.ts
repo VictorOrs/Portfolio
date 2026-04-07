@@ -68,21 +68,21 @@ const config: Config = {
 
       // ─── Fonts ──────────────────────────────────────────────────────────
       fontFamily: {
-        display: ["Nohemi", "sans-serif"],                            // headings, buttons, nav
-        body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, labels
+        display: ["Safiro", "sans-serif"],                            // headings
+        body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, buttons, nav, labels
       },
 
       // ─── Font sizes — responsive via CSS vars (see globals.css) ────────
       // Desktop values in :root, mobile overrides in @media (max-width: 768px).
       fontSize: {
-        "3xl": ["var(--font-size-3xl)", { lineHeight: "var(--line-height-3xl)", fontWeight: "500" }], // H1
-        "2xl": ["var(--font-size-2xl)", { lineHeight: "var(--line-height-2xl)", fontWeight: "500" }], // H2
-        "xl":  ["var(--font-size-xl)",  { lineHeight: "var(--line-height-xl)",  fontWeight: "500" }], // H3
-        "l":   ["var(--font-size-l)",   { lineHeight: "var(--line-height-l)",   fontWeight: "500" }], // H4
-        "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400", letterSpacing: "-0.5px" }], // Paragraph/L
-        "sm":  ["var(--font-size-sm)",  { lineHeight: "var(--line-height-sm)",  fontWeight: "600" }], // Button/L
-        "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400", letterSpacing: "-0.5px" }], // Paragraph/M · Link · Button/M
-        "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600" }], // Uppercase/Label
+        "3xl": ["var(--font-size-3xl)", { lineHeight: "var(--line-height-3xl)", fontWeight: "500", letterSpacing: "-0.03em" }], // H1
+        "2xl": ["var(--font-size-2xl)", { lineHeight: "var(--line-height-2xl)", fontWeight: "500", letterSpacing: "-0.03em" }], // H2
+        "xl":  ["var(--font-size-xl)",  { lineHeight: "var(--line-height-xl)",  fontWeight: "500", letterSpacing: "-0.03em" }], // H3
+        "l":   ["var(--font-size-l)",   { lineHeight: "var(--line-height-l)",   fontWeight: "500", letterSpacing: "-0.03em" }], // H4
+        "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400", letterSpacing: "-0.02em" }], // Paragraph/L
+        "sm":  ["var(--font-size-sm)",  { lineHeight: "var(--line-height-sm)",  fontWeight: "600", letterSpacing: "-0.03em" }], // Button/L
+        "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400", letterSpacing: "-0.02em" }], // Paragraph/M · Link · Button/M
+        "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600", letterSpacing: "-0.02em" }], // Uppercase/Label
       },
 
       // ─── Spacing (4 px base unit) ────────────────────────────────────────

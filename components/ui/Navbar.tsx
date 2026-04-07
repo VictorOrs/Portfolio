@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { useLoading } from "@/lib/loading";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import NavGroup from "@/components/ui/NavGroup";
@@ -49,6 +50,7 @@ function BurgerIcon({ open }: { open: boolean }) {
 
 export default function Navbar() {
   const { t } = useTranslation();
+  const { isLoaded } = useLoading();
   const pathname = usePathname();
   const isUseCase = pathname.startsWith("/work/");
   const [visible, setVisible] = useState(true);
@@ -70,8 +72,9 @@ export default function Navbar() {
 
   return (
     <motion.header
-      animate={{ y: visible ? 0 : "-100%" }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+      initial={{ opacity: 0, y: -16, filter: "blur(4px)" }}
+      animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? (visible ? 0 : "-100%") : -16, filter: isLoaded ? "blur(0px)" : "blur(4px)" }}
+      transition={{ duration: 1.2, ease }}
       className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
     >
       {/* Color gradient overlay */}
@@ -131,7 +134,7 @@ export default function Navbar() {
                   key={href}
                   href={href}
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl font-display text-s text-text-secondary hover:text-text-primary hover:bg-alpha transition-colors duration-150"
+                  className="flex items-center justify-between px-4 py-3 rounded-xl font-body font-medium text-s text-text-secondary hover:text-text-primary hover:bg-alpha transition-colors duration-150"
                 >
                   {t(`nav.${key}`)}
                 </Link>

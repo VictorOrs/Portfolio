@@ -42,7 +42,7 @@ Defined in `tailwind.config.ts` and `app/globals.css`. **Never use raw hex value
 - **Theme switching**: class-based (`darkMode: "class"`). The `<html>` element carries `dark`. `:root` holds light-mode values; `.dark` overrides them.
 - **Forced light mode on a single component**: override CSS variables inline on the element's `style` prop (see `WhoIAm` profile card for the pattern). Add `.light-card` class to suppress dark-only styles like the button shimmer.
 - **Color tokens**: `bg-background-base`, `bg-background-surface`, `text-text-primary`, `text-text-secondary`, `text-text-accent`, `bg-alpha`.
-- **Typography**: `font-display` → Nohemi (headings, buttons, nav); `font-body` → Inter. Scale: `text-display-1`, `text-heading-3`, `text-heading-4`, `text-body`, `text-btn-lg`, `text-link`, `text-label`.
+- **Typography**: `font-display` → Safiro (headings only); `font-body` → Inter (buttons, nav, links, labels). Scale: `text-display-1`, `text-heading-3`, `text-heading-4`, `text-body`, `text-btn-lg`, `text-link`, `text-label`.
 - **Spacing**: named section tokens `px-xl`, `py-l`, etc. defined in `tailwind.config.ts`.
 
 ### Button component
@@ -78,6 +78,7 @@ Write code that preserves frame rate. Dropped frames are a bug.
 
 ### Fonts
 
-- **Nohemi** (display): loaded via `@font-face` in `globals.css` from `/public/fonts/`. Weights: 500, 600.
+- **Safiro** (display/headings): loaded via `@font-face` in `globals.css` from `/public/fonts/`. Weight: 500.
+- **Nohemi** (legacy): loaded via `@font-face` in `globals.css` from `/public/fonts/`. Weights: 500, 600.
 - **Geist** (body fallback): loaded via `next/font/local` in `app/layout.tsx`.
 - Inter is referenced in Tailwind config but loaded from the web by the browser.

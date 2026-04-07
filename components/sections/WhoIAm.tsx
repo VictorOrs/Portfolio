@@ -13,12 +13,13 @@ export default function WhoIAm() {
 
   return (
     <section
-      className="relative px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10"
+      className="relative w-full"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
     >
+      <div className="px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10">
       <div className="grid grid-cols-1 gap-6 col-span-full min-[900px]:grid-cols-10 min-[900px]:gap-10 xl:col-start-2 xl:col-span-10">
 
         {/* ── Profile Card ─────────────────────────────────────── */}
@@ -30,8 +31,8 @@ export default function WhoIAm() {
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
         <SquircleCard
-          className="light-card relative flex flex-col gap-6 p-6 xl:p-8 overflow-hidden w-full h-full min-[900px]:justify-between min-[900px]:gap-0"
-          style={{ zIndex: 10000, background: "var(--color-bg-surface)" }}
+          className="light-card relative flex flex-col gap-6 p-8 overflow-hidden w-full h-full min-[900px]:justify-between min-[900px]:gap-0 border-2 border-white backdrop-blur-glass bg-background-surface"
+          style={{ zIndex: 10000 }}
         >
           {/* Profile info */}
           <div className="flex flex-col gap-6">
@@ -63,7 +64,7 @@ export default function WhoIAm() {
               </div>
 
               {/* Role */}
-              <p className="text-xs tracking-[1.12px] uppercase text-text-secondary">
+              <p className="font-body font-semibold text-xs tracking-[2px] uppercase text-text-secondary">
                 {t("whoiam.role")}
               </p>
             </div>
@@ -141,6 +142,7 @@ export default function WhoIAm() {
           </p>
         </motion.div>
 
+      </div>
       </div>
     </section>
   );

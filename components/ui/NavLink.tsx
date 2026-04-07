@@ -13,7 +13,7 @@ type NavLinkProps = ComponentProps<typeof Link> & {
 export default function NavLink({ className, children, isHovered, isActive, trailingIcon, ...props }: NavLinkProps) {
   return (
     <Link
-      className={`relative inline-flex items-center justify-center px-3 py-2 rounded-full font-display text-s transition-colors duration-200 ${isActive || isHovered ? "text-text-primary" : "text-text-secondary"}${className ? ` ${className}` : ""}`}
+      className={`relative inline-flex items-center justify-center px-3 py-2 rounded-full font-body font-medium text-s transition-colors duration-200 ${isActive || isHovered ? "text-text-primary" : "text-text-secondary"}${className ? ` ${className}` : ""}`}
       {...props}
     >
       <AnimatePresence>
@@ -29,7 +29,7 @@ export default function NavLink({ className, children, isHovered, isActive, trai
           />
         )}
       </AnimatePresence>
-      <span className="relative z-10 flex items-center justify-center pt-1 px-1 leading-5">
+      <span className="relative z-10 flex items-center justify-center py-0.5 px-1 leading-5">
         {children}
       </span>
       {trailingIcon && (

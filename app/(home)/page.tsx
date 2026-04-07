@@ -12,10 +12,12 @@ export default function Page() {
       <Navbar />
       <Hero />
       <WhoIAm />
-      <Work />
-      <Process />
-      <FAQServer />
-      <Footer />
+      <div className="relative bg-background-base" style={{ zIndex: 10000 }}>
+        <Work />
+        <Process />
+        <FAQServer />
+        <Footer />
+      </div>
     </main>
   );
 }

@@ -37,16 +37,17 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
     <motion.span
       layout
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="inline-flex items-center justify-center overflow-hidden"
+      className="inline-flex items-center justify-center overflow-hidden backdrop-blur-[12px]"
       style={{
         fontSize: fluid ? fontSize : undefined,
         height:       fluid ? "1.3em"   : "104px",
-        paddingLeft:  fluid ? "0.36em"  : "1.5rem",
-        paddingRight: fluid ? "0.36em"  : "1.5rem",
-        paddingTop:   fluid ? "0.11em"  : "10px",
+        paddingLeft:  fluid ? "0.36em"  : "24px",
+        paddingRight: fluid ? "0.36em"  : "24px",
+        paddingTop:   fluid ? "0.03em"  : "2px",
+        paddingBottom: fluid ? "0.03em" : "2px",
         borderRadius: "9999px",
-        backgroundColor: "var(--color-btn-primary-bg)",
-        boxShadow: "0 8px 48px 0 rgba(0,0,0,0.85)",
+        backgroundColor: "#B0B0B0",
+        mixBlendMode: "color-dodge" as const,
       }}
     >
       <AnimatePresence mode="popLayout">
@@ -63,7 +64,7 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
           style={{
             display: "block",
             lineHeight: "inherit",
-            color: "var(--color-bg-base)",
+            color: "#1a1a1a",
             ...(fluid ? { fontSize: "1em" } : {}),
           }}
         >

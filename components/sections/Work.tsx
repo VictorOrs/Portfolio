@@ -94,18 +94,17 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
         ),
         customContent: (
           <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
-            <p className="font-display">
-              <span className="text-xl text-[#666]">{t("work.seeMoreLine1")}</span>
+            <h4 className="font-display text-l">
+              <span className="text-text-secondary">{t("work.seeMoreLine1")}</span>{" "}
+              <span className="text-text-primary">{t("work.seeMoreLine2")}</span>
               <br />
-              <span className="text-xl text-text-primary">{t("work.seeMoreLine2")}</span>
-              <br />
-              <span className="text-xl text-text-primary">{t("work.seeMoreLine3")}</span>
-            </p>
+              <span className="text-text-primary">{t("work.seeMoreLine3")}</span>
+            </h4>
             <Link
               href="/work"
               className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
             >
-              <span className="pt-1 px-1">{t("work.seeAllWork")}</span>
+              <span className="py-0.5 px-1">{t("work.seeAllWork")}</span>
             </Link>
           </div>
         ),

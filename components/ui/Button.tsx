@@ -6,7 +6,7 @@ export const buttonVariants = cva(
   // Outer container — layout, background, transitions
   [
     "inline-flex items-center justify-center",
-    "font-display font-semibold whitespace-nowrap",
+    "font-body font-semibold whitespace-nowrap",
     "transition-all duration-200",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-accent",
     "disabled:pointer-events-none disabled:opacity-50",
@@ -34,12 +34,12 @@ export const buttonVariants = cva(
   }
 );
 
-// Inner label wrapper — optical top offset for Nohemi descenders, no bottom padding
-// lg: pt-1 px-2 (4px top, 8px sides)
-// md: pt-1 px-1 (4px top, 4px sides) — secondary size m spec
+// Inner label wrapper — optical vertical offset, balanced top/bottom
+// lg: py-0.5 px-1 lg:px-2 (2px top/bottom, 4px sides / 8px sides on lg)
+// md: py-0.5 px-1 (2px top/bottom, 4px sides)
 const labelClass: Record<string, string> = {
-  lg: "flex items-center justify-center pt-1 px-1 lg:px-2 leading-5",
-  md: "flex items-center justify-center pt-1 px-1 leading-5",
+  lg: "flex items-center justify-center py-0.5 px-1 lg:px-2 leading-5",
+  md: "flex items-center justify-center py-0.5 px-1 leading-5",
 };
 
 type ButtonBaseProps = VariantProps<typeof buttonVariants> & { icon?: ReactNode };

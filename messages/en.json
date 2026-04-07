@@ -38,8 +38,8 @@
     "mosoCta": "Visit website",
     "learnMore": "Learn more",
     "seeMoreLine1": "Keep going,",
-    "seeMoreLine2": "There is even",
-    "seeMoreLine3": "more to see.",
+    "seeMoreLine2": "There is",
+    "seeMoreLine3": "even more to see.",
     "seeAllWork": "See all work",
     "cta": "See more at enuma-collective.com"
   },
@@ -72,10 +72,10 @@
     "copyright": "© 2026 Victor Oursin. All rights reserved."
   },
   "whoiam": {
-    "role": "Freelance Product Designer",
+    "role": "Product & Brand Designer",
     "bioPrefix": "With over",
     "bioYears": "7 years' experience",
-    "bioMid": ", we're specialised in creating",
+    "bioMid": ", I'm specialised in creating",
     "bioSpeciality": "clean, user-centric and functional designs",
     "bioSuffix": "in a variety of markets, including",
     "bioMarkets": "fintech, data & web3.",

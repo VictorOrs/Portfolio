@@ -38,8 +38,8 @@
     "mosoCta": "Voir le site",
     "learnMore": "En savoir plus",
     "seeMoreLine1": "Continuez,",
-    "seeMoreLine2": "Il y a encore",
-    "seeMoreLine3": "plus à voir.",
+    "seeMoreLine2": "Il y a",
+    "seeMoreLine3": "encore plus à voir.",
     "seeAllWork": "Voir tout",
     "cta": "Voir sur enuma-collective.com"
   },
@@ -72,10 +72,10 @@
     "copyright": "© 2026 Victor Oursin. Tous droits réservés."
   },
   "whoiam": {
-    "role": "Designer Produit Freelance",
+    "role": "Product & Brand Designer",
     "bioPrefix": "Avec plus de",
     "bioYears": "7 ans d'expérience",
-    "bioMid": ", nous sommes spécialisés dans la création de",
+    "bioMid": ", je suis spécialisé dans la création de",
     "bioSpeciality": "designs propres, centrés utilisateur et fonctionnels",
     "bioSuffix": "dans différents marchés, notamment",
     "bioMarkets": "la fintech, la data et le web3.",

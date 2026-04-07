@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import GradientTracker from "@/components/GradientTracker";
+import SmoothScroll from "@/components/SmoothScroll";
 import Grain from "@/components/Grain";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -29,6 +30,7 @@ export default function RootLayout({
         className={`${geistSans.variable} antialiased`}
       >
         <GradientTracker />
+        <SmoothScroll />
         <Grain />
         <I18nProvider>
           {children}

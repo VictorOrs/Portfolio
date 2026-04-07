@@ -90,12 +90,11 @@ export default function Footer() {
           >
             <div className="flex flex-col gap-4 items-center">
               <div className="text-center">
-                <p className="font-display text-2xl md:text-[64px] md:leading-[72px] text-text-secondary">
-                  {t("footer.interested")}
-                </p>
-                <p className="font-display text-2xl md:text-[64px] md:leading-[72px] text-text-primary">
-                  {t("footer.getInTouch")}
-                </p>
+                <h2 className="font-display text-2xl md:text-[64px] md:leading-[72px]">
+                  <span className="text-text-secondary">{t("footer.interested")}</span>
+                  <br />
+                  <span className="text-text-primary">{t("footer.getInTouch")}</span>
+                </h2>
               </div>
               <p className="font-body text-m text-text-secondary text-center">
                 {t("footer.subtitle")}
@@ -134,20 +133,20 @@ export default function Footer() {
           <div className="grid grid-cols-1 gap-10 min-[426px]:grid-cols-3 min-[426px]:gap-6 md:gap-10 md:col-start-5 md:col-span-6 xl:col-start-6 pt-10 min-[426px]:pt-6 md:pt-4">
             {/* The Good */}
             <div className="flex flex-col gap-6">
-              <p className="font-display font-medium text-s text-text-primary">
+              <p className="font-body font-medium text-s text-text-primary">
                 {t("footer.theGood")}
               </p>
               <div className="flex flex-col gap-4">
-                <Link href="/" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   {t("footer.home")}
                 </Link>
-                <Link href="/work" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/work" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   Work
                 </Link>
-                <Link href="/services" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/services" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   Services
                 </Link>
-                <Link href="/manifesto" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <Link href="/manifesto" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   Manifesto
                 </Link>
               </div>
@@ -155,17 +154,17 @@ export default function Footer() {
 
             {/* The Boring */}
             <div className="flex flex-col gap-6">
-              <p className="font-display font-medium text-s text-text-primary">
+              <p className="font-body font-medium text-s text-text-primary">
                 {t("footer.theBoring")}
               </p>
               <div className="flex flex-col gap-4">
-                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <a href="#" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   {t("footer.privacy")}
                 </a>
-                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <a href="#" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   {t("footer.legalNotice")}
                 </a>
-                <a href="#" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <a href="#" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   {t("footer.help")}
                 </a>
               </div>
@@ -173,14 +172,14 @@ export default function Footer() {
 
             {/* The Cool */}
             <div className="flex flex-col gap-6">
-              <p className="font-display font-medium text-s text-text-primary">
+              <p className="font-body font-medium text-s text-text-primary">
                 {t("footer.theCool")}
               </p>
               <div className="flex flex-col gap-4">
-                <a href="https://www.linkedin.com/in/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <a href="https://www.linkedin.com/in/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   LinkedIn
                 </a>
-                <a href="https://www.instagram.com/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body text-s text-text-secondary hover:text-text-primary transition-colors">
+                <a href="https://www.instagram.com/victoroursin/" target="_blank" rel="noopener noreferrer" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   Instagram
                 </a>
               </div>

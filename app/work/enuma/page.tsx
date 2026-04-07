@@ -117,7 +117,7 @@ export default function EnumaPage() {
               rel="noopener noreferrer"
               className={buttonVariants({ variant: "primary", size: "lg" })}
             >
-              <span className="pt-1 px-1">Visit enuma-collective.com</span>
+              <span className="py-0.5 px-1">Visit enuma-collective.com</span>
             </a>
           </div>
         </motion.div>
@@ -246,10 +246,10 @@ export default function EnumaPage() {
               rel="noopener noreferrer"
               className={buttonVariants({ variant: "primary", size: "lg" })}
             >
-              <span className="pt-1 px-1">Visit enuma-collective.com</span>
+              <span className="py-0.5 px-1">Visit enuma-collective.com</span>
             </a>
             <Link href="/" className={buttonVariants({ variant: "secondary", size: "lg" })}>
-              <span className="pt-1 px-1">Back to portfolio</span>
+              <span className="py-0.5 px-1">Back to portfolio</span>
             </Link>
           </div>
         </motion.div>
