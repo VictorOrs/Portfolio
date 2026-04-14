@@ -4,8 +4,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { GRADIENT_STOPS } from "@/lib/gradient";
-import Button from "@/components/ui/Button";
-import MailIcon from "@/components/ui/MailIcon";
 
 const SPRING = { duration: 0.4, ease: [0.22, 1, 0.36, 1] } as const;
 
@@ -137,25 +135,6 @@ export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
           >
             {t("faq.title")}
           </p>
-          <div className="hidden md:flex gap-4 mt-4">
-            <Button
-              href="https://calendly.com/victor-oursin/30min"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="primary"
-              size="md"
-            >
-              {t("navbar.bookCall")}
-            </Button>
-            <Button
-              href="mailto:victor.oursin@gmail.com"
-              variant="secondary"
-              size="md"
-              icon={<MailIcon />}
-            >
-              {t("navbar.sendEmail")}
-            </Button>
-          </div>
         </motion.div>
 
         {/* ── FAQ list ──────────────────────────────────────────────── */}

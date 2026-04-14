@@ -72,8 +72,8 @@ export default function Navbar() {
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -16, filter: "blur(4px)" }}
-      animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? (visible ? 0 : "-100%") : -16, filter: isLoaded ? "blur(0px)" : "blur(4px)" }}
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? (visible ? 0 : "-100%") : -16 }}
       transition={{ duration: 1.2, ease }}
       className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
     >

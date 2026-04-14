@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLoading } from "@/lib/loading";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import LinkedInIcon from "@/components/ui/LinkedInIcon";
@@ -10,14 +11,18 @@ import { useTranslation } from "@/lib/i18n";
 
 export default function WhoIAm() {
   const { t } = useTranslation();
+  const { isLoaded } = useLoading();
 
   return (
-    <section
+    <motion.section
       className="relative w-full"
       style={{
         zIndex: 10000,
         background: "linear-gradient(to bottom, transparent 0px, var(--color-bg-base) 200px)",
       }}
+      initial={{ y: 60 }}
+      animate={isLoaded ? { y: 0 } : {}}
+      transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 1.8 }}
     >
       <div className="px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10">
       <div className="grid grid-cols-1 gap-6 col-span-full min-[900px]:grid-cols-10 min-[900px]:gap-10 xl:col-start-2 xl:col-span-10">
@@ -25,14 +30,14 @@ export default function WhoIAm() {
         {/* ── Profile Card ─────────────────────────────────────── */}
         <motion.div
           className="min-[900px]:col-span-4 h-full"
-          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          initial={{ opacity: 0, y: 32 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
-        <SquircleCard
-          className="light-card relative flex flex-col gap-6 p-8 overflow-hidden w-full h-full min-[900px]:justify-between min-[900px]:gap-0 border-2 border-white backdrop-blur-glass bg-background-surface"
-          style={{ zIndex: 10000 }}
+        <div
+          className="light-card light-card-border relative flex flex-col gap-6 p-8 overflow-hidden w-full h-full min-[900px]:justify-between min-[900px]:gap-0 backdrop-blur-glass rounded-[40px]"
+          style={{ zIndex: 10000, background: "var(--gradient-surface)" }}
         >
           {/* Profile info */}
           <div className="flex flex-col gap-6">
@@ -87,7 +92,7 @@ export default function WhoIAm() {
               {t("navbar.bookCall")}
             </Button>
           </div>
-        </SquircleCard>
+        </div>
         </motion.div>
 
         {/* ── Clients Section ───────────────────────────────────── */}
@@ -144,6 +149,6 @@ export default function WhoIAm() {
 
       </div>
       </div>
-    </section>
+    </motion.section>
   );
 }

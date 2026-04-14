@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Button from "@/components/ui/Button";
 import MailIcon from "@/components/ui/MailIcon";
 import Logo from "@/components/ui/Logo";
@@ -72,17 +72,32 @@ function TypingLocation() {
 export default function Footer() {
   const { t } = useTranslation();
 
+  const footerEndRef = useRef<HTMLDivElement>(null);
+  const footerEndInView = useInView(footerEndRef, { amount: "some" });
+
   return (
-    <footer className="w-full flex flex-col">
+    <footer className="w-full flex flex-col relative overflow-hidden">
+      {/* ── Footer background image ── */}
+      <motion.img
+        src="/img/footer_background.png"
+        alt=""
+        className="absolute bottom-[-118px] pointer-events-none origin-bottom w-[min(140vw,1603px)] min-w-[1200px] h-auto"
+        style={{ left: "50%", x: "-50%" }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={footerEndInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+        transition={{ duration: 2.5, ease: [0.12, 0.8, 0.2, 1] }}
+      />
+
       {/* ── Main content — 12-col grid ───────────────────────────────── */}
-      <div className="px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-x-4 md:gap-x-6 lg:gap-x-10 gap-y-[60px] lg:gap-y-[120px]">
+      <div className="relative px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-x-4 md:gap-x-6 lg:gap-x-10 gap-y-[60px] lg:gap-y-[120px]">
 
         {/* Wrapper — 10 cols centered, stacked vertically with 120px gap */}
         <div className="col-span-full xl:col-start-2 xl:col-span-10 flex flex-col gap-[60px] xl:gap-[120px]">
 
           {/* ── CTA card — forced light mode ───────────────────────── */}
           <motion.div
-            className="light-card flex flex-col gap-8 items-center p-6 md:p-16 rounded-[40px] bg-background-surface overflow-hidden"
+            className="light-card light-card-border flex flex-col gap-8 items-center p-6 md:p-16 rounded-[40px] overflow-hidden"
+            style={{ background: "var(--gradient-surface)" }}
             initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true, amount: 0.2 }}
@@ -190,7 +205,7 @@ export default function Footer() {
       </div>
 
       {/* ── Copyright bar ─────────────────────────────────────────────── */}
-      <div className="w-full bg-background-surface flex items-center justify-center py-4">
+      <div ref={footerEndRef} className="relative w-full flex items-center justify-center py-4">
         <p className="font-body text-s text-text-secondary">{t("footer.copyright")}</p>
       </div>
     </footer>

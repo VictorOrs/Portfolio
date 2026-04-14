@@ -1,6 +1,28 @@
 /* ─── Inter from Google Fonts (400, 500, 600) ────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
+/* ─── Animatable gradient color properties ─────────────────────────────── */
+@property --hero-text-color-1 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #090909;
+}
+@property --hero-text-color-2 {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #090909;
+}
+@property --hero-span-bg {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #090909;
+}
+@property --hero-span-text {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #090909;
+}
+
 /* ─── Nohemi font ───────────────────────────────────────────────────────────
    Place the corresponding .woff2 files in /public/fonts/ before deploying.
    ────────────────────────────────────────────────────────────────────────── */
@@ -60,8 +82,8 @@
   --color-text-accent:    #725FEB; /* Text/Accent — same in both modes */
 
   /* Overlays */
-  --color-alpha:        #09090914; /* 8% dark overlay on light bg */
-  --color-alpha-revert: #ffffff14; /* alpha/Revert — scrolled state bg */
+  --color-alpha:        rgba(9, 9, 9, 0.08); /* 8% dark overlay on light bg */
+  --color-alpha-revert: rgba(255, 255, 255, 0.08); /* alpha/Revert — scrolled state bg */
 
   /* Button / Primary */
   --color-btn-primary-bg:       #090909;
@@ -83,7 +105,7 @@
 @media (max-width: 425px) {
   :root {
     --font-size-3xl: 53px;  --line-height-3xl: 56px;
-    --font-size-2xl: 44px;  --line-height-2xl: 52px;
+    --font-size-2xl: 40px;  --line-height-2xl: 52px;
     --font-size-xl:  28px;  --line-height-xl:  36px;
     --font-size-l:   28px;  --line-height-l:   32px;
     --font-size-m:   18px;  --line-height-m:   28px;
@@ -98,6 +120,9 @@
 }
 
 .dark {
+  /* Gradients */
+  --gradient-hero-text: linear-gradient(217deg, #FFFFFF 0%, #222222 100%);
+
   /* Backgrounds */
   --color-bg-base:    #090909;
   --color-bg-surface: #1C1C1C;
@@ -108,8 +133,8 @@
   --color-text-accent:    #725FEB; /* Text/Accent */
 
   /* Overlays */
-  --color-alpha:        #ffffff1a; /* alpha/#1 — 10% white overlay on dark bg */
-  --color-alpha-revert: #0909090f; /* alpha/Revert — scrolled state bg */
+  --color-alpha:        rgba(255, 255, 255, 0.1); /* alpha/#1 — 10% white overlay on dark bg */
+  --color-alpha-revert: rgba(9, 9, 9, 0.06); /* alpha/Revert — scrolled state bg */
 
   /* Button / Primary */
   --color-btn-primary-bg:       #E0E0E0;
@@ -122,6 +147,7 @@ html {
   background: var(--color-bg-base);
   scroll-behavior: smooth;
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -178,6 +204,8 @@ body {
 .light-card {
   --color-bg-base:              #F5F5F5;
   --color-bg-surface:           rgba(245, 245, 245, 0.8);
+  --gradient-surface:           linear-gradient(180deg, rgba(245,245,245,0.88) 0%, rgba(245,245,245,0.72) 100%);
+  --gradient-border-card:       linear-gradient(180deg, #FFFFFF 0%, rgba(255,255,255,0.2) 100%);
   --color-text-primary:         #202020;
   --color-text-secondary:       #666666;
   --color-alpha:                #09090914;
@@ -187,7 +215,26 @@ body {
   --color-btn-primary-text:     #f5f5f5;
   --shadow-btn-glow:            0px 0px 20px 0px rgba(0, 0, 0, 0.48);
 }
-.light-card [class*="backdrop-blur"] {
+/* Gradient border for light cards — works with border-radius */
+.light-card-border {
+  position: relative;
+}
+.light-card-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: var(--gradient-border-card);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Disable backdrop-blur on secondary buttons inside light cards */
+.light-card [class*="bg-alpha-revert"][class*="backdrop-blur"] {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
 }
@@ -205,6 +252,35 @@ body {
   0%   { opacity: 1; background-position: 100% 50%; }
   65%  { opacity: 1; background-position: 0% 50%; }
   100% { opacity: 0; background-position: 0% 50%; }
+}
+
+/* Hero text reveal — gradient colors transition from bg-base to final values */
+.hero-text-reveal {
+  --hero-text-color-1: #090909;
+  --hero-text-color-2: #090909;
+  background-image: linear-gradient(217deg, var(--hero-text-color-1) 0%, var(--hero-text-color-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  mix-blend-mode: color-dodge;
+  transition: --hero-text-color-1 5s cubic-bezier(0.16, 1, 0.3, 1),
+              --hero-text-color-2 5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-text-reveal.revealed {
+  --hero-text-color-1: #FFFFFF;
+  --hero-text-color-2: #222222;
+}
+
+.hero-span-reveal {
+  --hero-span-bg: #090909;
+  --hero-span-text: #090909;
+  background-color: var(--hero-span-bg);
+  transition: --hero-span-bg 5s cubic-bezier(0.16, 1, 0.3, 1),
+              --hero-span-text 5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hero-span-reveal.revealed {
+  --hero-span-bg: #B0B0B0;
+  --hero-span-text: #1a1a1a;
 }
 
 @layer utilities {

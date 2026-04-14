@@ -64,7 +64,7 @@ export default function WorkCard({
 
   return (
     <div
-      className={`relative w-full rounded-[40px] overflow-hidden ${lightMode ? "light-card bg-[#E0E0E0]" : "bg-background-surface"}`}
+      className={`relative w-full rounded-[40px] overflow-hidden ${lightMode ? "light-card light-card-border" : "bg-background-surface"}`}
       style={{
         minHeight: height,
         boxShadow: "0px -3.648px 29.184px 0px rgba(0,0,0,0.72)",

@@ -8,11 +8,11 @@ export default function Grain() {
         width: "400%",
         height: "400%",
         backgroundImage: "url(/grain.svg)",
-        backgroundSize: "256px 256px",
-        opacity: 0.5,
+        backgroundSize: "128px 128px",
+        opacity: 0.4,
         mixBlendMode: "overlay",
         pointerEvents: "none",
-        zIndex: 9999,
+        zIndex: 10001,
       }}
     />
   );

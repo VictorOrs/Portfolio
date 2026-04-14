@@ -25,7 +25,7 @@ export default function NavLink({ className, children, isHovered, isActive, trai
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ type: "spring", stiffness: 350, damping: 35 }}
+            transition={{ type: "spring", stiffness: 280, damping: 30, mass: 0.6 }}
           />
         )}
       </AnimatePresence>

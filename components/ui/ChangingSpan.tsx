@@ -14,9 +14,11 @@ type ChangingSpanProps = {
   /** Fluid font-size (e.g. "calc((100vw - 3rem) / 10.5)"). When set, all internal
    *  dimensions use em units relative to this value instead of hardcoded px. */
   fontSize?: string;
+  /** Controls reveal animation — bg transitions from #090909 to #B0B0B0 */
+  revealed?: boolean;
 };
 
-export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpanProps) {
+export default function ChangingSpan({ interval = 3000, fontSize, revealed = true }: ChangingSpanProps) {
   const { lang } = useTranslation();
   const types = TYPES[lang];
   const [index, setIndex] = useState(0);
@@ -37,7 +39,7 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
     <motion.span
       layout
       transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="inline-flex items-center justify-center overflow-hidden backdrop-blur-[12px]"
+      className={`inline-flex items-center justify-center overflow-hidden backdrop-blur-[12px] hero-span-reveal${revealed ? " revealed" : ""}`}
       style={{
         fontSize: fluid ? fontSize : undefined,
         height:       fluid ? "1.3em"   : "104px",
@@ -46,7 +48,6 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
         paddingTop:   fluid ? "0.03em"  : "2px",
         paddingBottom: fluid ? "0.03em" : "2px",
         borderRadius: "9999px",
-        backgroundColor: "#B0B0B0",
         mixBlendMode: "color-dodge" as const,
       }}
     >
@@ -64,7 +65,7 @@ export default function ChangingSpan({ interval = 3000, fontSize }: ChangingSpan
           style={{
             display: "block",
             lineHeight: "inherit",
-            color: "#1a1a1a",
+            color: "var(--hero-span-text, #1a1a1a)",
             ...(fluid ? { fontSize: "1em" } : {}),
           }}
         >

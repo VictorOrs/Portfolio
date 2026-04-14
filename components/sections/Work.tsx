@@ -82,15 +82,12 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
       card: {
         lightMode: true,
         illustration: (
-          <div className="absolute top-0 bottom-0 left-0 right-[-230px] md:right-[-140px] lg:right-0 max-[425px]:left-[-218px] max-[425px]:top-[-172px] max-[425px]:w-[1086px] max-[425px]:h-[540px] max-[425px]:bottom-auto pointer-events-none" aria-hidden>
-            <Image
-              src="/img/work/more.png"
-              alt=""
-              fill
-              unoptimized
-              className="object-cover"
-            />
-          </div>
+          <img
+            src="/img/work/more.png"
+            alt=""
+            className="absolute pointer-events-none max-w-none max-[425px]:top-[-53px] max-[425px]:left-[-80px] max-[425px]:w-[836px] max-[425px]:h-[473px] min-[426px]:top-[-112px] min-[426px]:left-[-128px] min-[426px]:w-[1086px] min-[426px]:h-[614px] md:top-[-2px] md:left-0"
+            aria-hidden
+          />
         ),
         customContent: (
           <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
@@ -119,9 +116,13 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
   const [progress, setProgress]       = useState(0);
   const [paused, setPaused]           = useState(false);
   const [cardH, setCardH]             = useState(540);
+  const [cardGap, setCardGap]         = useState(24);
 
   useEffect(() => {
-    const update = () => setCardH(window.innerWidth < 768 ? 420 : 540);
+    const update = () => {
+      setCardH(window.innerWidth < 768 ? 420 : 540);
+      setCardGap(window.innerWidth < 768 ? 16 : 24);
+    };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
@@ -266,8 +267,8 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
         onPointerCancel={() => { isDragging.current = false; }}
       >
         <motion.div
-          className="flex gap-6"
-          animate={{ x: `calc(${-activeIndex * 100}% - ${activeIndex * 24}px)` }}
+          className="flex gap-4 md:gap-6"
+          animate={{ x: `calc(${-activeIndex * 100}% - ${activeIndex * (typeof window !== "undefined" && window.innerWidth < 768 ? 16 : 24)}px)` }}
           transition={{ duration: 0.65, ease }}
         >
           {SLIDES.map((slide, i) => (
