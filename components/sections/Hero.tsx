@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import ChangingSpan from "@/components/ui/ChangingSpan";
 import { useTranslation } from "@/lib/i18n";
@@ -13,6 +13,12 @@ export default function Hero() {
   const { t } = useTranslation();
   const { isLoaded } = useLoading();
   const [revealed, setRevealed] = useState(false);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) videoRef.current.playbackRate = 0.5;
+  }, []);
 
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 420], [1, 0]);
@@ -55,20 +61,26 @@ export default function Hero() {
             animate={isLoaded ? { opacity: 1, filter: "blur(0px)", scale: 1 } : {}}
             transition={{ duration: 4, ease: [0.12, 0.8, 0.2, 1], delay: 0.6 }}
           >
-            {/* Scroll dezoom directly on img — min-width ensures no crop on small screens */}
-            <motion.img
-              src="/img/background.png"
-              alt=""
-              className="opacity-90 origin-top"
+            {/* Scroll dezoom directly on video — min-width ensures no crop on small screens */}
+            <motion.video
+              ref={videoRef}
+              src="/img/background.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="origin-top object-cover"
               style={{
                 scale: bgScale,
                 position: "absolute",
-                top: 0,
+                top: -104,
                 left: "50%",
                 x: "-50%",
                 width: "min(140vw, 2016px)",
                 minWidth: "1800px",
                 height: "auto",
+                opacity: 0.8,
+                filter: "blur(4px)",
               }}
             />
           </motion.div>
