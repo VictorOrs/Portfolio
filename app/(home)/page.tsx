@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import Navbar from "@/components/ui/Navbar";
 import Hero from "@/components/sections/Hero";
 import WhoIAm from "@/components/sections/WhoIAm";
