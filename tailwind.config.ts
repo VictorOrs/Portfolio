@@ -69,7 +69,7 @@ const config: Config = {
       // ─── Fonts ──────────────────────────────────────────────────────────
       fontFamily: {
         display: ["Safiro", "sans-serif"],                            // headings
-        body:    ["Inter", "var(--font-geist-sans)", "sans-serif"],// body, buttons, nav, labels
+        body:    ["var(--font-inter)", "var(--font-geist-sans)", "sans-serif"],// body, buttons, nav, labels
       },
 
       // ─── Font sizes — responsive via CSS vars (see globals.css) ────────

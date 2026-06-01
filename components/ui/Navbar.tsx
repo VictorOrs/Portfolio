@@ -48,7 +48,7 @@ function BurgerIcon({ open }: { open: boolean }) {
   );
 }
 
-export default function Navbar({ alwaysVisible = false }: { alwaysVisible?: boolean }) {
+export default function Navbar() {
   const { t } = useTranslation();
   const { isLoaded } = useLoading();
   const pathname = usePathname();
@@ -70,14 +70,12 @@ export default function Navbar({ alwaysVisible = false }: { alwaysVisible?: bool
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const shown = alwaysVisible || visible;
-
   return (
     <motion.header
-      initial={alwaysVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: -16 }}
-      animate={{ opacity: isLoaded || alwaysVisible ? 1 : 0, y: (isLoaded || alwaysVisible) ? (shown ? 0 : "-100%") : -16 }}
-      transition={{ duration: alwaysVisible ? 0.4 : 1.2, ease }}
-      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled || alwaysVisible ? "z-[10010]" : "z-50"}`}
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? (visible ? 0 : "-100%") : -16 }}
+      transition={{ duration: 1.2, ease }}
+      className={`fixed top-0 left-0 right-0 flex items-center justify-between w-full px-6 py-5 md:px-10 md:py-8 lg:px-16 lg:py-10 2xl:px-xl ${scrolled ? "z-[10010]" : "z-50"}`}
     >
       {/* Color gradient overlay */}
       <div

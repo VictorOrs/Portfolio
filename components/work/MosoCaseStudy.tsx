@@ -112,8 +112,8 @@ export function MosoCaseStudyBody() {
               src="/img/work/moso_illustration.png"
               alt="Moso Flow interface"
               fill
+              sizes="(max-width: 1024px) 100vw, 760px"
               className="object-cover object-top opacity-80"
-              unoptimized
             />
           </SquircleCard>
         </motion.div>

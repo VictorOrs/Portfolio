@@ -80,7 +80,7 @@ export default function Footer({ data }: { data?: HomepageData | null }) {
     <footer className="w-full flex flex-col relative overflow-hidden">
       {/* ── Footer background image ── */}
       <motion.img
-        src="/img/footer_background.png"
+        src="/img/footer_background.webp"
         alt=""
         className="absolute bottom-[-118px] pointer-events-none origin-bottom w-[min(140vw,1603px)] min-w-[1200px] h-auto"
         style={{ left: "50%", x: "-50%" }}

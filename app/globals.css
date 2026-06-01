@@ -1,5 +1,4 @@
-/* ─── Inter from Google Fonts (400, 500, 600) ────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+/* Inter is self-hosted via next/font/google (see app/layout.tsx → --font-inter). */
 
 /* ─── Animatable gradient color properties ─────────────────────────────── */
 @property --hero-text-color-1 {

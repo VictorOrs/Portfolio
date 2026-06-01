@@ -2,7 +2,6 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Navbar from "@/components/ui/Navbar";
 import WorkCard from "@/components/ui/WorkCard";
 import Button from "@/components/ui/Button";
 import CloseIcon from "@/components/ui/CloseIcon";
@@ -139,14 +138,9 @@ export default function ProjectOverlay({
       animate={{ backgroundColor: mode === "closing" ? "rgba(0,1,3,0)" : "rgba(0,1,3,1)" }}
       transition={{ duration: 0.25, ease: "linear" }}
     >
-      {/* Navbar on top (forced visible — window scroll is frozen) */}
-      <div style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}>
-        <Navbar alwaysVisible />
-      </div>
-
       {/* Hero slot — aligned to the navbar's horizontal padding. Reserves the final
           card box; the real card shows once the clone morph settles. */}
-      <div className="px-6 md:px-10 lg:px-16 2xl:px-xl pt-[96px] md:pt-[112px] lg:pt-[120px]">
+      <div className="px-6 md:px-10 lg:px-16 2xl:px-xl pt-6 md:pt-8">
         <div ref={slotRef} className="relative" style={{ height: heroH }}>
           <div className="absolute inset-0" style={{ opacity: mode === "open" ? 1 : 0 }}>
             <WorkCard {...hero} fill />

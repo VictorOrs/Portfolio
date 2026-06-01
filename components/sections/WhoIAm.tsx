@@ -142,7 +142,7 @@ export default function WhoIAm({
               {/* Left — Enuma, offset via padding-bottom */}
               <div className="flex-1 min-w-0 pb-16 max-[425px]:pb-8">
                 <Image
-                  src="/img/enuma.svg" alt="Enuma" width={296} height={261}
+                  src="/img/enuma.webp" alt="Enuma" width={296} height={261}
                   className="w-full h-auto rounded-[16px]"
                   style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" }}
                 />
@@ -156,7 +156,7 @@ export default function WhoIAm({
                   style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
                 />
                 <Image
-                  src="/img/dialog.svg" alt="Dialog" width={296} height={261}
+                  src="/img/dialog.webp" alt="Dialog" width={296} height={261}
                   className="w-full h-auto rounded-[16px]"
                   style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
                 />

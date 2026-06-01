@@ -68,10 +68,12 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
             <motion.video
               ref={videoRef}
               src="/img/background.mp4"
+              poster="/img/background_poster.webp"
               autoPlay
               loop
               muted
               playsInline
+              preload="metadata"
               className="origin-top object-cover"
               style={{
                 scale: bgScale,

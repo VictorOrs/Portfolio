@@ -57,6 +57,8 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
   const sectionRef = useRef<HTMLElement>(null);
   const isInView   = useInView(sectionRef, { amount: 0.3 });
+  // Preload the 3D cube frames a bit before the section scrolls into view.
+  const nearView   = useInView(sectionRef, { once: true, margin: "800px 0px" });
 
   // Canvas
   const canvasRef    = useRef<HTMLCanvasElement>(null);
@@ -103,8 +105,17 @@ export default function Process({ data }: { data?: HomepageData | null }) {
     return () => ro.disconnect();
   }, [lang]);
 
-  // ── Load frames ─────────────────────────────────────────────────────────────
+  // ── Unblock the page immediately ─────────────────────────────────────────────
+  // The intro/loading screen must NOT wait for the 3D cube frames (loaded lazily
+  // below). Reveal the site as soon as the app mounts.
   useEffect(() => {
+    setProgress(100);
+    setGlobalLoaded();
+  }, [setProgress, setGlobalLoaded]);
+
+  // ── Lazy-load frames as the section approaches the viewport ───────────────────
+  useEffect(() => {
+    if (!nearView) return;
     let cancelled = false;
     const mobile  = window.innerWidth < MOBILE_BP;
     const total   = mobile ? MOBILE_TOTAL : DESKTOP_TOTAL;
@@ -119,27 +130,22 @@ export default function Process({ data }: { data?: HomepageData | null }) {
         bitmapsRef.current = arr;
         frameRef.current   = mid;
         setFramesLoaded(true);
-        setGlobalLoaded();
       });
       return () => { cancelled = true; };
     }
 
-    let done = 0;
     const arr = new Array<ImageBitmap>(total);
-
     Promise.all(
       Array.from({ length: total }, (_, i) =>
         fetchBitmap(frameUrl(mobile, i)).then((bmp) => {
           if (cancelled) { bmp.close(); return; }
           arr[i] = bmp;
-          setProgress(Math.round((++done / total) * 100));
         })
       )
     ).then(() => {
       if (cancelled) return;
       bitmapsRef.current = arr;
       setFramesLoaded(true);
-      setGlobalLoaded();
     });
 
     return () => {
@@ -147,7 +153,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
       bitmapsRef.current.forEach((b) => b?.close());
       bitmapsRef.current = [];
     };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [nearView]);
 
   // ── Canvas sizing ────────────────────────────────────────────────────────────
   useEffect(() => {

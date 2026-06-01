@@ -114,8 +114,8 @@ export function EnumaCaseStudyBody() {
               src="/img/work/enuma_illustration.png"
               alt="Enuma product interface"
               fill
+              sizes="(max-width: 1024px) 100vw, 760px"
               className="object-cover object-center opacity-80"
-              unoptimized
             />
           </SquircleCard>
         </motion.div>

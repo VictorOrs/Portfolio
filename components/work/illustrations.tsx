@@ -10,7 +10,7 @@ export function EnumaIllustration() {
         src="/img/work/enuma_illustration.png"
         alt=""
         fill
-        unoptimized
+        sizes="(max-width: 1024px) 100vw, 1280px"
         className="object-cover opacity-[0.72]"
       />
     </div>
@@ -27,7 +27,7 @@ export function MosoIllustration() {
         src="/img/work/moso_illustration.png"
         alt=""
         fill
-        unoptimized
+        sizes="(max-width: 1024px) 100vw, 1280px"
         className="object-cover object-top"
       />
     </div>

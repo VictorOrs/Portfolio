@@ -50,7 +50,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
         lightMode: true,
         illustration: (
           <img
-            src="/img/work/more.png"
+            src="/img/work/more.webp"
             alt=""
             className="absolute pointer-events-none max-w-none max-[425px]:top-[-53px] max-[425px]:left-[-80px] max-[425px]:w-[836px] max-[425px]:h-[473px] min-[426px]:top-[-112px] min-[426px]:left-[-128px] min-[426px]:w-[1086px] min-[426px]:h-[614px] md:top-[-2px] md:left-0"
             aria-hidden
