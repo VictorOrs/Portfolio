@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
+import { loc, type HomepageData } from "@/lib/queries";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
 import Link from "next/link";
@@ -52,15 +53,15 @@ const ease        = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
 
-export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
-  const { t } = useTranslation();
+export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolean; data?: HomepageData | null }) {
+  const { t, lang } = useTranslation();
 
   const SLIDES: Array<{ id: string; card: WorkCardProps }> = [
     {
       id: "enuma",
       card: {
         logo: { src: "/img/work/enuma_logo.svg", alt: "enuma" },
-        title: t("work.enumaTitle"),
+        title: loc(data, "work_enumaTitle", lang) ?? t("work.enumaTitle"),
         showWorkedOn: true,
         ctaPrimary:   { label: t("work.learnMore"),                href: "/work/enuma" },
         ctaSecondary: { label: t("work.enumaCta"), href: "https://www.enuma-collective.com" },
@@ -71,7 +72,7 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
       id: "moso",
       card: {
         logo: { src: "/img/work/moso_logo.svg", alt: "moso" },
-        title: t("work.mosoTitle"),
+        title: loc(data, "work_mosoTitle", lang) ?? t("work.mosoTitle"),
         ctaPrimary:   { label: t("work.learnMore"), href: "/work/moso" },
         ctaSecondary: { label: t("work.mosoCta"), href: "https://www.motionsociety.com" },
         illustration: <MosoIllustration />,
@@ -92,10 +93,12 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
         customContent: (
           <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
             <h4 className="font-display text-l">
-              <span className="text-text-secondary">{t("work.seeMoreLine1")}</span>{" "}
-              <span className="text-text-primary">{t("work.seeMoreLine2")}</span>
-              <br />
-              <span className="text-text-primary">{t("work.seeMoreLine3")}</span>
+              <span className="text-text-secondary">
+                {loc(data, "work_seeMoreMuted", lang) ?? t("work.seeMoreLine1")}
+              </span>{" "}
+              <span className="text-text-primary whitespace-pre-line">
+                {loc(data, "work_seeMoreEmphasis", lang) ?? `${t("work.seeMoreLine2")}\n${t("work.seeMoreLine3")}`}
+              </span>
             </h4>
             <Link
               href="/work"
@@ -239,7 +242,7 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
           transition={{ duration: 1.2, ease }}
         >
           <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-            {t("work.eyebrow")}
+            {loc(data, "work_eyebrow", lang) ?? t("work.eyebrow")}
           </p>
           <p
             className="font-display text-2xl bg-clip-text text-transparent"
@@ -249,7 +252,7 @@ export default function Work({ sliderOnly = false }: { sliderOnly?: boolean }) {
               backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
             }}
           >
-            {t("work.titlePrefix")} {t("work.titleHighlight")}
+            {loc(data, "work_title", lang) ?? `${t("work.titlePrefix")} ${t("work.titleHighlight")}`}
           </p>
         </motion.div>
       )}

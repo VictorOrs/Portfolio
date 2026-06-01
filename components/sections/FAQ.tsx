@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
+import { loc, type HomepageData } from "@/lib/queries";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 
 const SPRING = { duration: 0.4, ease: [0.22, 1, 0.36, 1] } as const;
@@ -90,7 +91,7 @@ export type FAQData = {
 };
 
 // ── Section ───────────────────────────────────────────────────────────────
-export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
+export default function FAQ({ sanityItems, data }: { sanityItems?: FAQData[]; data?: HomepageData | null }) {
   const { t, lang } = useTranslation();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
@@ -123,7 +124,7 @@ export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
           transition={{ duration: 1.2, ease }}
         >
           <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary text-center md:text-left">
-            {t("faq.eyebrow")}
+            {loc(data, "faq_eyebrow", lang) ?? t("faq.eyebrow")}
           </p>
           <p
             className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center md:text-left"
@@ -133,7 +134,7 @@ export default function FAQ({ sanityItems }: { sanityItems?: FAQData[] }) {
               backgroundPosition: "var(--grad-x, -50%) var(--grad-y, 50%)",
             }}
           >
-            {t("faq.title")}
+            {loc(data, "faq_title", lang) ?? t("faq.title")}
           </p>
         </motion.div>
 

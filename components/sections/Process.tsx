@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
+import { loc, type HomepageData } from "@/lib/queries";
 import { useLoading } from "@/lib/loading";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import SquircleCard from "@/components/ui/SquircleCard";
@@ -44,9 +45,15 @@ function drawContained(ctx: CanvasRenderingContext2D, bmp: ImageBitmap, zoom = C
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function Process() {
+export default function Process({ data }: { data?: HomepageData | null }) {
   const { t, lang } = useTranslation();
   const { setProgress, setLoaded: setGlobalLoaded } = useLoading();
+
+  const steps = data?.process_steps;
+  const stepTitle = (i: number) =>
+    (steps?.[i]?.[lang === "fr" ? "title_fr" : "title_en"]) || t(`process.step${i + 1}Title`);
+  const stepBody = (i: number) =>
+    (steps?.[i]?.[lang === "fr" ? "body_fr" : "body_en"]) || t(`process.step${i + 1}Body`);
 
   const sectionRef = useRef<HTMLElement>(null);
   const isInView   = useInView(sectionRef, { amount: 0.3 });
@@ -257,7 +264,7 @@ export default function Process() {
                 className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center min-[944px]:text-left"
                 style={gradStyle}
               >
-                <span ref={lastLineRef}>{t("process.title")}</span>
+                <span ref={lastLineRef}>{loc(data, "process_title", lang) ?? t("process.title")}</span>
               </p>
               {/* Sparkle — fenêtre dans le même gradient que le titre, alignée en px */}
               <div
@@ -313,7 +320,7 @@ export default function Process() {
                 )}
 
                 <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
-                  {String(i + 1).padStart(2, "0")}. {t(`process.step${i + 1}Title`)}
+                  {String(i + 1).padStart(2, "0")}. {stepTitle(i)}
                 </p>
 
                 <motion.div
@@ -327,7 +334,7 @@ export default function Process() {
                       animate={{ opacity: i === stepIndex && textVisible ? 1 : 0 }}
                       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      {t(`process.step${i + 1}Body`)}
+                      {stepBody(i)}
                     </motion.p>
                   </div>
                 </motion.div>

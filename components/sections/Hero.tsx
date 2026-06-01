@@ -5,13 +5,16 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import ChangingSpan from "@/components/ui/ChangingSpan";
 import { useTranslation } from "@/lib/i18n";
 import { useLoading } from "@/lib/loading";
+import { loc, type HomepageData } from "@/lib/queries";
 
 // 80px (main pt navbar) + 177px (section pt-xl) = natural viewport y of the title
 const FIXED_TOP = 80 + 177;
 
-export default function Hero() {
-  const { t } = useTranslation();
+export default function Hero({ data }: { data?: HomepageData | null }) {
+  const { t, lang } = useTranslation();
   const { isLoaded } = useLoading();
+
+  const pills = lang === "fr" ? data?.hero_pills_fr : data?.hero_pills_en;
   const [revealed, setRevealed] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -32,13 +35,13 @@ export default function Hero() {
   }, [isLoaded]);
 
   // 3-line split for xs+ (≥ 686px, < lg)
-  const headlineMobile = t("hero.headlineMobile");
+  const headlineMobile = loc(data, "hero_headlineTablet", lang) ?? t("hero.headlineMobile");
   const headlineMobileLines = headlineMobile.split("\n");
   const prevLinesMobile = headlineMobileLines.slice(0, -1).join("\n");
   const lastLineMobile  = headlineMobileLines[headlineMobileLines.length - 1];
 
   // 4-line split for < xs (< 686px)
-  const headlineMobileXs = t("hero.headlineMobileXs");
+  const headlineMobileXs = loc(data, "hero_headlineMobile", lang) ?? t("hero.headlineMobileXs");
   const headlineMobileXsLines = headlineMobileXs.split("\n");
   const prevLinesMobileXs = headlineMobileXsLines.slice(0, -1).join("\n");
   const lastLineMobileXs  = headlineMobileXsLines[headlineMobileXsLines.length - 1];
@@ -107,10 +110,10 @@ export default function Hero() {
                 {prevLinesMobileXs}{"\n"}{lastLineMobileXs}
               </p>
               <div className="xs:hidden mt-3">
-                <ChangingSpan fontSize="var(--hero-font-mobile)" revealed={revealed} />
+                <ChangingSpan fontSize="var(--hero-font-mobile)" revealed={revealed} words={pills} />
               </div>
               <p className={`hidden xs:block font-display text-2xl whitespace-pre hero-text-reveal${revealed ? " revealed" : ""}`}>
-                {prevLinesMobile}{"\n"}{lastLineMobile}<ChangingSpan fontSize="var(--font-size-2xl)" revealed={revealed} />
+                {prevLinesMobile}{"\n"}{lastLineMobile}<ChangingSpan fontSize="var(--font-size-2xl)" revealed={revealed} words={pills} />
               </p>
             </div>
           </div>
@@ -125,11 +128,11 @@ export default function Hero() {
             <p
               className={`absolute top-0 left-0 h-full font-display text-3xl whitespace-pre hero-text-reveal${revealed ? " revealed" : ""}`}
             >
-              {t("hero.headline")}
+              {loc(data, "hero_headline", lang) ?? t("hero.headline")}
             </p>
 
             <div className="absolute bottom-0 left-[458px]">
-              <ChangingSpan revealed={revealed} />
+              <ChangingSpan revealed={revealed} words={pills} />
             </div>
           </div>
         </div>

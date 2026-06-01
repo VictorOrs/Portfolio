@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import MailIcon from "@/components/ui/MailIcon";
 import Logo from "@/components/ui/Logo";
 import { useTranslation } from "@/lib/i18n";
+import { loc, type HomepageData } from "@/lib/queries";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -69,8 +70,8 @@ function TypingLocation() {
   );
 }
 
-export default function Footer() {
-  const { t } = useTranslation();
+export default function Footer({ data }: { data?: HomepageData | null }) {
+  const { t, lang } = useTranslation();
 
   const footerEndRef = useRef<HTMLDivElement>(null);
   const footerEndInView = useInView(footerEndRef, { amount: "some" });
@@ -106,13 +107,13 @@ export default function Footer() {
             <div className="flex flex-col gap-4 items-center">
               <div className="text-center">
                 <h2 className="font-display text-2xl md:text-[64px] md:leading-[72px]">
-                  <span className="text-text-secondary">{t("footer.interested")}</span>
+                  <span className="text-text-secondary">{loc(data, "cta_interested", lang) ?? t("footer.interested")}</span>
                   <br />
-                  <span className="text-text-primary">{t("footer.getInTouch")}</span>
+                  <span className="text-text-primary">{loc(data, "cta_getInTouch", lang) ?? t("footer.getInTouch")}</span>
                 </h2>
               </div>
               <p className="font-body text-m text-text-secondary text-center">
-                {t("footer.subtitle")}
+                {loc(data, "cta_subtitle", lang) ?? t("footer.subtitle")}
               </p>
             </div>
 

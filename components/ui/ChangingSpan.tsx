@@ -16,22 +16,24 @@ type ChangingSpanProps = {
   fontSize?: string;
   /** Controls reveal animation — bg transitions from #090909 to #B0B0B0 */
   revealed?: boolean;
+  /** Sanity-driven words — falls back to the built-in TYPES when absent/empty. */
+  words?: string[];
 };
 
-export default function ChangingSpan({ interval = 3000, fontSize, revealed = true }: ChangingSpanProps) {
+export default function ChangingSpan({ interval = 3000, fontSize, revealed = true, words }: ChangingSpanProps) {
   const { lang } = useTranslation();
-  const types = TYPES[lang];
+  const types = words && words.length > 0 ? words : TYPES[lang];
   const [index, setIndex] = useState(0);
 
-  // Reset index and restart interval when language or interval changes
+  // Reset index and restart interval when the word list or interval changes
   useEffect(() => {
     setIndex(0);
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % TYPES[lang].length);
+      setIndex((prev) => (prev + 1) % types.length);
     }, interval);
     return () => clearInterval(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang, interval]);
+  }, [lang, interval, words]);
 
   const fluid = !!fontSize;
 

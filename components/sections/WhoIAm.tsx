@@ -7,11 +7,21 @@ import Button from "@/components/ui/Button";
 import LinkedInIcon from "@/components/ui/LinkedInIcon";
 import MailIcon from "@/components/ui/MailIcon";
 import SquircleCard from "@/components/ui/SquircleCard";
+import { PortableText } from "@portabletext/react";
 import { useTranslation } from "@/lib/i18n";
+import { loc, type HomepageData } from "@/lib/queries";
 
-export default function WhoIAm() {
-  const { t } = useTranslation();
+export default function WhoIAm({
+  data,
+  profileImageUrl,
+}: {
+  data?: HomepageData | null;
+  profileImageUrl?: string | null;
+}) {
+  const { t, lang } = useTranslation();
   const { isLoaded } = useLoading();
+
+  const bio = lang === "fr" ? data?.about_bio_fr : data?.about_bio_en;
 
   return (
     <motion.section
@@ -44,15 +54,13 @@ export default function WhoIAm() {
             {/* Avatar */}
             <div className="relative w-[72px] h-[72px] shrink-0">
               <Image
-                src="/img/profil_pic.jpg"
+                src={profileImageUrl ?? "/img/profil_pic.jpg"}
                 alt="Victor Oursin"
                 width={72}
                 height={72}
                 priority
-                className="rounded-full object-cover"
+                className="rounded-full object-cover w-[72px] h-[72px]"
               />
-              {/* Online dot */}
-              <span className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-success border-4 border-background-surface" />
             </div>
 
             <div className="flex flex-col gap-1">
@@ -70,20 +78,36 @@ export default function WhoIAm() {
 
               {/* Role */}
               <p className="font-body font-semibold text-xs tracking-[2px] uppercase text-text-secondary">
-                {t("whoiam.role")}
+                {loc(data, "about_role", lang) ?? t("whoiam.role")}
               </p>
             </div>
           </div>
 
-          {/* Bio */}
-          <p className="font-body text-s md:text-m text-text-secondary leading-6 md:leading-8">
-            {t("whoiam.bioPrefix")}{" "}
-            <strong className="font-medium text-text-primary">{t("whoiam.bioYears")}</strong>
-            {t("whoiam.bioMid")}{" "}
-            <strong className="font-medium text-text-primary">{t("whoiam.bioSpeciality")}</strong>
-            {" "}{t("whoiam.bioSuffix")}{" "}
-            <strong className="font-medium text-text-primary">{t("whoiam.bioMarkets")}</strong>
-          </p>
+          {/* Bio — Sanity Portable Text when present, else segmented i18n fallback */}
+          <div className="font-body text-s md:text-m text-text-secondary leading-6 md:leading-8">
+            {bio && bio.length > 0 ? (
+              <PortableText
+                value={bio}
+                components={{
+                  block: { normal: ({ children }) => <p>{children}</p> },
+                  marks: {
+                    strong: ({ children }) => (
+                      <strong className="font-medium text-text-primary">{children}</strong>
+                    ),
+                  },
+                }}
+              />
+            ) : (
+              <p>
+                {t("whoiam.bioPrefix")}{" "}
+                <strong className="font-medium text-text-primary">{t("whoiam.bioYears")}</strong>
+                {t("whoiam.bioMid")}{" "}
+                <strong className="font-medium text-text-primary">{t("whoiam.bioSpeciality")}</strong>
+                {" "}{t("whoiam.bioSuffix")}{" "}
+                <strong className="font-medium text-text-primary">{t("whoiam.bioMarkets")}</strong>
+              </p>
+            )}
+          </div>
 
           {/* CTA buttons */}
           <div className="flex gap-4">
@@ -109,7 +133,7 @@ export default function WhoIAm() {
 
             {/* Heading */}
             <h2 className="absolute left-8 top-10 max-[425px]:left-6 max-[425px]:top-6 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
-              {t("whoiam.clientsHeading")}
+              {loc(data, "about_clientsHeading", lang) ?? t("whoiam.clientsHeading")}
             </h2>
 
             {/* Logo group */}
@@ -143,7 +167,7 @@ export default function WhoIAm() {
 
           {/* Caption */}
           <p className="font-body text-m text-text-secondary lg:pl-8">
-            {t("whoiam.clientsCaption")}
+            {loc(data, "about_clientsCaption", lang) ?? t("whoiam.clientsCaption")}
           </p>
         </motion.div>
 
