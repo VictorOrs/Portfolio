@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 import { LoadingProvider } from "@/lib/loading";
+import { WorkExpandProvider } from "@/components/work/WorkExpandContext";
 import GradientTracker from "@/components/GradientTracker";
 import Grain from "@/components/Grain";
 import SmoothScroll from "@/components/SmoothScroll";
@@ -35,7 +36,9 @@ export default function RootLayout({
         <SmoothScroll />
         <I18nProvider>
           <LoadingProvider>
-            {children}
+            <WorkExpandProvider>
+              {children}
+            </WorkExpandProvider>
           </LoadingProvider>
         </I18nProvider>
         <SpeedInsights />

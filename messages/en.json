@@ -6,6 +6,7 @@
     "sendEmail": "Send an email"
   },
   "nav": {
+    "home": "Home",
     "work": "Work",
     "services": "Services",
     "manifesto": "Method"

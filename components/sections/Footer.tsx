@@ -156,9 +156,7 @@ export default function Footer({ data }: { data?: HomepageData | null }) {
                 <Link href="/" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   {t("footer.home")}
                 </Link>
-                <Link href="/work" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
-                  Work
-                </Link>
+                {/* Work page temporarily disabled — re-enable the link when it returns. */}
                 <Link href="/services" className="font-body font-medium text-s text-text-secondary hover:text-text-primary transition-colors">
                   Services
                 </Link>

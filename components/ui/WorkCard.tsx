@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useId } from "react";
+import React, { useId, useRef } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { buttonVariants } from "@/components/ui/Button";
+import Button, { buttonVariants } from "@/components/ui/Button";
+import ChevronRightIcon from "@/components/ui/ChevronRightIcon";
+import { useWorkExpand } from "@/components/work/WorkExpandContext";
 
 // ── All client logos for the "Worked on" marquee ──────────────────────────────
 
@@ -27,6 +28,8 @@ const MARQUEE_LOGOS = [
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface WorkCardProps {
+  /** Project slug — enables the shared-element expand animation when set */
+  slug?: string;
   /** Card height in px (default 540 — matches Figma) */
   height?: number;
   /** Optional logo above the title */
@@ -43,11 +46,17 @@ export interface WorkCardProps {
   lightMode?: boolean;
   /** Custom content — replaces the standard bottom content when provided */
   customContent?: React.ReactNode;
+  /** Fill the parent's height (height:100%) instead of using a fixed minHeight.
+   *  Used by the expand overlay so the card scales with its animated box. */
+  fill?: boolean;
+  /** When true, the whole card is clickable to open the case study, with a hover stroke. */
+  expandable?: boolean;
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function WorkCard({
+  slug,
   height = 420,
   logo,
   title,
@@ -57,16 +66,39 @@ export default function WorkCard({
   illustration,
   lightMode = false,
   customContent,
+  fill = false,
+  expandable = false,
 }: WorkCardProps) {
   const uid = useId();
   const gradId = `card-grad-${uid.replace(/:/g, "")}`;
+  const { open } = useWorkExpand();
+  const rootRef = useRef<HTMLDivElement>(null);
   const hasContent = !!(logo || title || ctaPrimary || ctaSecondary || showWorkedOn);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (!expandable || !slug) return;
+    // Let inner links (e.g. "Visit website") do their own thing.
+    if ((e.target as HTMLElement).closest("a")) return;
+    const rect = rootRef.current?.getBoundingClientRect();
+    open(
+      slug,
+      rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined,
+      { logo, title, illustration, ctaSecondary, showWorkedOn }
+    );
+  };
 
   return (
     <div
-      className={`relative w-full rounded-[40px] overflow-hidden ${lightMode ? "light-card light-card-border" : "bg-background-surface"}`}
+      ref={rootRef}
+      data-work-card={slug || undefined}
+      onClick={handleCardClick}
+      className={`relative w-full ${fill ? "h-full" : ""} rounded-[40px] overflow-hidden ${lightMode ? "light-card light-card-border" : "bg-background-surface"}${
+        expandable
+          ? " cursor-pointer transition-[outline-color] duration-200 outline outline-2 outline-transparent outline-offset-[-2px] hover:outline-alpha"
+          : ""
+      }`}
       style={{
-        minHeight: height,
+        ...(fill ? { height: "100%" } : { minHeight: height }),
         boxShadow: "0px -3.648px 29.184px 0px rgba(0,0,0,0.72)",
       }}
     >
@@ -188,26 +220,28 @@ export default function WorkCard({
             )}
           </div>
 
-          {/* CTAs */}
-          {(ctaPrimary || ctaSecondary) && (
-            <div className="flex gap-4">
-              {ctaPrimary && (
-                <Link
-                  href={ctaPrimary.href}
-                  className={`${buttonVariants({ variant: "primary", size: "md" })} flex-1 md:flex-none`}
-                >
-                  <span className="py-0.5 px-1">{ctaPrimary.label}</span>
-                </Link>
-              )}
-              {ctaSecondary && (
-                <a
-                  href={ctaSecondary.href}
-                  target={ctaSecondary.href.startsWith("http") ? "_blank" : undefined}
-                  rel={ctaSecondary.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className={`${buttonVariants({ variant: "secondary", size: "md" })} flex-1 md:flex-none`}
-                >
-                  <span className="py-0.5 px-1">{ctaSecondary.label}</span>
-                </a>
+          {/* CTAs — "Visit website" + chevron open affordance */}
+          {ctaSecondary && (
+            <div className="flex gap-3 items-center">
+              <a
+                href={ctaSecondary.href}
+                target={ctaSecondary.href.startsWith("http") ? "_blank" : undefined}
+                rel={ctaSecondary.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                className={`${buttonVariants({ variant: "secondary", size: "md" })} flex-1 md:flex-none`}
+              >
+                <span className="py-0.5 px-1">{ctaSecondary.label}</span>
+              </a>
+              {/* Chevron open affordance — hidden once expanded (fill = hero). Bubbles
+                  to the card click to open the case study. */}
+              {!fill && (
+                <Button
+                  variant="secondary"
+                  size="md"
+                  icon={<ChevronRightIcon size={24} />}
+                  type="button"
+                  tabIndex={-1}
+                  aria-hidden
+                />
               )}
             </div>
           )}

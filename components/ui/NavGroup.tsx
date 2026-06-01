@@ -12,9 +12,9 @@ type NavGroupProps = {
 };
 
 const NAV_KEYS: { key: string; href: string; chevron?: true }[] = [
-  { key: "work",  href: "/work" },
+  { key: "home",      href: "/" },
   { key: "services",  href: "/services" },
-  { key: "manifesto",  href: "/manifesto" },
+  { key: "manifesto", href: "/manifesto" },
 ];
 
 export default function NavGroup({ scrolled = false, className }: NavGroupProps) {

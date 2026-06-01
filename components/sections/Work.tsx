@@ -2,49 +2,14 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, useInView } from "framer-motion";
-import Image from "next/image";
 import { useTranslation } from "@/lib/i18n";
 import { loc, type HomepageData } from "@/lib/queries";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
-import Link from "next/link";
 import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
 import { buttonVariants } from "@/components/ui/Button";
-
-// ── Enuma illustration ────────────────────────────────────────────────────────
-
-function EnumaIllustration() {
-  return (
-    <div className="absolute inset-0 top-[-170px] right-[-340px] bottom-0 left-8 max-lg:top-[-96px] max-lg:right-[-160px] max-lg:bottom-[160px] max-lg:left-[40px] max-md:top-[-176px] max-md:right-[-160px] max-md:left-[24px] max-md:bottom-[96px] max-[425px]:top-[-250px] max-[425px]:bottom-[150px] max-[425px]:left-0 max-[425px]:right-0 pointer-events-none" aria-hidden>
-      <Image
-        src="/img/work/enuma_illustration.png"
-        alt=""
-        fill
-        unoptimized
-        className="object-cover opacity-[0.72]"
-      />
-    </div>
-  );
-}
-
-// ── Moso illustration ────────────────────────────────────────────────────────
-
-function MosoIllustration() {
-  return (
-    <div
-      className="absolute inset-0 max-md:top-[-90px] max-md:right-[-470px] max-md:left-[-28px] max-[425px]:top-[-60px] max-[425px]:right-[-162px] max-[425px]:left-0 pointer-events-none"
-      aria-hidden
-    >
-      <Image
-        src="/img/work/moso_illustration.png"
-        alt=""
-        fill
-        unoptimized
-        className="object-cover object-top"
-      />
-    </div>
-  );
-}
+import { EnumaIllustration, MosoIllustration } from "@/components/work/illustrations";
+import { useWorkExpand } from "@/components/work/WorkExpandContext";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -55,15 +20,16 @@ const ease        = [0.22, 1, 0.36, 1] as const;
 
 export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolean; data?: HomepageData | null }) {
   const { t, lang } = useTranslation();
+  const { openSlug } = useWorkExpand();
 
   const SLIDES: Array<{ id: string; card: WorkCardProps }> = [
     {
       id: "enuma",
       card: {
+        slug: "enuma",
         logo: { src: "/img/work/enuma_logo.svg", alt: "enuma" },
         title: loc(data, "work_enumaTitle", lang) ?? t("work.enumaTitle"),
         showWorkedOn: true,
-        ctaPrimary:   { label: t("work.learnMore"),                href: "/work/enuma" },
         ctaSecondary: { label: t("work.enumaCta"), href: "https://www.enuma-collective.com" },
         illustration: <EnumaIllustration />,
       },
@@ -71,9 +37,9 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
     {
       id: "moso",
       card: {
+        slug: "moso",
         logo: { src: "/img/work/moso_logo.svg", alt: "moso" },
         title: loc(data, "work_mosoTitle", lang) ?? t("work.mosoTitle"),
-        ctaPrimary:   { label: t("work.learnMore"), href: "/work/moso" },
         ctaSecondary: { label: t("work.mosoCta"), href: "https://www.motionsociety.com" },
         illustration: <MosoIllustration />,
       },
@@ -100,12 +66,10 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
                 {loc(data, "work_seeMoreEmphasis", lang) ?? `${t("work.seeMoreLine2")}\n${t("work.seeMoreLine3")}`}
               </span>
             </h4>
-            <Link
-              href="/work"
-              className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
-            >
+            {/* href will be replaced with a Figma portfolio link when ready */}
+            <a href="#" className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}>
               <span className="py-0.5 px-1">{t("work.seeAllWork")}</span>
-            </Link>
+            </a>
           </div>
         ),
       } as WorkCardProps,
@@ -143,9 +107,10 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
     }
   }, [inView]);
 
-  // RAF-based timer — only runs when section is visible, not paused, and not sliderOnly
+  // RAF-based timer — only runs when section is visible, not paused, not sliderOnly,
+  // and not while a project overlay is open (avoids the slide moving under the morph).
   useEffect(() => {
-    if (sliderOnly || paused || !inView) return;
+    if (sliderOnly || paused || !inView || openSlug) return;
 
     const startP = progressRef.current; // resume from current position when unpausing
     let t0: number | null = null;
@@ -167,7 +132,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [paused, inView, activeIndex]);
+  }, [paused, inView, activeIndex, openSlug]);
 
   const transitionLock = useRef(false);
 
@@ -280,7 +245,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
               className={`w-full shrink-0${i !== activeIndex ? " cursor-pointer" : ""}`}
               onClick={() => i !== activeIndex && goToSlide(i)}
             >
-              <WorkCard {...slide.card} height={cardH} />
+              <WorkCard {...slide.card} height={cardH} expandable={!sliderOnly && i === activeIndex} />
             </div>
           ))}
         </motion.div>

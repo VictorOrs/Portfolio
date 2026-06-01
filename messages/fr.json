@@ -6,6 +6,7 @@
     "sendEmail": "Envoyer un email"
   },
   "nav": {
+    "home": "Accueil",
     "work": "Projets",
     "services": "Services",
     "manifesto": "Méthode"

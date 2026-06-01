@@ -16,6 +16,8 @@ import PlayPauseButton from "@/components/ui/PlayPauseButton";
 import WorkCard from "@/components/ui/WorkCard";
 import WorkController from "@/components/ui/WorkController";
 import ChevronIcon from "@/components/ui/ChevronIcon";
+import ChevronRightIcon from "@/components/ui/ChevronRightIcon";
+import CloseIcon from "@/components/ui/CloseIcon";
 import NavLink from "@/components/ui/NavLink";
 import NavGroup from "@/components/ui/NavGroup";
 import LanguageToggle from "@/components/ui/LanguageToggle";
@@ -217,6 +219,8 @@ function TabButton() {
           <Button variant="secondary" size="lg">Learn more</Button>
           <Button variant="secondary" size="md">Learn more</Button>
           <Button variant="secondary" size="lg" icon={<MailIcon />} aria-label="Mail" />
+          <Button variant="secondary" size="lg" icon={<CloseIcon />} aria-label="Close" />
+          <Button variant="secondary" size="md" icon={<ChevronRightIcon />} aria-label="Open" />
           <Button variant="primary"   size="lg" icon={<MailIcon />}>Send email</Button>
           <Button href="#" variant="primary" size="lg">Link button</Button>
         </div>
