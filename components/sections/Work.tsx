@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { loc, type HomepageData } from "@/lib/queries";
@@ -49,12 +50,37 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
       card: {
         lightMode: true,
         illustration: (
-          <img
-            src="/img/work/more.webp"
-            alt=""
-            className="absolute pointer-events-none max-w-none max-[425px]:top-[-53px] max-[425px]:left-[-80px] max-[425px]:w-[836px] max-[425px]:h-[473px] min-[426px]:top-[-112px] min-[426px]:left-[-128px] min-[426px]:w-[1086px] min-[426px]:h-[614px] md:top-[-2px] md:left-0"
+          <>
+          {/* Light gradient — sits behind the (transparent) illustration as the card background */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: "linear-gradient(180deg, rgba(245, 245, 245, 0.88) 0%, rgba(245, 245, 245, 0.72) 100%)" }}
             aria-hidden
           />
+          <div
+            className="absolute pointer-events-none max-[425px]:w-full min-[426px]:top-[-112px] min-[426px]:left-[-128px] min-[426px]:w-[1086px] md:top-[-2px] md:left-0"
+            aria-hidden
+          >
+            {/* Default asset (≥ 426px) */}
+            <Image
+              src="/img/work/more.webp"
+              alt=""
+              width={1672}
+              height={946}
+              sizes="(max-width: 1024px) 100vw, 1086px"
+              className="w-full object-cover max-[425px]:hidden"
+            />
+            {/* Mobile asset (< 426px) */}
+            <Image
+              src="/img/work/more_mobile.webp"
+              alt=""
+              width={328}
+              height={420}
+              sizes="100vw"
+              className="w-full object-cover hidden max-[425px]:block"
+            />
+          </div>
+          </>
         ),
         customContent: (
           <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">

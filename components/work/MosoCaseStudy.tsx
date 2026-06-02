@@ -109,7 +109,7 @@ export function MosoCaseStudyBody() {
             style={{ aspectRatio: "16 / 10" }}
           >
             <Image
-              src="/img/work/moso_illustration.png"
+              src="/img/work/moso_illustration.webp"
               alt="Moso Flow interface"
               fill
               sizes="(max-width: 1024px) 100vw, 760px"
@@ -199,7 +199,7 @@ export default function MosoCaseStudy() {
       >
         <div className="absolute top-[-80px] left-0 right-0 bottom-0 overflow-hidden">
           <Image
-            src="/img/work/moso_illustration.png"
+            src="/img/work/moso_illustration.webp"
             alt=""
             fill
             priority

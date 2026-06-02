@@ -92,7 +92,7 @@ export default function WorkCard({
       ref={rootRef}
       data-work-card={slug || undefined}
       onClick={handleCardClick}
-      className={`relative w-full ${fill ? "h-full" : ""} rounded-[40px] overflow-hidden ${lightMode ? "light-card light-card-border" : "bg-background-surface"}${
+      className={`group relative w-full ${fill ? "h-full" : ""} rounded-[40px] overflow-hidden ${lightMode ? "light-card light-card-border" : "bg-background-surface"}${
         expandable
           ? " cursor-pointer transition-[outline-color] duration-200 outline outline-2 outline-transparent outline-offset-[-2px] hover:outline-alpha"
           : ""
@@ -170,8 +170,17 @@ export default function WorkCard({
                 className="hidden min-[426px]:block relative overflow-hidden w-full md:w-[575px]"
                 style={{ height: 40 }}
               >
-                {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label */}
-                <div className="absolute inset-y-0 left-0 md:left-[107px]">
+                {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label.
+                    Edges fade via a transparency mask so logos blend over any background. */}
+                <div
+                  className="absolute inset-y-0 left-0 right-0 md:left-[107px]"
+                  style={{
+                    WebkitMaskImage:
+                      "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
+                    maskImage:
+                      "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
+                  }}
+                >
                   <motion.div
                     className="flex items-center gap-8 h-full w-max"
                     animate={{ x: ["0%", "-50%"] }}
@@ -196,26 +205,10 @@ export default function WorkCard({
                   </motion.div>
                 </div>
 
-                {/* Left fade + "Worked on" label */}
-                <div
-                  aria-hidden
-                  className="absolute inset-y-0 left-0 pointer-events-none w-[90px] md:w-[320px]"
-                  style={{ background: "linear-gradient(to right, var(--color-bg-surface) 31%, transparent 100%)" }}
-                />
+                {/* "Worked on" label — sits left of the masked logo track */}
                 <p className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 font-body text-s text-text-secondary whitespace-nowrap">
                   Worked on
                 </p>
-
-                {/* Right fade */}
-                <div
-                  aria-hidden
-                  className="absolute inset-y-0 right-0 pointer-events-none"
-                  style={{
-                    width: 90,
-                    background:
-                      "linear-gradient(to left, var(--color-bg-surface) 31%, transparent 100%)",
-                  }}
-                />
               </div>
             )}
           </div>
@@ -241,6 +234,7 @@ export default function WorkCard({
                   type="button"
                   tabIndex={-1}
                   aria-hidden
+                  className="group-hover:bg-alpha"
                 />
               )}
             </div>
