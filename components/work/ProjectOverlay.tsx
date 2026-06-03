@@ -10,6 +10,12 @@ import { PROJECTS } from "./registry";
 import type { CardRect, HeroCardProps } from "./WorkExpandContext";
 
 const MORPH_MS = 600;
+// Pre-morph hold: the background goes opaque (surrounding elements fade out) while the
+// clone sits still on the source card, THEN the box morphs — so nothing shows behind it.
+const OPEN_DELAY_MS = 240;
+// On close the ease-out lands the card visually before the morph technically ends, so we
+// start revealing the surroundings this many ms early — less dead time before they reappear.
+const EXIT_REVEAL_LEAD = 160;
 const EASING = "cubic-bezier(0.22,1,0.36,1)";
 
 const rectOf = (el: Element): CardRect => {
@@ -51,6 +57,9 @@ export default function ProjectOverlay({
   const [target, setTarget] = useState<CardRect | null>(null);
   const [heroH, setHeroH] = useState<number>(openRect?.height ?? 540);
   const [visible, setVisible] = useState(false);
+  // Backdrop opacity, decoupled from `mode` so it stays opaque while the clone morphs
+  // back on close — the surroundings only reappear once the card is home.
+  const [bgOn, setBgOn] = useState(true);
 
   const entry = PROJECTS[slug];
 
@@ -72,11 +81,12 @@ export default function ProjectOverlay({
     if (mode !== "opening" || !target || !openRect || !cloneRef.current) return;
     const anim = cloneRef.current.animate([kf(openRect), kf(target)], {
       duration: MORPH_MS,
+      delay: OPEN_DELAY_MS,
       easing: EASING,
       fill: "forwards",
     });
     anim.onfinish = () => setMode("open");
-    const id = window.setTimeout(() => setVisible(true), 60);
+    const id = window.setTimeout(() => setVisible(true), OPEN_DELAY_MS + 60);
     return () => {
       anim.cancel();
       window.clearTimeout(id);
@@ -103,7 +113,16 @@ export default function ProjectOverlay({
       easing: EASING,
       fill: "forwards",
     });
-    anim.onfinish = onClose;
+    // Reveal the surroundings slightly before the morph technically ends (card is already
+    // visually home via the ease-out), then unmount once the backdrop has faded out.
+    const revealAt = Math.max(0, MORPH_MS - EXIT_REVEAL_LEAD);
+    const tReveal = window.setTimeout(() => setBgOn(false), revealAt);
+    const tClose = window.setTimeout(onClose, revealAt + 250);
+    return () => {
+      anim.cancel();
+      window.clearTimeout(tReveal);
+      window.clearTimeout(tClose);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
@@ -135,12 +154,12 @@ export default function ProjectOverlay({
       data-lenis-prevent
       className="fixed inset-0 z-[10020] overflow-y-auto overflow-x-hidden"
       initial={{ backgroundColor: "rgba(0,1,3,0)" }}
-      animate={{ backgroundColor: mode === "closing" ? "rgba(0,1,3,0)" : "rgba(0,1,3,1)" }}
-      transition={{ duration: 0.25, ease: "linear" }}
+      animate={{ backgroundColor: bgOn ? "rgba(0,1,3,1)" : "rgba(0,1,3,0)" }}
+      transition={{ duration: bgOn ? 0.2 : 0.25, ease: "linear" }}
     >
       {/* Hero slot — aligned to the navbar's horizontal padding. Reserves the final
           card box; the real card shows once the clone morph settles. */}
-      <div className="px-6 md:px-10 lg:px-16 2xl:px-xl pt-6 md:pt-8">
+      <div className="px-6 md:px-10 lg:px-16 w-full max-w-[1568px] mx-auto pt-6 md:pt-8">
         <div ref={slotRef} className="relative" style={{ height: heroH }}>
           <div className="absolute inset-0" style={{ opacity: mode === "open" ? 1 : 0 }}>
             <WorkCard {...hero} fill />
@@ -149,7 +168,11 @@ export default function ProjectOverlay({
           {/* Close button — top-right of the hero card (same as navbar mail button) */}
           <div
             className="absolute top-5 right-5 z-10"
-            style={{ opacity: visible ? 1 : 0, transition: "opacity 0.3s ease" }}
+            style={{
+              opacity: mode === "open" ? 1 : 0,
+              pointerEvents: mode === "open" ? "auto" : "none",
+              transition: "opacity 0.15s ease",
+            }}
           >
             <Button variant="secondary" size="lg" icon={<CloseIcon />} onClick={handleClose} aria-label="Close" />
           </div>
