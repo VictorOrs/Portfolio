@@ -19,9 +19,11 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Assume playback works; we only learn otherwise when play() is refused.
-  // Starting at `true` keeps the still hidden on healthy devices (no flash).
-  const [videoPlaying, setVideoPlaying] = useState(true);
+  // Start from the still, not from the video. iOS draws its native play button as
+  // soon as a video is on screen without playing, so showing the video first meant
+  // the button flashed for as long as detection took. The video only appears once
+  // playback is confirmed; the still is a frame of it, so the swap does not show.
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   useEffect(() => {
     const v = videoRef.current;
@@ -100,10 +102,9 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
             animate={isLoaded ? { filter: "blur(0px)", scale: 1 } : {}}
             transition={{ duration: 4, ease: [0.12, 0.8, 0.2, 1], delay: 0.6 }}
           >
-            {/* Painted fallback still — a plain div, so the H1's color-dodge always has
-                real content to blend against. WebKit paints a stopped <video> in its own
-                compositing layer: it stays visible on screen but drops out of the blend
-                group, which is what kills the title when iOS refuses autoplay. */}
+            {/* Painted still — shown first, and kept whenever playback never starts
+                (iOS refuses autoplay in Low Power Mode). Same frame, same geometry and
+                blur as the video, so handing over to it does not read as a change. */}
             <motion.div
               aria-hidden
               className="hero-still origin-top"
@@ -118,7 +119,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
                 width: "min(140vw, 2016px)",
                 minWidth: "1800px",
                 aspectRatio: "1908 / 1084",
-                opacity: 0,
+                opacity: 0.8,
                 backgroundImage: "url(/img/background_poster.webp)",
                 backgroundSize: "cover",
                 backgroundPosition: "center top",
@@ -139,9 +140,9 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
               onPlaying={() => setVideoPlaying(true)}
               onPause={() => setVideoPlaying(false)}
               className="hero-video origin-top object-cover"
-              // Hidden outright when playback never starts: iOS draws its native play
-              // button inside the element, so hiding the element takes the button with
-              // it. The painted still below carries the visual, so nothing is lost.
+              // Revealed only once playback is confirmed. iOS draws its native play
+              // button inside the element, so an element kept hidden until then can
+              // never flash that button.
               animate={{ opacity: videoPlaying ? 0.8 : 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               style={{
@@ -153,7 +154,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
                 width: "min(140vw, 2016px)",
                 minWidth: "1800px",
                 height: "auto",
-                opacity: 0.8,
+                opacity: 0,
                 filter: "blur(4px)",
               }}
             />
