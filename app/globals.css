@@ -273,6 +273,14 @@ body {
   .hero-still {
     opacity: 0.8 !important;
   }
+  /* iOS is stricter than macOS here: the hero's bottom backdrop-filter band is its
+     own composited layer, and iOS drops the blend across it where macOS tolerates it.
+     Verified on an iOS 26 simulator — removing the filter brings the dodge back. The
+     band only blurred the background, which is a static still under WebKit anyway. */
+  .hero-bottom-blur {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
 }
 
 /* Hero text reveal — gradient colors transition from bg-base to final values */

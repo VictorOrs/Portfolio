@@ -140,7 +140,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
             }}
           />
           <div
-            className="absolute bottom-0 left-0 right-0 h-[400px] backdrop-blur-[12px]"
+            className="hero-bottom-blur absolute bottom-0 left-0 right-0 h-[400px] backdrop-blur-[12px]"
             style={{
               maskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
               WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
