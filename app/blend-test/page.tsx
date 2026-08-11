@@ -1,26 +1,26 @@
 "use client";
 
-import ChangingSpan from "@/components/ui/ChangingSpan";
 import { useTranslation } from "@/lib/i18n";
+import ChangingSpan from "@/components/ui/ChangingSpan";
 
 /**
- * Isolated blend test — background video, title, pill. Nothing else.
+ * Isolated blend test — the real title over the real background video, stripped of
+ * the entrance animation, the scroll fade and the still fallback.
  *
- * No entrance animation, no scroll fade, no painted-still fallback, and the video
- * deliberately does NOT carry the `hero-video` class, so the WebKit override that
- * swaps it for a still does not apply here. What you see is the raw behaviour.
+ * Kept around as the reproduction case for the WebKit blend bug: `.hero-text-reveal`
+ * carries `transform: translateZ(0)`, which is what makes the color-dodge survive
+ * over a composited video layer. Drop that one declaration and the title goes flat
+ * grey in Safari and on iOS while staying correct in Blink.
  */
 export default function BlendTestPage() {
   const { t } = useTranslation();
 
   return (
     <main className="relative min-h-screen bg-background-base">
-      {/* Same blend context as the hero */}
       <div
         className="fixed inset-0 overflow-hidden"
         style={{ zIndex: 0, isolation: "isolate" }}
       >
-        {/* Background video — same geometry, blur and opacity as the hero */}
         <video
           src="/img/background.mp4"
           poster="/img/background_poster.webp"
@@ -42,7 +42,6 @@ export default function BlendTestPage() {
           }}
         />
 
-        {/* Title — gradient clipped to text + color-dodge */}
         <div className="absolute inset-x-0 top-[200px] px-6 md:px-10 lg:px-s">
           <p className="font-display text-3xl whitespace-pre hero-text-reveal revealed">
             {t("hero.headlineMobileXs")}

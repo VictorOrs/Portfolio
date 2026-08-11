@@ -261,28 +261,6 @@ body {
   -webkit-appearance: none;
 }
 
-/* WebKit drops mix-blend-mode as soon as a composited video layer sits in the
-   backdrop, which kills the hero title's color-dodge. Verified in Safari: with the
-   video gone and a painted backdrop, the dodge comes back. So Safari gets the still
-   instead of the video — the effect is kept, the motion is not. `-webkit-hyphens`
-   is a WebKit-only query, and the -moz-appearance clause keeps Gecko out. */
-@supports (-webkit-hyphens: none) and (not (-moz-appearance: none)) {
-  .hero-video {
-    display: none;
-  }
-  .hero-still {
-    opacity: 0.8 !important;
-  }
-  /* iOS is stricter than macOS here: the hero's bottom backdrop-filter band is its
-     own composited layer, and iOS drops the blend across it where macOS tolerates it.
-     Verified on an iOS 26 simulator — removing the filter brings the dodge back. The
-     band only blurred the background, which is a static still under WebKit anyway. */
-  .hero-bottom-blur {
-    -webkit-backdrop-filter: none !important;
-    backdrop-filter: none !important;
-  }
-}
-
 /* Hero text reveal — gradient colors transition from bg-base to final values */
 .hero-text-reveal {
   --hero-text-color-1: #090909;
@@ -292,6 +270,10 @@ body {
   background-clip: text;
   color: transparent;
   mix-blend-mode: color-dodge;
+  /* WebKit drops the blend over a composited layer (the video) unless the blended
+     element gets a layer of its own. A real transform does it; will-change alone
+     does not. Harmless on Blink, and it keeps both engines on the same path. */
+  transform: translateZ(0);
   transition: --hero-text-color-1 5s cubic-bezier(0.16, 1, 0.3, 1),
               --hero-text-color-2 5s cubic-bezier(0.16, 1, 0.3, 1);
 }
