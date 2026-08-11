@@ -254,6 +254,13 @@ body {
   100% { opacity: 0; background-position: 0% 50%; }
 }
 
+/* iOS draws a native play button over any inline video that has not started.
+   In Low Power Mode autoplay is refused, so it appears over the hero background. */
+.hero-video::-webkit-media-controls-start-playback-button {
+  display: none;
+  -webkit-appearance: none;
+}
+
 /* Hero text reveal — gradient colors transition from bg-base to final values */
 .hero-text-reveal {
   --hero-text-color-1: #090909;

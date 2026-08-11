@@ -19,8 +19,17 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
 
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // Assume playback works; we only learn otherwise when play() is refused.
+  // Starting at `true` keeps the still hidden on healthy devices (no flash).
+  const [videoPlaying, setVideoPlaying] = useState(true);
+
   useEffect(() => {
-    if (videoRef.current) videoRef.current.playbackRate = 0.5;
+    const v = videoRef.current;
+    if (!v) return;
+    v.playbackRate = 0.5;
+    // iOS refuses autoplay in Low Power Mode even when muted + playsInline.
+    // The rejected promise is the signal that the painted still has to take over.
+    v.play().catch(() => setVideoPlaying(false));
   }, []);
 
   const { scrollY } = useScroll();
@@ -64,6 +73,32 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
             animate={isLoaded ? { opacity: 1, filter: "blur(0px)", scale: 1 } : {}}
             transition={{ duration: 4, ease: [0.12, 0.8, 0.2, 1], delay: 0.6 }}
           >
+            {/* Painted fallback still — a plain div, so the H1's color-dodge always has
+                real content to blend against. WebKit paints a stopped <video> in its own
+                compositing layer: it stays visible on screen but drops out of the blend
+                group, which is what kills the title when iOS refuses autoplay. */}
+            <motion.div
+              aria-hidden
+              className="origin-top"
+              animate={{ opacity: videoPlaying ? 0 : 0.8 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              style={{
+                scale: bgScale,
+                position: "absolute",
+                top: -104,
+                left: "50%",
+                x: "-50%",
+                width: "min(140vw, 2016px)",
+                minWidth: "1800px",
+                aspectRatio: "1908 / 1084",
+                opacity: 0,
+                backgroundImage: "url(/img/background_poster.webp)",
+                backgroundSize: "cover",
+                backgroundPosition: "center top",
+                filter: "blur(4px)",
+              }}
+            />
+
             {/* Scroll dezoom directly on video — min-width ensures no crop on small screens */}
             <motion.video
               ref={videoRef}
@@ -74,7 +109,9 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
               muted
               playsInline
               preload="metadata"
-              className="origin-top object-cover"
+              onPlaying={() => setVideoPlaying(true)}
+              onPause={() => setVideoPlaying(false)}
+              className="hero-video origin-top object-cover"
               style={{
                 scale: bgScale,
                 position: "absolute",
