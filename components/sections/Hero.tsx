@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { animate, motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import ChangingSpan from "@/components/ui/ChangingSpan";
 import { useTranslation } from "@/lib/i18n";
 import { useLoading } from "@/lib/loading";
@@ -36,7 +36,27 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
   }, []);
 
   const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 420], [1, 0]);
+  const scrollOpacity = useTransform(scrollY, [0, 420], [1, 0]);
+
+  // The entrance fade has to live on the container too, for the same reason as the
+  // scroll fade: an opacity < 1 between the backdrop and the title is a group
+  // boundary, and WebKit drops the blend across it. Kept on the background alone, it
+  // left the title unblended for the whole entrance. The two fades multiply.
+  const entranceOpacity = useMotionValue(0);
+  const opacity = useTransform(
+    [scrollOpacity, entranceOpacity],
+    ([s, e]: number[]) => s * e
+  );
+
+  useEffect(() => {
+    if (!isLoaded) return;
+    const controls = animate(entranceOpacity, 1, {
+      duration: 4,
+      ease: [0.12, 0.8, 0.2, 1],
+      delay: 0.6,
+    });
+    return () => controls.stop();
+  }, [isLoaded, entranceOpacity]);
   const bgScale = useTransform(scrollY, [0, 800], [1, 0.82]);
 
   // Trigger text reveal after loading with delay
@@ -76,8 +96,8 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
           {/* Entrance animation wrapper */}
           <motion.div
             className="absolute inset-0 origin-top"
-            initial={{ opacity: 0, filter: "blur(4px)", scale: 0.9 }}
-            animate={isLoaded ? { opacity: 1, filter: "blur(0px)", scale: 1 } : {}}
+            initial={{ filter: "blur(4px)", scale: 0.9 }}
+            animate={isLoaded ? { filter: "blur(0px)", scale: 1 } : {}}
             transition={{ duration: 4, ease: [0.12, 0.8, 0.2, 1], delay: 0.6 }}
           >
             {/* Painted fallback still — a plain div, so the H1's color-dodge always has
