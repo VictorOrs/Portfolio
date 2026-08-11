@@ -139,6 +139,11 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
               onPlaying={() => setVideoPlaying(true)}
               onPause={() => setVideoPlaying(false)}
               className="hero-video origin-top object-cover"
+              // Hidden outright when playback never starts: iOS draws its native play
+              // button inside the element, so hiding the element takes the button with
+              // it. The painted still below carries the visual, so nothing is lost.
+              animate={{ opacity: videoPlaying ? 0.8 : 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               style={{
                 scale: bgScale,
                 position: "absolute",
