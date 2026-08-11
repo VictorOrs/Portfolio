@@ -261,6 +261,20 @@ body {
   -webkit-appearance: none;
 }
 
+/* WebKit drops mix-blend-mode as soon as a composited video layer sits in the
+   backdrop, which kills the hero title's color-dodge. Verified in Safari: with the
+   video gone and a painted backdrop, the dodge comes back. So Safari gets the still
+   instead of the video — the effect is kept, the motion is not. `-webkit-hyphens`
+   is a WebKit-only query, and the -moz-appearance clause keeps Gecko out. */
+@supports (-webkit-hyphens: none) and (not (-moz-appearance: none)) {
+  .hero-video {
+    display: none;
+  }
+  .hero-still {
+    opacity: 0.8 !important;
+  }
+}
+
 /* Hero text reveal — gradient colors transition from bg-base to final values */
 .hero-text-reveal {
   --hero-text-color-1: #090909;

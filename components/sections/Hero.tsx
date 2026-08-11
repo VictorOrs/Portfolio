@@ -27,9 +27,12 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
     const v = videoRef.current;
     if (!v) return;
     v.playbackRate = 0.5;
-    // iOS refuses autoplay in Low Power Mode even when muted + playsInline.
-    // The rejected promise is the signal that the painted still has to take over.
-    v.play().catch(() => setVideoPlaying(false));
+    // iOS refuses autoplay in Low Power Mode even when muted + playsInline, but the
+    // play() promise is not a usable signal there — it can stay pending instead of
+    // rejecting. Judge on whether the video actually advanced.
+    v.play().catch(() => {});
+    const id = setTimeout(() => setVideoPlaying(!v.paused && v.currentTime > 0), 1500);
+    return () => clearTimeout(id);
   }, []);
 
   const { scrollY } = useScroll();
@@ -58,14 +61,18 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
   return (
     <section className="relative h-[540px] xs:h-[390px] lg:h-[440px] xl:h-[55vh] 2xl:h-[55vh] min-[1920px]:h-[35vh]">
 
-      {/* Fixed container — isolation: isolate keeps blend context */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0, isolation: "isolate" }}>
+      {/* Fixed container — isolation: isolate keeps blend context.
+          The scroll fade lives here, not on the background alone: WebKit refuses to
+          blend across a group boundary, so any opacity < 1 between the backdrop and
+          the title kills the color-dodge. Fading both together keeps them in one
+          group, where the blend resolves before the group opacity applies. */}
+      <motion.div
+        className="fixed inset-0 pointer-events-none overflow-hidden"
+        style={{ zIndex: 0, isolation: "isolate", opacity }}
+      >
 
-        {/* Background image — scroll opacity wrapper */}
-        <motion.div
-          className="absolute top-0 left-0 right-0 bottom-0"
-          style={{ opacity }}
-        >
+        {/* Background image */}
+        <div className="absolute top-0 left-0 right-0 bottom-0">
           {/* Entrance animation wrapper */}
           <motion.div
             className="absolute inset-0 origin-top"
@@ -79,7 +86,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
                 group, which is what kills the title when iOS refuses autoplay. */}
             <motion.div
               aria-hidden
-              className="origin-top"
+              className="hero-still origin-top"
               animate={{ opacity: videoPlaying ? 0 : 0.8 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               style={{
@@ -139,7 +146,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
               WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 100%)",
             }}
           />
-        </motion.div>
+        </div>
 
         {/* Mobile / tablet title (< lg) */}
         <div className="lg:hidden absolute inset-x-0 top-[260px]">
@@ -176,7 +183,7 @@ export default function Hero({ data }: { data?: HomepageData | null }) {
           </div>
         </div>
 
-      </div>
+      </motion.div>
 
     </section>
   );
