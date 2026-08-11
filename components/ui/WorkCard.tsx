@@ -3,7 +3,7 @@
 import React, { useId, useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import Button, { buttonVariants } from "@/components/ui/Button";
+import Button from "@/components/ui/Button";
 import ChevronRightIcon from "@/components/ui/ChevronRightIcon";
 import { useWorkExpand } from "@/components/work/WorkExpandContext";
 
@@ -135,9 +135,28 @@ export default function WorkCard({
       {/* Custom content — replaces standard layout */}
       {customContent}
 
+      {/* Chevron CTA — top-right, opens the case study. Always visible on mobile
+          (no hover there); hover-gated from md up.
+          Opacity lives on the button, never on this wrapper: an ancestor with
+          opacity < 1 becomes a backdrop root, which starves the button's
+          backdrop-blur and makes it pop in only once opacity hits 1. */}
+      {ctaSecondary && !fill && (
+        <div className="absolute top-8 right-8 md:top-[48px] md:right-[48px] z-10 pointer-events-none group-hover:pointer-events-auto">
+          <Button
+            variant="secondary"
+            size="md"
+            icon={<ChevronRightIcon size={24} />}
+            type="button"
+            tabIndex={-1}
+            aria-hidden
+            className="ease-out md:opacity-0 md:scale-90 md:group-hover:opacity-100 md:group-hover:scale-100"
+          />
+        </div>
+      )}
+
       {/* Content — pinned to bottom, matching Figma px-[48px] py-[48px] */}
       {!customContent && hasContent && (
-        <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
+        <div className="absolute bottom-0 left-0 right-0 p-8 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
 
           {/* Logo + Title + Worked on */}
           <div className="flex flex-col gap-4 md:gap-6">
@@ -167,7 +186,7 @@ export default function WorkCard({
             {/* "Worked on" marquee */}
             {showWorkedOn && (
               <div
-                className="hidden min-[426px]:block relative overflow-hidden w-full md:w-[575px]"
+                className="relative overflow-hidden w-full md:w-[575px]"
                 style={{ height: 40 }}
               >
                 {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label.
@@ -212,33 +231,6 @@ export default function WorkCard({
               </div>
             )}
           </div>
-
-          {/* CTAs — "Visit website" + chevron open affordance */}
-          {ctaSecondary && (
-            <div className="flex gap-3 items-center">
-              <a
-                href={ctaSecondary.href}
-                target={ctaSecondary.href.startsWith("http") ? "_blank" : undefined}
-                rel={ctaSecondary.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className={`${buttonVariants({ variant: "secondary", size: "md" })} flex-1 md:flex-none`}
-              >
-                <span className="py-0.5 px-1">{ctaSecondary.label}</span>
-              </a>
-              {/* Chevron open affordance — hidden once expanded (fill = hero). Bubbles
-                  to the card click to open the case study. */}
-              {!fill && (
-                <Button
-                  variant="secondary"
-                  size="md"
-                  icon={<ChevronRightIcon size={24} />}
-                  type="button"
-                  tabIndex={-1}
-                  aria-hidden
-                  className="group-hover:bg-alpha"
-                />
-              )}
-            </div>
-          )}
         </div>
       )}
     </div>

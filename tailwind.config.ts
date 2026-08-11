@@ -82,7 +82,8 @@ const config: Config = {
         "m":   ["var(--font-size-m)",   { lineHeight: "var(--line-height-m)",   fontWeight: "400", letterSpacing: "-0.02em" }], // Paragraph/L
         "sm":  ["var(--font-size-sm)",  { lineHeight: "var(--line-height-sm)",  fontWeight: "600", letterSpacing: "-0.03em" }], // Button/L
         "s":   ["var(--font-size-s)",   { lineHeight: "var(--line-height-s)",   fontWeight: "400", letterSpacing: "-0.02em" }], // Paragraph/M · Link · Button/M
-        "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600", letterSpacing: "-0.02em" }], // Uppercase/Label
+        "xs":  ["var(--font-size-xs)",  { lineHeight: "var(--line-height-xs)",  fontWeight: "600", letterSpacing: "1.12px" }], // Uppercase/M
+        "xxs": ["var(--font-size-xxs)", { lineHeight: "var(--line-height-xxs)", fontWeight: "600", letterSpacing: "1.12px" }], // Uppercase/S — Uppercase params, only size + line-height differ
       },
 
       // ─── Spacing (4 px base unit) ────────────────────────────────────────

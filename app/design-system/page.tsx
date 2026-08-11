@@ -27,7 +27,7 @@ import LanguageToggle from "@/components/ui/LanguageToggle";
 function Subsection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+      <h3 className="font-body text-xs uppercase text-text-secondary">
         {title}
       </h3>
       {children}
@@ -143,20 +143,23 @@ function TabTypography() {
       <TypoRow token="m" size="20px" lh="32px" w="400" font="Inter">
         <p className="font-body text-m text-text-primary">Body copy goes here.</p>
       </TypoRow>
-      <TypoRow token="s" size="16px" lh="20px" w="400" font="Inter">
+      <TypoRow token="s" size="16px" lh="24px" w="400" font="Inter">
         <p className="font-body text-s text-text-primary">Body medium — Worked on</p>
       </TypoRow>
       <TypoRow token="sm" size="18px" lh="20px" w="600" font="Nohemi">
         <p className="font-display text-sm text-text-primary">Book a call</p>
       </TypoRow>
-      <TypoRow token="s" size="16px" lh="20px" w="600" font="Nohemi">
+      <TypoRow token="s" size="16px" lh="24px" w="600" font="Nohemi">
         <p className="font-display text-s text-text-primary">Learn more</p>
       </TypoRow>
-      <TypoRow token="s" size="16px" lh="20px" w="500" font="Inter">
+      <TypoRow token="s" size="16px" lh="24px" w="500" font="Inter">
         <p className="font-body text-s text-text-primary">See all projects</p>
       </TypoRow>
       <TypoRow token="xs" size="14px" lh="20px" w="600" font="Inter" tracking="1.12px">
         <p className="font-body text-xs text-text-primary uppercase">01. Discovery</p>
+      </TypoRow>
+      <TypoRow token="xxs" size="12px" lh="16px" w="600" font="Inter" tracking="1.12px">
+        <p className="font-body text-xxs text-text-primary uppercase">01. Discovery</p>
       </TypoRow>
     </div>
   );

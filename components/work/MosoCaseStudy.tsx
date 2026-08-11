@@ -42,7 +42,7 @@ const CONTRIBUTIONS = [
 
 function Eyebrow({ children }: { children: string }) {
   return (
-    <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+    <p className="font-body text-xs uppercase text-text-secondary">
       {children}
     </p>
   );

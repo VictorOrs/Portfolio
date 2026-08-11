@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useMotionValue, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
 import { loc, type HomepageData } from "@/lib/queries";
 import { useLoading } from "@/lib/loading";
@@ -14,6 +14,34 @@ const MOBILE_TOTAL  = 182;
 const MOBILE_BP     = 768;
 const STEP_COUNT    = 4;
 const STEP_DURATION = 6000; // ms
+
+// ── Mobile choreography (< MOBILE_BP only) ────────────────────────────────────
+// The section gets a scroll runway and pins its content; every beat below is a
+// position on that runway's progress (0 → 1) rather than a duration.
+// Runway length lives in the section's `max-md:h-[400vh]` class — JS reads it
+// back off the element, so there is nothing to keep in sync here.
+// A single scroll track spans approach + pinned runway. The section is 4× the
+// viewport (`max-md:h-[400vh]`), so pinning begins exactly a quarter in; `runwayP`
+// remaps the rest to the 0→1 the beats below are written against.
+const PIN_START  = 0.25;
+// TITLE_IN is on the raw track, i.e. during the approach — otherwise the title only
+// starts fading in once the section is already pinned, which reads as late.
+const TITLE_IN   = [0.06, 0.20] as const;
+// Strictly sequential: the title must be fully gone before the cube starts, or
+// it shows through the card while both are mid-fade. TITLE_OUT therefore ends
+// exactly where CUBE_IN begins.
+const TITLE_OUT  = [0.10, 0.18] as const;
+const CUBE_IN    = [0.18, 0.28] as const;
+const CUBE_RISE  = 48; // px the cube travels up during its entrance
+const STEPS_FROM = 0.36; // steps + frame scrub own the rest of the runway
+
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+/** 0 before `a`, 1 after `b`, linear in between. */
+const ramp = (p: number, a: number, b: number) => clamp01((p - a) / (b - a));
+/** Raw track progress → 0–1 across the pinned runway. */
+const runwayP = (t: number) => clamp01((t - PIN_START) / (1 - PIN_START));
+/** Runway progress → 0–1 across the steps band. */
+const stepsProgress = (p: number) => clamp01((p - STEPS_FROM) / (1 - STEPS_FROM));
 
 function frameUrl(mobile: boolean, idx: number): string {
   const n = String(idx + 1).padStart(3, "0");
@@ -73,6 +101,72 @@ export default function Process({ data }: { data?: HomepageData | null }) {
   const [textVisible,   setTextVisible]   = useState(true);
   // timerKey resets the auto-advance cycle on manual step click
   const [timerKey, setTimerKey] = useState(0);
+
+  // ── Mobile: scroll drives everything (no timer, frames scrub continuously) ───
+  // `null` until measured: rendering the desktop reveal before the media query
+  // lands would register a `whileInView` observer that survives the prop being
+  // removed, then fire a WAAPI opacity animation that overrides the scroll one.
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BP - 1}px)`);
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  // Window-level scroll tracking (same as Hero) with the section's own geometry
+  // read per tick: `useScroll({ target, offset })` reported a permanent 0 for this
+  // pinned section, so the beats never fired.
+  // 0 when the section's top reaches the viewport bottom, 1 when its bottom does.
+  const { scrollY } = useScroll();
+  const scrollYProgress = useTransform(scrollY, () => {
+    const el = sectionRef.current;
+    if (!el) return 0;
+    const r = el.getBoundingClientRect();
+    return r.height ? clamp01((window.innerHeight - r.top) / r.height) : 0;
+  });
+
+  // `isMobile` is false on the first render (no window during SSR), so framer
+  // applies the desktop `initial` as inline style before the media query lands.
+  // Dropping the props afterwards does not clear that state — only a MotionValue
+  // overrides it — hence these constants rather than plain numbers/strings.
+  const zeroY  = useMotionValue(0);
+  const noBlur = useMotionValue("blur(0px)");
+
+  // Written as functions, not [input]/[output] ranges: framer compiles range
+  // form into scroll-linked WAAPI keyframes, which do not hold their last value
+  // past the final offset here — the cube would fade back out after its beat.
+  const titleOpacity   = useTransform(scrollYProgress, (t) =>
+    Math.min(ramp(t, TITLE_IN[0], TITLE_IN[1]), 1 - ramp(runwayP(t), TITLE_OUT[0], TITLE_OUT[1])));
+  const cubeOpacity    = useTransform(scrollYProgress, (t) => ramp(runwayP(t), CUBE_IN[0], CUBE_IN[1]));
+  const cubeY          = useTransform(scrollYProgress, (t) => CUBE_RISE * (1 - ramp(runwayP(t), CUBE_IN[0], CUBE_IN[1])));
+  const stepsOpacity   = useTransform(scrollYProgress, (t) => ramp(runwayP(t), CUBE_IN[1], STEPS_FROM));
+  // Fill of the active step's bar — its position inside its own band.
+  const stepFill = useTransform(scrollYProgress, (t) => {
+    const local = stepsProgress(runwayP(t)) * STEP_COUNT;
+    return clamp01(local - Math.floor(local));
+  });
+
+  // Scroll → active step + canvas frame. Writes to the canvas directly instead
+  // of through state, so scrubbing never queues a React render per frame.
+  useMotionValueEvent(scrollYProgress, "change", (t) => {
+    if (!isMobile) return;
+    const local = stepsProgress(runwayP(t));
+
+    const idx = Math.min(STEP_COUNT - 1, Math.floor(local * STEP_COUNT));
+    setStepIndex((prev) => (prev === idx ? prev : idx));
+
+    const bitmaps = bitmapsRef.current;
+    if (!bitmaps.length) return;
+    const frame = Math.round(local * (bitmaps.length - 1));
+    if (frame !== frameRef.current) {
+      frameRef.current = frame;
+      const bmp = bitmaps[frame];
+      if (ctxRef.current && bmp) drawContained(ctxRef.current, bmp, getCanvasZoom());
+    }
+  });
 
   // Sparkle — measured via getClientRects() on the title span
   const lastLineRef  = useRef<HTMLSpanElement>(null);
@@ -178,7 +272,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
   // ── Animate canvas to target frame over 2 s when step changes ───────────────
   useEffect(() => {
-    if (!framesLoaded) return;
+    if (!framesLoaded || isMobile !== false) return; // mobile scrubs from scroll instead
     const bitmaps    = bitmapsRef.current;
     const total      = bitmaps.length;
     const target     = Math.round((stepIndex / (STEP_COUNT - 1)) * (total - 1));
@@ -212,16 +306,17 @@ export default function Process({ data }: { data?: HomepageData | null }) {
       clearTimeout(timeoutId);
       cancelAnimationFrame(rafRef.current);
     };
-  }, [stepIndex, framesLoaded]);
+  }, [stepIndex, framesLoaded, isMobile]);
 
   // Reset timerKey (and progress bar) each time the section enters the view
   useEffect(() => {
-    if (isInView) setTimerKey(k => k + 1);
-  }, [isInView]);
+    if (isInView && isMobile === false) setTimerKey(k => k + 1);
+  }, [isInView, isMobile]);
 
-  // ── Auto-advance: only when section is in view ───────────────────────────────
+  // ── Auto-advance: desktop only — on mobile the scroll position is the source
+  //    of truth, so a timer would fight it on every wheel event ────────────────
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || isMobile !== false) return;
     const dismissId = setTimeout(() => setTextVisible(false), STEP_DURATION - 300);
     const advanceId = setTimeout(() => {
       setStepIndex(prev => (prev + 1) % STEP_COUNT);
@@ -231,13 +326,27 @@ export default function Process({ data }: { data?: HomepageData | null }) {
       clearTimeout(dismissId);
       clearTimeout(advanceId);
     };
-  }, [timerKey, stepIndex, isInView]);
+  }, [timerKey, stepIndex, isInView, isMobile]);
 
   const handleStepClick = useCallback((i: number) => {
+    // Mobile: move the scroll position instead of the state, so the pinned
+    // sequence stays the single source of truth and can't desync.
+    if (isMobile) {
+      const el = sectionRef.current;
+      if (!el) return;
+      const vh = window.innerHeight;
+      const docTop = el.getBoundingClientRect().top + window.scrollY;
+      const local = (i + 0.5) / STEP_COUNT;        // centre of the step's band
+      const p = STEPS_FROM + local * (1 - STEPS_FROM);
+      const t = PIN_START + p * (1 - PIN_START);   // runway → raw track
+      // Track starts a viewport above the section (offset "start end").
+      window.scrollTo({ top: docTop - vh + t * el.offsetHeight, behavior: "smooth" });
+      return;
+    }
     setStepIndex(i);
     setTextVisible(true);
     setTimerKey(k => k + 1);
-  }, []);
+  }, [isMobile]);
 
   // ── Shared styles ────────────────────────────────────────────────────────────
   const gradStyle = {
@@ -248,24 +357,35 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
   const ease = [0.22, 1, 0.36, 1] as const;
 
-  return (
-    <section ref={sectionRef} className="relative px-6 md:px-10 lg:px-s grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10 py-[60px] lg:py-l w-full max-w-[1440px] mx-auto">
+  // Desktop keeps the grouped scroll-into-view reveal; on mobile every block's
+  // opacity comes from the runway instead, so the two must not both drive it.
+  const reveal = (delay = 0) =>
+    isMobile !== false
+      ? {}
+      : {
+          initial:     { opacity: 0, y: 32, filter: "blur(4px)" },
+          whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+          viewport:    { once: true, amount: 0.1 },
+          transition:  { duration: 1.2, ease, delay },
+        };
 
-      {/* 12-col centered wrapper — transparent to grid on lg+ */}
-      <div className="col-span-full flex flex-col gap-10 min-[944px]:contents">
+  return (
+    <section ref={sectionRef} className="relative px-6 md:px-10 lg:px-s grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10 py-[60px] lg:py-l w-full max-w-[1440px] mx-auto max-md:h-[400vh] max-md:py-0">
+
+      {/* 12-col centered wrapper — transparent to grid on lg+.
+          Below md it pins for the length of the section's runway. */}
+      <div className="col-span-full flex flex-col gap-10 min-[944px]:contents max-md:sticky max-md:top-0 max-md:h-screen max-md:gap-8 max-md:justify-between max-md:pt-[108px] max-md:pb-16">
 
         {/* ── Left column wrapper — contents on mobile, flex col on desktop ────── */}
-        <div className="contents min-[944px]:flex min-[944px]:flex-col min-[944px]:gap-16 min-[944px]:col-span-5 min-[1127px]:col-span-4 xl:col-start-2">
+        <div className="contents min-[944px]:flex min-[944px]:flex-col min-[944px]:gap-16 min-[944px]:justify-between min-[944px]:h-full min-[944px]:py-12 min-[944px]:col-span-5 min-[1127px]:col-span-4 xl:col-start-2">
 
           {/* Title + sparkle — order 1 on mobile */}
           <motion.div
-            className="order-1 min-[944px]:order-none"
-            initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1.2, ease }}
+            className="order-1 min-[944px]:order-none max-md:absolute max-md:inset-x-0 max-md:top-0 max-md:h-[62vh] max-md:flex max-md:items-center max-md:pointer-events-none"
+            {...reveal()}
+            style={isMobile ? { opacity: titleOpacity, y: zeroY, filter: noBlur } : undefined}
           >
-            <div ref={titleWrapRef} className="relative">
+            <div ref={titleWrapRef} className="relative max-md:w-full">
               <p
                 className="font-display text-2xl bg-clip-text text-transparent whitespace-pre-line text-center min-[944px]:text-left"
                 style={gradStyle}
@@ -295,11 +415,9 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
           {/* Steps list — order 3 on mobile */}
           <motion.div
-            className="order-3 min-[944px]:order-none flex flex-col gap-6"
-            initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 1.2, ease }}
+            className="order-3 min-[944px]:order-none flex flex-col gap-6 max-md:gap-4 max-md:min-h-0"
+            {...reveal()}
+            style={isMobile ? { opacity: stepsOpacity, y: zeroY, filter: noBlur } : undefined}
           >
             {Array.from({ length: STEP_COUNT }, (_, i) => (
               <button
@@ -311,13 +429,20 @@ export default function Process({ data }: { data?: HomepageData | null }) {
                 {/* Animated progress bar over active step border */}
                 {i === stepIndex && (
                   <motion.div
-                    key={`${stepIndex}-${timerKey}`}
+                    key={isMobile ? "scroll" : `${stepIndex}-${timerKey}`}
                     aria-hidden
                     className="absolute left-[-3px] top-0 w-[3px] pointer-events-none"
-                    initial={{ scaleY: 0 }}
-                    animate={{ scaleY: 1 }}
-                    transition={{ duration: STEP_DURATION / 1000, ease: "linear" }}
+                    {...(isMobile
+                      ? {}
+                      : {
+                          initial:    { scaleY: 0 },
+                          animate:    { scaleY: 1 },
+                          transition: { duration: STEP_DURATION / 1000, ease: "linear" },
+                        })}
                     style={{
+                      // Mobile: the bar tracks the scroll position inside the
+                      // step's band rather than a fixed duration.
+                      ...(isMobile ? { scaleY: stepFill } : {}),
                       height:          "100%",
                       transformOrigin: "top",
                       backgroundColor: "white",
@@ -325,7 +450,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
                   />
                 )}
 
-                <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+                <p className="font-body text-xxs uppercase text-text-secondary">
                   {String(i + 1).padStart(2, "0")}. {stepTitle(i)}
                 </p>
 
@@ -336,7 +461,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
                 >
                   <div style={{ overflow: "hidden", minHeight: 0 }}>
                     <motion.p
-                      className="font-body text-m text-text-primary pt-3"
+                      className="font-body text-s font-medium text-text-primary pt-3"
                       animate={{ opacity: i === stepIndex && textVisible ? 1 : 0 }}
                       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                     >
@@ -352,11 +477,9 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
         {/* ── Right: cube — 5 cols (col 7–11, col 6 = gap) ───────────────────── */}
         <motion.div
-          className="aspect-video order-2 min-[944px]:order-none min-[944px]:aspect-auto min-[944px]:h-[570px] min-[944px]:col-start-6 min-[944px]:col-span-5 xl:col-start-7"
-          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          viewport={{ once: true, amount: 0.1 }}
-          transition={{ duration: 1.2, ease, delay: 0.1 }}
+          className="aspect-video order-2 min-[944px]:order-none min-[944px]:aspect-auto min-[944px]:h-[570px] min-[944px]:col-start-6 min-[944px]:col-span-5 xl:col-start-7 max-md:aspect-auto max-md:h-[360px] max-md:shrink-0"
+          {...reveal(0.1)}
+          style={isMobile ? { opacity: cubeOpacity, y: cubeY, filter: noBlur } : undefined}
         >
           <SquircleCard className="relative w-full h-full bg-background-surface overflow-hidden">
             <div ref={cardInnerRef} className="absolute inset-0">
@@ -377,7 +500,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
               {/* Mobile vignette */}
               <div
                 aria-hidden
-                className="max-[425px]:hidden lg:hidden absolute inset-0 pointer-events-none"
+                className="lg:hidden absolute inset-0 pointer-events-none"
                 style={{
                   background: "radial-gradient(ellipse 47% 38% at center, transparent 60%, var(--color-bg-surface) 100%)",
                 }}

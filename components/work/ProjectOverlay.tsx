@@ -49,6 +49,7 @@ export default function ProjectOverlay({
   const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const cloneRef = useRef<HTMLDivElement>(null);
   const closingRef = useRef(false);
 
@@ -104,6 +105,16 @@ export default function ProjectOverlay({
     setMode("closing");
   };
 
+  // Backdrop click — anything that isn't the hero card or the case-study body.
+  // Guarded on "open" so a click can't interrupt the opening morph.
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (mode !== "open") return;
+    const target = e.target as Node;
+    if (slotRef.current?.contains(target)) return;
+    if (bodyRef.current?.contains(target)) return;
+    handleClose();
+  };
+
   useLayoutEffect(() => {
     if (mode !== "closing" || !cloneRef.current || !cloneFrom) return;
     const live = document.querySelector(`[data-work-card="${slug}"]`);
@@ -153,6 +164,7 @@ export default function ProjectOverlay({
       ref={scrollRef}
       data-lenis-prevent
       className="fixed inset-0 z-[10020] overflow-y-auto overflow-x-hidden"
+      onClick={handleBackdropClick}
       initial={{ backgroundColor: "rgba(0,1,3,0)" }}
       animate={{ backgroundColor: bgOn ? "rgba(0,1,3,1)" : "rgba(0,1,3,0)" }}
       transition={{ duration: bgOn ? 0.2 : 0.25, ease: "linear" }}
@@ -165,22 +177,27 @@ export default function ProjectOverlay({
             <WorkCard {...hero} fill />
           </div>
 
-          {/* Close button — top-right of the hero card (same as navbar mail button) */}
+          {/* Close button — same top-right offset (48px) as the card's chevron CTA,
+              so the morph between the two reads as one continuous element. */}
           <div
-            className="absolute top-5 right-5 z-10"
-            style={{
-              opacity: mode === "open" ? 1 : 0,
-              pointerEvents: mode === "open" ? "auto" : "none",
-              transition: "opacity 0.15s ease",
-            }}
+            className="absolute top-8 right-8 md:top-[48px] md:right-[48px] z-10"
+            style={{ pointerEvents: mode === "open" ? "auto" : "none" }}
           >
-            <Button variant="secondary" size="lg" icon={<CloseIcon />} onClick={handleClose} aria-label="Close" />
+            <Button
+              variant="secondary"
+              size="md"
+              icon={<CloseIcon />}
+              onClick={handleClose}
+              aria-label="Close"
+              className={`ease-out ${mode === "open" ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
+            />
           </div>
         </div>
       </div>
 
       {/* Case-study body — keeps its own grid; fades in once the morph settles */}
       <div
+        ref={bodyRef}
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "none" : "translateY(24px)",

@@ -45,6 +45,15 @@ Defined in `tailwind.config.ts` and `app/globals.css`. **Never use raw hex value
 - **Typography**: `font-display` → Safiro (headings only); `font-body` → Inter (buttons, nav, links, labels). Scale: `text-display-1`, `text-heading-3`, `text-heading-4`, `text-body`, `text-btn-lg`, `text-link`, `text-label`.
 - **Spacing**: named section tokens `px-xl`, `py-l`, etc. defined in `tailwind.config.ts`.
 
+### Component reuse
+
+**Always build from the existing component library before writing new markup.** Whenever a task calls for a button, icon, card, or any other UI element, look in `components/ui/` first (and `components/work/` for project-specific pieces) and use what's already there.
+
+- Use the `Button` component itself — not a bare `<span>` / `<div>` re-styled with `buttonVariants`. `buttonVariants` is only for cases where the element genuinely can't be a `<button>` (e.g. it must be an `<a>`).
+- For a decorative control whose click should bubble to a clickable parent, still use `Button` with `type="button"`, `tabIndex={-1}`, `aria-hidden` (see the work card's chevron and mobile CTA).
+- Icons are standalone components in `components/ui/` (`ChevronRightIcon`, `CloseIcon`, `LinkedInIcon`, `DribbbleIcon`, …). Add a new one there rather than inlining an `<svg>` in a section.
+- Only create a new primitive when nothing existing fits — and put it in `components/ui/` so the next use can reuse it.
+
 ### Button component
 
 `Button` uses CVA (`class-variance-authority`). Variants: `primary` / `secondary`. Sizes: `lg` / `md`. The `icon` prop renders outside the label span. The `.btn-primary` CSS class in `globals.css` owns the shimmer animation (`btn-shimmer` keyframe) and hover glow — do not replicate these in Tailwind classes.

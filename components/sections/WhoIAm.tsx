@@ -52,14 +52,14 @@ export default function WhoIAm({
           {/* Profile info */}
           <div className="flex flex-col gap-6">
             {/* Avatar */}
-            <div className="relative w-[72px] h-[72px] shrink-0">
+            <div className="relative w-14 h-14 md:w-[72px] md:h-[72px] shrink-0">
               <Image
                 src={profileImageUrl ?? "/img/profil_pic.jpg"}
                 alt="Victor Oursin"
                 width={72}
                 height={72}
                 priority
-                className="rounded-full object-cover w-[72px] h-[72px]"
+                className="rounded-full object-cover w-14 h-14 md:w-[72px] md:h-[72px]"
               />
             </div>
 
@@ -77,7 +77,7 @@ export default function WhoIAm({
               </div>
 
               {/* Role */}
-              <p className="font-body font-semibold text-xs tracking-[2px] uppercase text-text-secondary">
+              <p className="font-body text-xxs md:text-xs uppercase text-text-secondary">
                 {loc(data, "about_role", lang) ?? t("whoiam.role")}
               </p>
             </div>
@@ -129,7 +129,7 @@ export default function WhoIAm({
         >
 
           {/* Client logos card */}
-          <SquircleCard className="relative bg-background-surface max-[425px]:h-[220px] min-[426px]:min-h-[492px] min-[900px]:min-h-[372px] lg:min-h-0 lg:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
+          <SquircleCard className="relative bg-background-surface max-[425px]:h-[240px] min-[426px]:min-h-[492px] min-[900px]:min-h-[372px] lg:min-h-0 lg:h-[414px] w-full overflow-hidden" style={{ zIndex: 10000 }}>
 
             {/* Heading */}
             <h2 className="absolute left-8 top-10 max-[425px]:left-6 max-[425px]:top-6 font-display text-l max-[425px]:text-sm text-text-primary leading-10 whitespace-pre">
@@ -156,7 +156,7 @@ export default function WhoIAm({
                   style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
                 />
                 <Image
-                  src="/img/dialog.webp" alt="Dialog" width={296} height={261}
+                  src="/img/gemos.webp" alt="Gemos" width={296} height={261}
                   className="w-full h-auto rounded-[16px]"
                   style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
                 />

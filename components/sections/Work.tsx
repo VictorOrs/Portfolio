@@ -83,7 +83,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
           </>
         ),
         customContent: (
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:px-[48px] md:py-[48px] flex flex-col gap-8">
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:px-[48px] md:py-[48px] flex flex-col gap-4 md:gap-8">
             <h4 className="font-display text-l">
               <span className="text-text-secondary">
                 {loc(data, "work_seeMoreMuted", lang) ?? t("work.seeMoreLine1")}
@@ -111,6 +111,19 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
   const [cardH, setCardH]             = useState(540);
   const [cardGap, setCardGap]         = useState(24);
 
+  // ── Controller reveal — observed while still in normal flow, so its geometry
+  //    is real. Dot morph / autoplay timer / sticky fire on their own short
+  //    delay once visible, instead of waiting for the whole pill fade to end.
+  const controllerRef    = useRef<HTMLDivElement>(null);
+  const controllerInView = useInView(controllerRef, { once: true, amount: 1 });
+  const [revealDone, setRevealDone] = useState(false);
+
+  useEffect(() => {
+    if (!controllerInView) return;
+    const timer = setTimeout(() => setRevealDone(true), 400);
+    return () => clearTimeout(timer);
+  }, [controllerInView]);
+
   useEffect(() => {
     const update = () => {
       setCardH(window.innerWidth < 768 ? 420 : 540);
@@ -136,7 +149,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
   // RAF-based timer — only runs when section is visible, not paused, not sliderOnly,
   // and not while a project overlay is open (avoids the slide moving under the morph).
   useEffect(() => {
-    if (sliderOnly || paused || !inView || openSlug) return;
+    if (sliderOnly || paused || !inView || !revealDone || openSlug) return;
 
     const startP = progressRef.current; // resume from current position when unpausing
     let t0: number | null = null;
@@ -158,7 +171,7 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
 
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [paused, inView, activeIndex, openSlug]);
+  }, [paused, inView, revealDone, activeIndex, openSlug]);
 
   const transitionLock = useRef(false);
 
@@ -221,18 +234,18 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
       className="relative px-6 md:px-10 lg:px-s py-[60px] lg:py-l w-full max-w-[1440px] mx-auto grid grid-cols-10 xl:grid-cols-12 gap-4 md:gap-6 lg:gap-10"
       style={{ zIndex: 10000 }}
     >
-      <div className="flex flex-col gap-8 md:gap-16 col-span-full xl:col-start-2 xl:col-span-10">
+      <div className="flex flex-col gap-10 md:gap-16 col-span-full xl:col-start-2 xl:col-span-10">
 
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       {!sliderOnly && (
         <motion.div
-          className="flex flex-col gap-6 items-center text-center"
+          className="flex flex-col gap-3 items-center text-center"
           initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease }}
         >
-          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary">
+          <p className="font-body text-xs uppercase text-text-secondary">
             {loc(data, "work_eyebrow", lang) ?? t("work.eyebrow")}
           </p>
           <p
@@ -248,54 +261,61 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
         </motion.div>
       )}
 
-      {/* ── Horizontal slider ────────────────────────────────────────────── */}
-      <motion.div
-        ref={sliderRef}
-        className="overflow-visible touch-pan-y"
-        initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
-        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        viewport={{ once: true, amount: 0.05 }}
-        transition={{ duration: 1.2, ease, delay: 0.1 }}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onPointerCancel={() => { isDragging.current = false; }}
-      >
-        <motion.div
-          className="flex gap-4 md:gap-6"
-          animate={{ x: `calc(${-activeIndex * 100}% - ${activeIndex * (typeof window !== "undefined" && window.innerWidth < 768 ? 16 : 24)}px)` }}
-          transition={{ duration: 0.65, ease }}
-        >
-          {SLIDES.map((slide, i) => (
-            <div
-              key={slide.id}
-              className={`w-full shrink-0${i !== activeIndex ? " cursor-pointer" : ""}`}
-              onClick={() => i !== activeIndex && goToSlide(i)}
-            >
-              <WorkCard {...slide.card} height={cardH} expandable={!sliderOnly && i === activeIndex} />
-            </div>
-          ))}
-        </motion.div>
-      </motion.div>
+      {/* ── Carousel + controller — own wrapper so the sticky controller is
+           scoped to the carousel's scroll height, not the whole section. ── */}
+      <div className="flex flex-col gap-10 md:gap-16">
 
-      {/* ── Sticky controller ─────────────────────────────────────────────── */}
-      {!sliderOnly && (
+        {/* ── Horizontal slider ────────────────────────────────────────── */}
         <motion.div
-          className="sticky bottom-6 flex justify-center z-10"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 1.0, ease, delay: 0.2 }}
+          ref={sliderRef}
+          className="overflow-visible touch-pan-y"
+          initial={{ opacity: 0, y: 32, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.05 }}
+          transition={{ duration: 1.2, ease, delay: 0.1 }}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => { isDragging.current = false; }}
         >
-          <WorkController
-            count={SLIDES.length}
-            activeIndex={activeIndex}
-            progress={progress}
-            paused={paused}
-            onTogglePause={() => setPaused((p) => !p)}
-            onDotClick={goToSlide}
-          />
+          <motion.div
+            className="flex gap-4 md:gap-6"
+            animate={{ x: `calc(${-activeIndex * 100}% - ${activeIndex * (typeof window !== "undefined" && window.innerWidth < 768 ? 16 : 24)}px)` }}
+            transition={{ duration: 0.65, ease }}
+          >
+            {SLIDES.map((slide, i) => (
+              <div
+                key={slide.id}
+                className={`w-full shrink-0${i !== activeIndex ? " cursor-pointer" : ""}`}
+                onClick={() => i !== activeIndex && goToSlide(i)}
+              >
+                <WorkCard {...slide.card} height={cardH} expandable={!sliderOnly && i === activeIndex} />
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
-      )}
+
+        {/* ── Controller — stays in normal flow while it reveals (so the fade +
+             slide is actually on screen when it plays), then turns sticky. ── */}
+        {!sliderOnly && (
+          <motion.div
+            ref={controllerRef}
+            className={`flex justify-center z-10${revealDone ? " sticky bottom-6" : ""}`}
+            initial={{ opacity: 0, y: 16 }}
+            animate={controllerInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1.0, ease, delay: 0.2 }}
+          >
+            <WorkController
+              count={SLIDES.length}
+              activeIndex={activeIndex}
+              progress={progress}
+              paused={paused}
+              onTogglePause={() => setPaused((p) => !p)}
+              onDotClick={goToSlide}
+              revealed={revealDone}
+            />
+          </motion.div>
+        )}
+      </div>
 
       </div>
     </section>

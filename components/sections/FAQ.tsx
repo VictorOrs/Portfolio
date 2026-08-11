@@ -123,7 +123,7 @@ export default function FAQ({ sanityItems, data }: { sanityItems?: FAQData[]; da
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 1.2, ease }}
         >
-          <p className="font-body font-semibold text-[14px] leading-5 tracking-[1.12px] uppercase text-text-secondary text-center md:text-left">
+          <p className="font-body text-xs uppercase text-text-secondary text-center md:text-left">
             {loc(data, "faq_eyebrow", lang) ?? t("faq.eyebrow")}
           </p>
           <p
