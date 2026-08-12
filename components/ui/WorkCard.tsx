@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useId, useRef, useState } from "react";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import ChevronRightIcon from "@/components/ui/ChevronRightIcon";
@@ -60,27 +59,50 @@ export interface WorkCardProps {
 }
 
 /** Sanity's CDN 403s any request with an Origin header, and mask fetches always
- *  carry one — so mask sources go through the rewrite in next.config.mjs.
- *  Plain <img> loads are not CORS-gated and keep using the CDN directly. */
+ *  carry one — so mask sources go through the proxy route at /sanity-cdn. */
 const maskSrc = (src: string) => src.replace("https://cdn.sanity.io/", "/sanity-cdn/");
 
-/** One client logo in the strip — flattened to white so any source colour works. */
+/**
+ * A logo painted through a mask: the shape comes from the file, the colour from
+ * text-secondary. Whatever palette a logo is uploaded in — black included — every
+ * logo on the card lands on the same tone, and follows the theme token.
+ * inline-block so the fixed height drives the width via aspect-ratio.
+ */
+function MaskedLogo({
+  logo,
+  height,
+  className = "",
+}: {
+  logo: CardLogo;
+  height: number;
+  className?: string;
+}) {
+  return (
+    <span
+      role="img"
+      aria-label={logo.alt}
+      className={`inline-block align-bottom bg-text-secondary ${className}`}
+      style={{
+        height,
+        aspectRatio: `${logo.width ?? 110} / ${logo.height ?? 20}`,
+        WebkitMaskImage: `url("${maskSrc(logo.src)}")`,
+        maskImage: `url("${maskSrc(logo.src)}")`,
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "left center",
+        maskPosition: "left center",
+      }}
+    />
+  );
+}
+
+/** One client logo in the scrolling strip. */
 function MarqueeLogo({ logo }: { logo: CardLogo }) {
   return (
     <div className="flex items-center justify-center shrink-0" style={{ height: 32 }}>
-      <Image
-        src={logo.src}
-        alt={logo.alt}
-        width={logo.width ?? 80}
-        height={logo.height ?? 32}
-        unoptimized
-        style={{
-          height: 40,
-          width: "auto",
-          filter: "brightness(0) invert(1)",
-          opacity: 0.5,
-        }}
-      />
+      <MaskedLogo logo={logo} height={40} />
     </div>
   );
 }
@@ -217,26 +239,7 @@ export default function WorkCard({
           <div className="flex flex-col gap-4 md:gap-6">
             <div className="flex flex-col gap-6 md:gap-8 items-start w-full md:w-[575px]">
               {logo && (
-                /* Painted through a mask rather than drawn: whatever colours the
-                   uploaded file carries, every card logo lands on text-secondary.
-                   inline-block so the fixed height drives the width via aspect-ratio. */
-                <span
-                  role="img"
-                  aria-label={logo.alt}
-                  className="inline-block align-bottom bg-text-secondary max-[425px]:!h-[18px]"
-                  style={{
-                    height: 20,
-                    aspectRatio: `${logo.width ?? 110} / ${logo.height ?? 20}`,
-                    WebkitMaskImage: `url("${maskSrc(logo.src)}")`,
-                    maskImage: `url("${maskSrc(logo.src)}")`,
-                    WebkitMaskSize: "contain",
-                    maskSize: "contain",
-                    WebkitMaskRepeat: "no-repeat",
-                    maskRepeat: "no-repeat",
-                    WebkitMaskPosition: "left center",
-                    maskPosition: "left center",
-                  }}
-                />
+                <MaskedLogo logo={logo} height={20} className="max-[425px]:!h-[18px]" />
               )}
               {title && (
                 <p className="font-display text-l text-white whitespace-pre-line max-[425px]:whitespace-normal">
