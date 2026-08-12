@@ -374,14 +374,14 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
       {/* 12-col centered wrapper — transparent to grid on lg+.
           Below md it pins for the length of the section's runway. */}
-      <div className="col-span-full flex flex-col gap-10 min-[944px]:contents max-md:sticky max-md:top-0 max-md:h-screen max-md:gap-8 max-md:justify-between max-md:pt-[104px] max-md:pb-16">
+      <div className="col-span-full flex flex-col gap-10 min-[944px]:contents max-md:sticky max-md:top-0 max-md:h-screen max-md:gap-8 max-md:justify-between max-md:pt-8 max-md:pb-16">
 
         {/* ── Left column wrapper — contents on mobile, flex col on desktop ────── */}
         <div className="contents min-[944px]:flex min-[944px]:flex-col min-[944px]:gap-16 min-[944px]:justify-between min-[944px]:h-full min-[944px]:py-12 min-[944px]:col-span-5 min-[1127px]:col-span-4 xl:col-start-2">
 
           {/* Title + sparkle — order 1 on mobile */}
           <motion.div
-            className="order-1 min-[944px]:order-none max-md:absolute max-md:inset-x-0 max-md:top-0 max-md:h-[62vh] max-md:flex max-md:items-center max-md:pointer-events-none"
+            className="order-1 min-[944px]:order-none max-md:absolute max-md:inset-0 max-md:flex max-md:items-center max-md:pointer-events-none"
             {...reveal()}
             style={isMobile ? { opacity: titleOpacity, y: zeroY, filter: noBlur } : undefined}
           >
@@ -415,7 +415,7 @@ export default function Process({ data }: { data?: HomepageData | null }) {
 
           {/* Steps list — order 3 on mobile */}
           <motion.div
-            className="order-3 min-[944px]:order-none flex flex-col gap-6 max-md:gap-4 max-md:min-h-0"
+            className="order-3 min-[944px]:order-none flex flex-col gap-6 max-md:min-h-0"
             {...reveal()}
             style={isMobile ? { opacity: stepsOpacity, y: zeroY, filter: noBlur } : undefined}
           >
