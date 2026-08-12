@@ -59,6 +59,11 @@ export interface WorkCardProps {
   expandable?: boolean;
 }
 
+/** Sanity's CDN 403s any request with an Origin header, and mask fetches always
+ *  carry one — so mask sources go through the rewrite in next.config.mjs.
+ *  Plain <img> loads are not CORS-gated and keep using the CDN directly. */
+const maskSrc = (src: string) => src.replace("https://cdn.sanity.io/", "/sanity-cdn/");
+
 /** One client logo in the strip — flattened to white so any source colour works. */
 function MarqueeLogo({ logo }: { logo: CardLogo }) {
   return (
@@ -209,8 +214,8 @@ export default function WorkCard({
                   style={{
                     height: 20,
                     aspectRatio: `${logo.width ?? 110} / ${logo.height ?? 20}`,
-                    WebkitMaskImage: `url("${logo.src}")`,
-                    maskImage: `url("${logo.src}")`,
+                    WebkitMaskImage: `url("${maskSrc(logo.src)}")`,
+                    maskImage: `url("${maskSrc(logo.src)}")`,
                     WebkitMaskSize: "contain",
                     maskSize: "contain",
                     WebkitMaskRepeat: "no-repeat",
