@@ -7,9 +7,7 @@ import { LoadingProvider } from "@/lib/loading";
 import { WorkExpandProvider } from "@/components/work/WorkExpandContext";
 import { client } from "@/lib/sanity";
 import { projectsQuery, type ProjectData } from "@/lib/queries";
-import GradientTracker from "@/components/GradientTracker";
-import Grain from "@/components/Grain";
-import SmoothScroll from "@/components/SmoothScroll";
+import SiteChrome from "@/components/SiteChrome";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 
@@ -50,9 +48,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${inter.variable} antialiased`}
       >
-        <GradientTracker />
-        <Grain />
-        <SmoothScroll />
+        <SiteChrome />
         <I18nProvider>
           <LoadingProvider>
             <WorkExpandProvider projects={projects}>
