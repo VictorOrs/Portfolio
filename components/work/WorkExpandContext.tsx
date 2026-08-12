@@ -2,16 +2,23 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import ProjectOverlay from "./ProjectOverlay";
-import { PROJECTS } from "./registry";
 import { getLenis } from "@/components/SmoothScroll";
 import type { WorkCardProps } from "@/components/ui/WorkCard";
+import type { ProjectData } from "@/lib/queries";
 
 export type CardRect = { top: number; left: number; width: number; height: number };
 
 /** The exact slider-card props, so the overlay hero renders identical content. */
 export type HeroCardProps = Pick<
   WorkCardProps,
-  "logo" | "title" | "illustration" | "ctaPrimary" | "ctaSecondary" | "showWorkedOn"
+  | "logo"
+  | "title"
+  | "illustration"
+  | "ctaPrimary"
+  | "ctaSecondary"
+  | "showWorkedOn"
+  | "workedOnLogos"
+  | "scrollLogos"
 >;
 
 type WorkExpandValue = {
@@ -24,18 +31,29 @@ type WorkExpandValue = {
 
 const WorkExpandContext = createContext<WorkExpandValue | null>(null);
 
-export function WorkExpandProvider({ children }: { children: React.ReactNode }) {
+export function WorkExpandProvider({
+  projects = [],
+  children,
+}: {
+  projects?: ProjectData[];
+  children: React.ReactNode;
+}) {
   const [slug, setSlug] = useState<string | null>(null);
   const [openRect, setOpenRect] = useState<CardRect | undefined>(undefined);
   const [cardProps, setCardProps] = useState<HeroCardProps | undefined>(undefined);
 
+  const has = useCallback(
+    (s: string) => projects.some((p) => p.slug === s),
+    [projects]
+  );
+
   const open = useCallback((next: string, rect?: CardRect, card?: HeroCardProps) => {
-    if (!PROJECTS[next]) return;
+    if (!has(next)) return;
     setOpenRect(rect);
     setCardProps(card);
     setSlug(next);
     window.history.pushState({ workSlug: next }, "", `/work/${next}`);
-  }, []);
+  }, [has]);
 
   const close = useCallback(() => {
     if (window.history.state?.workSlug) window.history.back();
@@ -55,11 +73,11 @@ export function WorkExpandProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     const onPop = () => {
       const s = window.history.state?.workSlug;
-      setSlug(s && PROJECTS[s] ? s : null);
+      setSlug(s && has(s) ? s : null);
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
-  }, []);
+  }, [has]);
 
   // Lock background scroll with overflow:hidden on <html> — freezes the page at its
   // current position without collapsing height (so close leaves scroll untouched).
@@ -84,11 +102,19 @@ export function WorkExpandProvider({ children }: { children: React.ReactNode }) 
     };
   }, [slug]);
 
+  const project = slug ? projects.find((p) => p.slug === slug) : undefined;
+
   return (
     <WorkExpandContext.Provider value={{ open, close, openSlug: slug }}>
       {children}
-      {slug && (
-        <ProjectOverlay key={slug} slug={slug} openRect={openRect} cardProps={cardProps} onClose={close} />
+      {project && (
+        <ProjectOverlay
+          key={project.slug}
+          project={project}
+          openRect={openRect}
+          cardProps={cardProps}
+          onClose={close}
+        />
       )}
     </WorkExpandContext.Provider>
   );

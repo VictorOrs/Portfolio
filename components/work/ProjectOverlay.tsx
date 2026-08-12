@@ -6,8 +6,10 @@ import WorkCard from "@/components/ui/WorkCard";
 import Button from "@/components/ui/Button";
 import CloseIcon from "@/components/ui/CloseIcon";
 import { useTranslation } from "@/lib/i18n";
-import { PROJECTS } from "./registry";
+import CaseStudyBody from "./CaseStudyBody";
+import { projectCardProps } from "./projectCard";
 import type { CardRect, HeroCardProps } from "./WorkExpandContext";
+import type { ProjectData } from "@/lib/queries";
 
 const MORPH_MS = 600;
 // Pre-morph hold: the background goes opaque (surrounding elements fade out) while the
@@ -36,17 +38,18 @@ const kf = (r: CardRect) => ({
  * bottom-left. The background goes opaque immediately so the home isn't seen behind.
  */
 export default function ProjectOverlay({
-  slug,
+  project,
   openRect,
   cardProps,
   onClose,
 }: {
-  slug: string;
+  project: ProjectData;
   openRect?: CardRect;
   cardProps?: HeroCardProps;
   onClose: () => void;
 }) {
-  const { t } = useTranslation();
+  const { lang } = useTranslation();
+  const slug = project.slug;
   const scrollRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -61,8 +64,6 @@ export default function ProjectOverlay({
   // Backdrop opacity, decoupled from `mode` so it stays opaque while the clone morphs
   // back on close — the surroundings only reappear once the card is home.
   const [bgOn, setBgOn] = useState(true);
-
-  const entry = PROJECTS[slug];
 
   // Measure the in-flow hero slot → final height (keeps the card's aspect) + clone destination.
   useLayoutEffect(() => {
@@ -146,16 +147,9 @@ export default function ProjectOverlay({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!entry) return null;
-  const { Body, logo, illustration: Illustration, titleKey, external } = entry;
-
-  // Identical card content — prefer live slider props, fall back to the registry.
-  const hero: HeroCardProps = cardProps ?? {
-    logo,
-    title: t(titleKey),
-    illustration: <Illustration />,
-    ctaSecondary: { label: t(external.labelKey), href: external.href },
-  };
+  // Identical card content — prefer the live slider props, rebuild from the
+  // project document when the overlay is restored without them (history nav).
+  const hero: HeroCardProps = cardProps ?? projectCardProps(project, lang);
 
   const showClone = mode === "opening" || mode === "closing";
 
@@ -204,7 +198,7 @@ export default function ProjectOverlay({
           transition: "opacity 0.5s ease 0.1s, transform 0.5s ease 0.1s",
         }}
       >
-        <Body />
+        <CaseStudyBody project={project} />
       </div>
 
       {/* Morphing clone — fixed, animates its box between card and hero */}

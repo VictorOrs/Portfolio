@@ -11,6 +11,30 @@ import { PortableText } from "@portabletext/react";
 import { useTranslation } from "@/lib/i18n";
 import { loc, type HomepageData } from "@/lib/queries";
 
+type ClientImage = { src: string; alt: string; width: number; height: number };
+
+// Used until the Sanity field is filled — same artwork the section shipped with.
+const FALLBACK_CLIENTS: ClientImage[] = [
+  { src: "/img/enuma.webp", alt: "Enuma", width: 640, height: 565 },
+  { src: "/img/moso.svg",   alt: "Moso",  width: 296, height: 261 },
+  { src: "/img/gemos.webp", alt: "Gemos", width: 592, height: 522 },
+];
+
+function ClientCardImage({ image, shadow }: { image: ClientImage; shadow: string }) {
+  return (
+    <Image
+      src={image.src}
+      alt={image.alt}
+      width={image.width}
+      height={image.height}
+      // Next's optimiser rejects remote SVGs; these are served as-is instead.
+      unoptimized={image.src.endsWith(".svg")}
+      className="w-full h-auto rounded-[16px]"
+      style={{ boxShadow: shadow }}
+    />
+  );
+}
+
 export default function WhoIAm({
   data,
   profileImageUrl,
@@ -22,6 +46,17 @@ export default function WhoIAm({
   const { isLoaded } = useLoading();
 
   const bio = lang === "fr" ? data?.about_bio_fr : data?.about_bio_en;
+
+  // First image leads the left column, the rest stack on the right.
+  const fromSanity = (data?.about_clientImages ?? [])
+    .filter((img) => !!img.url)
+    .map((img) => ({
+      src: img.url as string,
+      alt: img.name ?? "",
+      width: img.width ?? 296,
+      height: img.height ?? 261,
+    }));
+  const [lead, ...stacked] = fromSanity.length > 0 ? fromSanity : FALLBACK_CLIENTS;
 
   return (
     <motion.section
@@ -139,28 +174,25 @@ export default function WhoIAm({
             {/* Logo group */}
             <div className="absolute left-6 md:left-8 right-[-16px] bottom-[-72px] max-[425px]:bottom-[-48px] flex gap-4 items-end">
 
-              {/* Left — Enuma, offset via padding-bottom */}
-              <div className="flex-1 min-w-0 pb-16 max-[425px]:pb-8">
-                <Image
-                  src="/img/enuma.webp" alt="Enuma" width={296} height={261}
-                  className="w-full h-auto rounded-[16px]"
-                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" }}
-                />
-              </div>
+              {/* Left — leading image, offset via padding-bottom */}
+              {lead && (
+                <div className="flex-1 min-w-0 pb-16 max-[425px]:pb-8">
+                  <ClientCardImage image={lead} shadow="0px -3.65px 29.18px 0px rgba(0,0,0,0.72)" />
+                </div>
+              )}
 
-              {/* Right — Moso (top) + Dialog (bottom), stacked */}
-              <div className="flex-1 min-w-0 flex flex-col gap-6">
-                <Image
-                  src="/img/moso.svg" alt="Moso" width={296} height={261}
-                  className="w-full h-auto rounded-[16px]"
-                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
-                />
-                <Image
-                  src="/img/gemos.webp" alt="Gemos" width={296} height={261}
-                  className="w-full h-auto rounded-[16px]"
-                  style={{ boxShadow: "0px -3.65px 29.18px 0px rgba(0,0,0,0.48)" }}
-                />
-              </div>
+              {/* Right — the rest, stacked. Lighter shadow keeps them behind. */}
+              {stacked.length > 0 && (
+                <div className="flex-1 min-w-0 flex flex-col gap-6">
+                  {stacked.map((image, i) => (
+                    <ClientCardImage
+                      key={i}
+                      image={image}
+                      shadow="0px -3.65px 29.18px 0px rgba(0,0,0,0.48)"
+                    />
+                  ))}
+                </div>
+              )}
 
             </div>
           </SquircleCard>

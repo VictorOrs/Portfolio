@@ -69,15 +69,51 @@ export default defineType({
       group: "about",
     }),
     ...bilingual("about_clientsHeading", "Clients heading", "about", "text"),
+    defineField({
+      name: "about_clientImages",
+      title: "Client images",
+      type: "array",
+      description:
+        "Shown in the clients card. The first image sits in the left column, the rest stack in the right one — three reads best. Falls back to the bundled artwork when empty.",
+      group: "about",
+      of: [
+        {
+          type: "image",
+          fields: [{ name: "name", title: "Client name", type: "string" }],
+          preview: { select: { title: "name", media: "asset" } },
+        },
+      ],
+    }),
     ...bilingual("about_clientsCaption", "Clients caption", "about", "text"),
 
     // ── Work ──────────────────────────────────────────────────────────
+    // The cards themselves live in their own "Project" documents — this group
+    // only covers the section header and the white card that closes the slider.
     ...bilingual("work_eyebrow", "Eyebrow", "work"),
     ...bilingual("work_title", "Section title", "work"),
-    ...bilingual("work_enumaTitle", "Enuma card title", "work", "text"),
-    ...bilingual("work_mosoTitle", "Moso card title", "work", "text"),
     ...bilingual("work_seeMoreMuted", "See-more — muted part", "work"),
     ...bilingual("work_seeMoreEmphasis", "See-more — emphasis part", "work", "text"),
+    ...bilingual("work_seeMoreCta", "See-more — button label", "work"),
+    defineField({
+      name: "work_seeMoreHref",
+      title: "See-more — button URL",
+      type: "url",
+      group: "work",
+    }),
+    defineField({
+      name: "work_seeMoreImage",
+      title: "See-more — image (≥ 426px)",
+      type: "image",
+      description: "Falls back to the bundled artwork when empty.",
+      group: "work",
+    }),
+    defineField({
+      name: "work_seeMoreImageMobile",
+      title: "See-more — image (< 426px)",
+      type: "image",
+      description: "Falls back to the bundled artwork when empty.",
+      group: "work",
+    }),
 
     // ── Process ───────────────────────────────────────────────────────
     ...bilingual("process_title", "Section title", "process", "text"),

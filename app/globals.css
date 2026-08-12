@@ -247,6 +247,36 @@ body {
   opacity: 0;
 }
 
+/* Work-card artwork box — offsets come from Sanity, one set per breakpoint.
+   Media queries can't live in an inline style, so the component only feeds the
+   custom properties and the cascade happens here. */
+.project-illustration {
+  position: absolute;
+  top:    var(--ill-top,    0);
+  right:  var(--ill-right,  0);
+  bottom: var(--ill-bottom, 0);
+  left:   var(--ill-left,   0);
+  width:  var(--ill-width,  auto);
+}
+@media (min-width: 768px) {
+  .project-illustration {
+    top:    var(--ill-top-md,    0);
+    right:  var(--ill-right-md,  0);
+    bottom: var(--ill-bottom-md, 0);
+    left:   var(--ill-left-md,   0);
+    width:  var(--ill-width-md,  auto);
+  }
+}
+@media (min-width: 1024px) {
+  .project-illustration {
+    top:    var(--ill-top-lg,    0);
+    right:  var(--ill-right-lg,  0);
+    bottom: var(--ill-bottom-lg, 0);
+    left:   var(--ill-left-lg,   0);
+    width:  var(--ill-width-lg,  auto);
+  }
+}
+
 
 @keyframes btn-shimmer {
   0%   { opacity: 1; background-position: 100% 50%; }

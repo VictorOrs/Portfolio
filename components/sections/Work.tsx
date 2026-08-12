@@ -4,12 +4,12 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { useTranslation } from "@/lib/i18n";
-import { loc, type HomepageData } from "@/lib/queries";
+import { loc, type HomepageData, type ProjectData } from "@/lib/queries";
 import { GRADIENT_STOPS } from "@/lib/gradient";
 import WorkController from "@/components/ui/WorkController";
 import WorkCard, { type WorkCardProps } from "@/components/ui/WorkCard";
 import { buttonVariants } from "@/components/ui/Button";
-import { EnumaIllustration, MosoIllustration } from "@/components/work/illustrations";
+import { projectCardProps } from "@/components/work/projectCard";
 import { useWorkExpand } from "@/components/work/WorkExpandContext";
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -19,32 +19,24 @@ const ease        = [0.22, 1, 0.36, 1] as const;
 
 // ── Section ───────────────────────────────────────────────────────────────────
 
-export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolean; data?: HomepageData | null }) {
+export default function Work({
+  sliderOnly = false,
+  data,
+  projects = [],
+}: {
+  sliderOnly?: boolean;
+  data?: HomepageData | null;
+  projects?: ProjectData[];
+}) {
   const { t, lang } = useTranslation();
   const { openSlug } = useWorkExpand();
 
+  const seeMore = data?.work_seeMoreImage;
+  const seeMoreMobile = data?.work_seeMoreImageMobile;
+
+  // Project cards come from Sanity, in `order`; the white card always closes the row.
   const SLIDES: Array<{ id: string; card: WorkCardProps }> = [
-    {
-      id: "enuma",
-      card: {
-        slug: "enuma",
-        logo: { src: "/img/work/enuma_logo.svg", alt: "enuma" },
-        title: loc(data, "work_enumaTitle", lang) ?? t("work.enumaTitle"),
-        showWorkedOn: true,
-        ctaSecondary: { label: t("work.enumaCta"), href: "https://www.enuma-collective.com" },
-        illustration: <EnumaIllustration />,
-      },
-    },
-    {
-      id: "moso",
-      card: {
-        slug: "moso",
-        logo: { src: "/img/work/moso_logo.svg", alt: "moso" },
-        title: loc(data, "work_mosoTitle", lang) ?? t("work.mosoTitle"),
-        ctaSecondary: { label: t("work.mosoCta"), href: "https://www.motionsociety.com" },
-        illustration: <MosoIllustration />,
-      },
-    },
+    ...projects.map((p) => ({ id: p.slug, card: projectCardProps(p, lang) })),
     ...(!sliderOnly ? [{
       id: "see-more",
       card: {
@@ -63,19 +55,19 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
           >
             {/* Default asset (≥ 426px) */}
             <Image
-              src="/img/work/more.webp"
+              src={seeMore?.url ?? "/img/work/more.webp"}
               alt=""
-              width={1672}
-              height={946}
+              width={seeMore?.width ?? 1672}
+              height={seeMore?.height ?? 946}
               sizes="(max-width: 1024px) 100vw, 1086px"
               className="w-full object-cover max-[425px]:hidden"
             />
             {/* Mobile asset (< 426px) */}
             <Image
-              src="/img/work/more_mobile.webp"
+              src={seeMoreMobile?.url ?? "/img/work/more_mobile.webp"}
               alt=""
-              width={328}
-              height={420}
+              width={seeMoreMobile?.width ?? 328}
+              height={seeMoreMobile?.height ?? 420}
               sizes="100vw"
               className="w-full object-cover hidden max-[425px]:block"
             />
@@ -92,9 +84,13 @@ export default function Work({ sliderOnly = false, data }: { sliderOnly?: boolea
                 {loc(data, "work_seeMoreEmphasis", lang) ?? `${t("work.seeMoreLine2")}\n${t("work.seeMoreLine3")}`}
               </span>
             </h4>
-            {/* href will be replaced with a Figma portfolio link when ready */}
-            <a href="#" className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}>
-              <span className="py-0.5 px-1">{t("work.seeAllWork")}</span>
+            <a
+              href={data?.work_seeMoreHref ?? "#"}
+              className={`${buttonVariants({ variant: "primary", size: "md" })} self-start max-[425px]:self-stretch`}
+            >
+              <span className="py-0.5 px-1">
+                {loc(data, "work_seeMoreCta", lang) ?? t("work.seeAllWork")}
+              </span>
             </a>
           </div>
         ),

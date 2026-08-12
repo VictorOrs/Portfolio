@@ -6,38 +6,44 @@ import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import ChevronRightIcon from "@/components/ui/ChevronRightIcon";
 import { useWorkExpand } from "@/components/work/WorkExpandContext";
+import { useTranslation } from "@/lib/i18n";
 
-// ── All client logos for the "Worked on" marquee ──────────────────────────────
+// ── Marquee tuning ────────────────────────────────────────────────────────────
+// The track animates by -50% of its own width, so a fixed duration would make
+// the speed depend on how many logos there are. Deriving both the duration and
+// the number of repeats from the count keeps every card scrolling at the same
+// pace, and keeps one half wider than the visible strip so the loop has no gap.
 
-const MARQUEE_LOGOS = [
-  { name: "Google",               src: "/img/work/logo/Google.svg",               h: 22  },
-  { name: "dynamic",              src: "/img/work/logo/dynamic.svg",              h: 14  },
-  { name: "Seam",                 src: "/img/work/logo/Seam.svg",                 h: 15  },
-  { name: "FoodFlow",             src: "/img/work/logo/fuse.svg",                 h: 23  },
-  { name: "Flutter",              src: "/img/work/logo/flutter.svg",              h: 18  },
-  { name: "CHANEL",               src: "/img/work/logo/CHANEL.svg",              h: 14  },
-  { name: "JUUL",                 src: "/img/work/logo/JUUL.svg",                h: 20  },
-  { name: "Silna",                src: "/img/work/logo/Silna.svg",               h: 15  },
-  { name: "Ultimate",             src: "/img/work/logo/utlimate.svg",            h: 11  },
-  { name: "OPENLYTICS",           src: "/img/work/logo/OPENLYTICS.svg",          h: 15  },
-  { name: "Carma",                src: "/img/work/logo/carma.svg",               h: 20  },
-  { name: "probably-something",   src: "/img/work/logo/probably-something.svg",  h: 24  },
-  { name: "unstoppable-finance",  src: "/img/work/logo/unstoppable-finance.svg", h: 32  },
-];
+/** Seconds per logo — an average logo occupies ~118px, so this holds ~55px/s. */
+const LOGO_SECONDS = 2.15;
+/** Logos each half needs before it comfortably overflows the widest strip (468px). */
+const MIN_PER_HALF = 6;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+export interface CardLogo {
+  src: string;
+  alt: string;
+  /** Intrinsic size — only used to keep the aspect ratio while the height is fixed */
+  width?: number;
+  height?: number;
+}
 
 export interface WorkCardProps {
   /** Project slug — enables the shared-element expand animation when set */
   slug?: string;
   /** Card height in px (default 540 — matches Figma) */
   height?: number;
-  /** Optional logo above the title */
-  logo?: { src: string; alt: string };
+  /** Optional logo above the title — recoloured to text-secondary */
+  logo?: CardLogo;
   /** Card title */
   title?: string;
   /** Show scrolling "Worked on" logo marquee */
   showWorkedOn?: boolean;
+  /** Client logos filling the marquee, in order */
+  workedOnLogos?: CardLogo[];
+  /** Scroll those logos; false lays them out as a static row */
+  scrollLogos?: boolean;
   ctaPrimary?: { label: string; href: string };
   ctaSecondary?: { label: string; href: string };
   /** Full-bleed illustration rendered as absolute background */
@@ -53,6 +59,27 @@ export interface WorkCardProps {
   expandable?: boolean;
 }
 
+/** One client logo in the strip — flattened to white so any source colour works. */
+function MarqueeLogo({ logo }: { logo: CardLogo }) {
+  return (
+    <div className="flex items-center justify-center shrink-0" style={{ height: 32 }}>
+      <Image
+        src={logo.src}
+        alt={logo.alt}
+        width={logo.width ?? 80}
+        height={logo.height ?? 32}
+        unoptimized
+        style={{
+          height: 40,
+          width: "auto",
+          filter: "brightness(0) invert(1)",
+          opacity: 0.5,
+        }}
+      />
+    </div>
+  );
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function WorkCard({
@@ -61,6 +88,8 @@ export default function WorkCard({
   logo,
   title,
   showWorkedOn = false,
+  workedOnLogos = [],
+  scrollLogos = true,
   ctaPrimary,
   ctaSecondary,
   illustration,
@@ -70,7 +99,15 @@ export default function WorkCard({
   expandable = false,
 }: WorkCardProps) {
   const uid = useId();
+  const { t } = useTranslation();
   const gradId = `card-grad-${uid.replace(/:/g, "")}`;
+
+  // One half of the scrolling track — repeated so a short list still overflows.
+  const repeats = workedOnLogos.length
+    ? Math.max(1, Math.ceil(MIN_PER_HALF / workedOnLogos.length))
+    : 1;
+  const half = Array.from({ length: repeats }, () => workedOnLogos).flat();
+  const marqueeDuration = half.length * LOGO_SECONDS;
   const { open } = useWorkExpand();
   const rootRef = useRef<HTMLDivElement>(null);
   const hasContent = !!(logo || title || ctaPrimary || ctaSecondary || showWorkedOn);
@@ -83,7 +120,7 @@ export default function WorkCard({
     open(
       slug,
       rect ? { top: rect.top, left: rect.left, width: rect.width, height: rect.height } : undefined,
-      { logo, title, illustration, ctaSecondary, showWorkedOn }
+      { logo, title, illustration, ctaSecondary, showWorkedOn, workedOnLogos, scrollLogos }
     );
   };
 
@@ -162,17 +199,24 @@ export default function WorkCard({
           <div className="flex flex-col gap-4 md:gap-6">
             <div className="flex flex-col gap-6 md:gap-8 items-start w-full md:w-[575px]">
               {logo && (
-                <Image
-                  src={logo.src}
-                  alt={logo.alt}
-                  width={110}
-                  height={20}
-                  className="max-[425px]:!h-[18px]"
+                /* Painted through a mask rather than drawn: whatever colours the
+                   uploaded file carries, every card logo lands on text-secondary.
+                   inline-block so the fixed height drives the width via aspect-ratio. */
+                <span
+                  role="img"
+                  aria-label={logo.alt}
+                  className="inline-block align-bottom bg-text-secondary max-[425px]:!h-[18px]"
                   style={{
                     height: 20,
-                    width: "auto",
-                    opacity: 0.5,
-                    display: "block",
+                    aspectRatio: `${logo.width ?? 110} / ${logo.height ?? 20}`,
+                    WebkitMaskImage: `url("${logo.src}")`,
+                    maskImage: `url("${logo.src}")`,
+                    WebkitMaskSize: "contain",
+                    maskSize: "contain",
+                    WebkitMaskRepeat: "no-repeat",
+                    maskRepeat: "no-repeat",
+                    WebkitMaskPosition: "left center",
+                    maskPosition: "left center",
                   }}
                 />
               )}
@@ -184,49 +228,50 @@ export default function WorkCard({
             </div>
 
             {/* "Worked on" marquee */}
-            {showWorkedOn && (
+            {showWorkedOn && workedOnLogos.length > 0 && (
               <div
                 className="relative overflow-hidden w-full md:w-[575px]"
                 style={{ height: 40 }}
               >
-                {/* Scrolling logos — offset 107px on desktop to leave room for "Worked on" label.
-                    Edges fade via a transparency mask so logos blend over any background. */}
+                {/* Logo strip — offset 107px on desktop to leave room for the label.
+                    Scrolling edges fade via a transparency mask so logos blend over
+                    any background; a static row starts flush instead. */}
                 <div
                   className="absolute inset-y-0 left-0 right-0 md:left-[107px]"
-                  style={{
-                    WebkitMaskImage:
-                      "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
-                    maskImage:
-                      "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
-                  }}
+                  style={
+                    scrollLogos
+                      ? {
+                          WebkitMaskImage:
+                            "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
+                          maskImage:
+                            "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
+                        }
+                      : undefined
+                  }
                 >
-                  <motion.div
-                    className="flex items-center gap-8 h-full w-max"
-                    animate={{ x: ["0%", "-50%"] }}
-                    transition={{ duration: 28, ease: "linear", repeat: Infinity }}
-                  >
-                    {[...MARQUEE_LOGOS, ...MARQUEE_LOGOS].map((logo, i) => (
-                      <div key={i} className="flex items-center justify-center shrink-0" style={{ height: 32 }}>
-                        <Image
-                          src={logo.src}
-                          alt={logo.name}
-                          width={80}
-                          height={32}
-                          style={{
-                            height: 40,
-                            width: "auto",
-                            filter: "brightness(0) invert(1)",
-                            opacity: 0.5,
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </motion.div>
+                  {scrollLogos ? (
+                    <motion.div
+                      className="flex items-center gap-8 h-full w-max"
+                      animate={{ x: ["0%", "-50%"] }}
+                      transition={{ duration: marqueeDuration, ease: "linear", repeat: Infinity }}
+                    >
+                      {/* Doubled so the -50% loop is seamless */}
+                      {[...half, ...half].map((client, i) => (
+                        <MarqueeLogo key={i} logo={client} />
+                      ))}
+                    </motion.div>
+                  ) : (
+                    <div className="flex items-center gap-8 h-full">
+                      {workedOnLogos.map((client, i) => (
+                        <MarqueeLogo key={i} logo={client} />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* "Worked on" label — sits left of the masked logo track */}
                 <p className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 font-body text-s text-text-secondary whitespace-nowrap">
-                  Worked on
+                  {t("work.workedOn")}
                 </p>
               </div>
             )}

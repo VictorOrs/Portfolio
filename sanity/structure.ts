@@ -10,8 +10,17 @@ export const structure: StructureResolver = (S) =>
         .title("Homepage")
         .child(S.document().schemaType("homepage").documentId("homepage")),
       S.divider(),
-      // Remaining document types as regular lists (FAQ, Project)
+      // Work cards — listed in slider order
+      S.listItem()
+        .id("project")
+        .title("Projects")
+        .child(
+          S.documentTypeList("project")
+            .title("Projects")
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+        ),
+      // Remaining document types as regular lists (FAQ)
       ...S.documentTypeListItems().filter(
-        (item) => item.getId() !== "homepage"
+        (item) => item.getId() !== "homepage" && item.getId() !== "project"
       ),
     ]);
