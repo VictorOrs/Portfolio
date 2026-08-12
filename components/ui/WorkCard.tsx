@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useId, useRef } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
@@ -106,6 +106,19 @@ export default function WorkCard({
   const uid = useId();
   const { t } = useTranslation();
   const gradId = `card-grad-${uid.replace(/:/g, "")}`;
+
+  // Below md the strip is only as wide as the card, so a static row runs off the
+  // edge — mobile keeps scrolling whatever the document asks for. The animation
+  // is driven in JS, so the breakpoint has to be read in JS too.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  const scrolling = scrollLogos || narrow;
 
   // One half of the scrolling track — repeated so a short list still overflows.
   const repeats = workedOnLogos.length
@@ -244,7 +257,7 @@ export default function WorkCard({
                 <div
                   className="absolute inset-y-0 left-0 right-0 md:left-[107px]"
                   style={
-                    scrollLogos
+                    scrolling
                       ? {
                           WebkitMaskImage:
                             "linear-gradient(to right, transparent 0, black 40px, black calc(100% - 40px), transparent 100%)",
@@ -254,7 +267,7 @@ export default function WorkCard({
                       : undefined
                   }
                 >
-                  {scrollLogos ? (
+                  {scrolling ? (
                     <motion.div
                       className="flex items-center gap-8 h-full w-max"
                       animate={{ x: ["0%", "-50%"] }}
