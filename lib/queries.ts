@@ -46,6 +46,11 @@ export const homepageQuery = groq`
     process_steps[]{ title_en, title_fr, body_en, body_fr },
     faq_eyebrow_en, faq_eyebrow_fr,
     faq_title_en, faq_title_fr,
+    seo_title,
+    seo_description,
+    seo_ogImage${IMAGE},
+    seo_favicon${IMAGE},
+    seo_webclip${IMAGE},
     cta_interested_en, cta_interested_fr,
     cta_getInTouch_en, cta_getInTouch_fr,
     cta_subtitle_en, cta_subtitle_fr
@@ -158,6 +163,11 @@ export type HomepageData = {
   process_steps?: Array<{ title_en?: string; title_fr?: string; body_en?: string; body_fr?: string }>;
   faq_eyebrow_en?: string; faq_eyebrow_fr?: string;
   faq_title_en?: string; faq_title_fr?: string;
+  seo_title?: string;
+  seo_description?: string;
+  seo_ogImage?: SanityImage;
+  seo_favicon?: SanityImage;
+  seo_webclip?: SanityImage;
   cta_interested_en?: string; cta_interested_fr?: string;
   cta_getInTouch_en?: string; cta_getInTouch_fr?: string;
   cta_subtitle_en?: string; cta_subtitle_fr?: string;

@@ -22,8 +22,48 @@ export default defineType({
     { name: "process", title: "Process" },
     { name: "faq", title: "FAQ" },
     { name: "cta", title: "CTA" },
+    { name: "seo", title: "SEO & sharing" },
   ],
   fields: [
+    // ── SEO / social ──────────────────────────────────────────────────
+    // Not bilingual: Next builds these on the server, before the visitor has
+    // picked a language, and the document is served as <html lang="en">.
+    defineField({
+      name: "seo_title",
+      title: "Browser tab & search title",
+      type: "string",
+      description: "Shown in the tab, in bookmarks, in search results and when the link is shared.",
+      group: "seo",
+    }),
+    defineField({
+      name: "seo_description",
+      title: "Description",
+      type: "text",
+      description: "The sentence under the title in search results and link previews. Around 150 characters.",
+      group: "seo",
+    }),
+    defineField({
+      name: "seo_ogImage",
+      title: "Sharing image (OpenGraph)",
+      type: "image",
+      description: "The picture shown when the link is posted. 1200 × 630 px.",
+      group: "seo",
+    }),
+    defineField({
+      name: "seo_favicon",
+      title: "Favicon",
+      type: "image",
+      description: "The little icon in the browser tab. A square PNG or SVG, 512 × 512 px.",
+      group: "seo",
+    }),
+    defineField({
+      name: "seo_webclip",
+      title: "Webclip (iOS home screen)",
+      type: "image",
+      description: "Icon used when the site is added to an iPhone home screen. Square, 180 × 180 px. Falls back to the favicon.",
+      group: "seo",
+    }),
+
     // ── Hero ──────────────────────────────────────────────────────────
     ...bilingual("hero_headline", "Headline — desktop", "hero", "text"),
     ...bilingual("hero_headlineTablet", "Headline — tablet", "hero", "text"),
