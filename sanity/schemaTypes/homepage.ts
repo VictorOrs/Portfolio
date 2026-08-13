@@ -114,8 +114,9 @@ export default defineType({
       title: "Client images",
       type: "array",
       description:
-        "Shown in the clients card. The first image sits in the left column, the rest stack in the right one — three reads best. Falls back to the bundled artwork when empty.",
+        "Shown in the clients card. The first image sits in the left column, the other two stack in the right one. Three at most — the card has a fixed height and a fourth would be clipped. Falls back to the bundled artwork when empty.",
       group: "about",
+      validation: (r) => r.max(3),
       of: [
         {
           type: "image",
